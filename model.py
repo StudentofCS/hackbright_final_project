@@ -21,7 +21,7 @@ class User(db.Model):
 
 
 class Build(db.Model):
-    "A build"
+    """A build"""
 
     __tablename__ = 'builds'
 
@@ -36,8 +36,8 @@ class Build(db.Model):
                                   db.ForeignKey('characteristics.id'))
     # base_stats_id = db.Column(db.Integer,
     #                          db.ForeignKy('base_stats.id'))
-    class_id = db.Column(db.Integer,
-                         db.ForeignKey('classes.id'))
+    character_class_id = db.Column(db.Integer,
+                         db.ForeignKey('character_classes.id'))
     level = db.Column(db.Integer, default = 1)
 
     def __repr__(self):
@@ -48,7 +48,7 @@ class Build(db.Model):
     
 
 class Characteristic(db.Model):
-    "Selected characteristics"
+    """Selected characteristics"""
 
     __tablename__ = 'characteristics'
 
@@ -69,6 +69,7 @@ class Characteristic(db.Model):
     agility = db.Column(db.Integer)
     lock = db.Column(db.Integer)
     dodge = db.Column(db.Integer)
+    initiative = db.Column(db.Integer)
     lock_dodge = db.Column(db.Integer)
     force_of_will = db.Column(db.Integer)
     fortune = db.Column(db.Integer)
@@ -108,28 +109,49 @@ class Characteristic_cap(db.Model):
     level = db.Column(db.Integer,
                       primary_key = True)
     intelligence = db.Column(db.Integer)
-    hp_percentage = db.Column(db.Integer)
+    hp_percentage = db.Column(db.Integer,
+                              default = -1,
+                              nullable = False)
     elem_res = db.Column(db.Integer)
     barrier = db.Column(db.Integer)
     heals_received = db.Column(db.Integer)
     armor_hp = db.Column(db.Integer)
     strength = db.Column(db.Integer)
-    elem_mastery = db.Column(db.Integer)
+    elem_mastery = db.Column(db.Integer,
+                              default = -1,
+                              nullable = False)
     melee = db.Column(db.Integer)
     distance = db.Column(db.Integer)
-    hp = db.Column(db.Integer)
+    hp = db.Column(db.Integer,
+                              default = -1,
+                              nullable = False)
     agility = db.Column(db.Integer)
-    lock = db.Column(db.Integer)
-    dodge = db.Column(db.Integer)
-    lock_dodge = db.Column(db.Integer)
+    lock = db.Column(db.Integer,
+                              default = -1,
+                              nullable = False)
+    dodge = db.Column(db.Integer,
+                              default = -1,
+                              nullable = False)
+    initiative = db.Column(db.Integer)
+    lock_dodge = db.Column(db.Integer,
+                              default = -1,
+                              nullable = False)
     force_of_will = db.Column(db.Integer)
     fortune = db.Column(db.Integer)
     crit_hit = db.Column(db.Integer)
     block = db.Column(db.Integer)
-    crit_mastery = db.Column(db.Integer)
-    rear_mastery = db.Column(db.Integer)
-    berserk_mastery = db.Column(db.Integer)
-    healing_mastery = db.Column(db.Integer)
+    crit_mastery = db.Column(db.Integer,
+                              default = -1,
+                              nullable = False)
+    rear_mastery = db.Column(db.Integer,
+                              default = -1,
+                              nullable = False)
+    berserk_mastery = db.Column(db.Integer,
+                              default = -1,
+                              nullable = False)
+    healing_mastery = db.Column(db.Integer,
+                              default = -1,
+                              nullable = False)
     rear_res = db.Column(db.Integer)
     crit_res = db.Column(db.Integer)
     major = db.Column(db.Integer)
@@ -193,5 +215,314 @@ class Equipment_set(db.Model):
                 Main_hand_id = {self.main_hand_id};
                 Two_hander_id = {self.two_hander_id};
                 Emblem_id = {self.emblem_id};
-                Mount_id = {self.mount_id};
+                Mount_id = {self.mount_id}>
                 """
+
+class Equipment(db.Model):
+    """All equippable items in the game"""
+
+    __tablename__ = 'equipments'
+
+    id = db.Column(db.Integer,
+                   primary_key = True)
+    equip_type_id = db.Column(db.Integer)
+    level = db.Column(db.Integer)
+    hp = db.Column(db.Integer)
+    hp_neg = db.Column(db.Integer)
+    armor = db.Column(db.Integer)
+    armor_neg = db.Column(db.Integer)
+    ap = db.Column(db.Integer)
+    ap_neg = db.Column(db.Integer)
+    mp = db.Column(db.Integer)
+    mp_neg = db.Column(db.Integer)
+    wp = db.Column(db.Integer)
+    wp_neg = db.Column(db.Integer)
+    water_mastery = db.Column(db.Integer)
+    water_mastery_neg = db.Column(db.Integer)
+    air_mastery = db.Column(db.Integer)
+    air_mastery_neg = db.Column(db.Integer)
+    earth_mastery = db.Column(db.Integer)
+    earth_mastery_neg = db.Column(db.Integer)
+    fire_mastery = db.Column(db.Integer)
+    fire_mastery_neg = db.Column(db.Integer)
+    water_res  = db.Column(db.Integer)
+    water_res_neg = db.Column(db.Integer)
+    air_res = db.Column(db.Integer)
+    air_res_neg = db.Column(db.Integer)
+    earth_res = db.Column(db.Integer)
+    earth_res_neg = db.Column(db.Integer)
+    fire_res = db.Column(db.Integer)
+    fire_res_neg = db.Column(db.Integer)
+    dmg_inflicted = db.Column(db.Integer)
+    dmg_inflicted_neg = db.Column(db.Integer)
+    crit_hit = db.Column(db.Integer)
+    crit_hit_neg = db.Column(db.Integer)
+    initiative = db.Column(db.Integer)
+    initiative_neg = db.Column(db.Integer)
+    dodge = db.Column(db.Integer)
+    dodge_neg = db.Column(db.Integer)
+    wisdom = db.Column(db.Integer)
+    wisdom_neg = db.Column(db.Integer)
+    control = db.Column(db.Integer)
+    control_neg = db.Column(db.Integer)
+    heals_performed = db.Column(db.Integer)
+    heals_performed_neg = db.Column(db.Integer)
+    block = db.Column(db.Integer)
+    block_neg = db.Column(db.Integer)
+    spell_range = db.Column(db.Integer)
+    range__neg = db.Column(db.Integer)
+    lock = db.Column(db.Integer)
+    lock_neg = db.Column(db.Integer)
+    prospecting = db.Column(db.Integer)
+    prospecting_neg = db.Column(db.Integer)
+    force_of_will = db.Column(db.Integer)
+    force_of_will_neg = db.Column(db.Integer)
+    crit_mastery = db.Column(db.Integer)
+    crit_mastery_neg = db.Column(db.Integer)
+    rear_mastery = db.Column(db.Integer)
+    rear_mastery_neg = db.Column(db.Integer)
+    melee_mastery = db.Column(db.Integer)
+    melee_mastery_neg = db.Column(db.Integer)
+    distance_mastery = db.Column(db.Integer)
+    distance_mastery_neg = db.Column(db.Integer)
+    healing_mastery = db.Column(db.Integer)
+    healing_mastery_neg = db.Column(db.Integer)
+    berserk_mastery = db.Column(db.Integer)
+    berserk_mastery_neg = db.Column(db.Integer)
+    crit_res = db.Column(db.Integer)
+    crit_res_neg = db.Column(db.Integer)
+    rear_res = db.Column(db.Integer)
+    rear_res_neg = db.Column(db.Integer)
+    armor_given = db.Column(db.Integer)
+    armor_given_neg = db.Column(db.Integer)
+    armor_received = db.Column(db.Integer)
+    armor_received_neg = db.Column(db.Integer)
+    indirect_dmg = db.Column(db.Integer)
+    indirect_dmg_neg = db.Column(db.Integer)
+    random_masteries = db.Column(db.Integer) #num of random masteries allowed
+    random_resistances = db.Column(db.Integer)
+
+    def __repr__(self):
+        return f"""
+                <id = {self.id};
+                equip_type_id = {self.equip_type_id};
+                level = {self.level};
+                hp = {self.hp};
+                hp_neg = {self.hp_neg};
+                armor = {self.armor};
+                armor_neg = {self.armor_neg};
+                ap = {self.ap};
+                ap_neg = {self.ap_neg};
+                mp = {self.mp};
+                mp_neg = {self.mp_neg};
+                wp = {self.wp};
+                wp_neg = {self.wp_neg};
+                water_mastery = {self.water_mastery};
+                water_mastery_neg = {self.water_mastery_neg};
+                air_mastery = {self.air_mastery};
+                air_mastery_neg = {self.air_mastery_neg};
+                earth_mastery = {self.earth_mastery};
+                earth_mastery_neg = {self.earth_mastery_neg};
+                fire_mastery = {self.fire_mastery};
+                fire_mastery_neg = {self.fire_mastery_neg};
+                water_res  = {self.water_res };
+                water_res_neg = {self.water_res_neg};
+                air_res = {self.air_res};
+                air_res_neg = {self.air_res_neg};
+                earth_res = {self.earth_res};
+                earth_res_neg = {self.earth_res_neg};
+                fire_res = {self.fire_res};
+                fire_res_neg = {self.fire_res_neg};
+                dmg_inflicted = {self.dmg_inflicted};
+                dmg_inflicted_neg = {self.dmg_inflicted_neg};
+                crit_hit = {self.crit_hit};
+                crit_hit_neg = {self.crit_hit_neg};
+                initiative = {self.initiative};
+                initiative_neg = {self.initiative_neg};
+                dodge = {self.dodge};
+                dodge_neg = {self.dodge_neg};
+                wisdom = {self.wisdom};
+                wisdom_neg = {self.wisdom_neg};
+                control = {self.control};
+                control_neg = {self.control_neg};
+                heals_performed = {self.heals_performed};
+                heals_performed_neg = {self.heals_performed_neg};
+                block = {self.block};
+                block_neg = {self.block_neg};
+                spell_range = {self.spell_range};
+                range__neg = {self.range__neg};
+                lock = {self.lock};
+                lock_neg = {self.lock_neg};
+                prospecting = {self.prospecting};
+                prospecting_neg = {self.prospecting_neg};
+                force_of_will = {self.force_of_will};
+                force_of_will_neg = {self.force_of_will_neg};
+                crit_mastery = {self.crit_mastery};
+                crit_mastery_neg = {self.crit_mastery_neg};
+                rear_mastery = {self.rear_mastery};
+                rear_mastery_neg = {self.rear_mastery_neg};
+                melee_mastery = {self.melee_mastery};
+                melee_mastery_neg = {self.melee_mastery_neg};
+                distance_mastery = {self.distance_mastery};
+                distance_mastery_neg = {self.distance_mastery_neg};
+                healing_mastery = {self.healing_mastery};
+                healing_mastery_neg = {self.healing_mastery_neg};
+                berserk_mastery = {self.berserk_mastery};
+                berserk_mastery_neg = {self.berserk_mastery_neg};
+                crit_res = {self.crit_res};
+                crit_res_neg = {self.crit_res_neg};
+                rear_res = {self.rear_res};
+                rear_res_neg = {self.rear_res_neg};
+                armor_given = {self.armor_given};
+                armor_given_neg = {self.armor_given_neg};
+                armor_received = {self.armor_received};
+                armor_received_neg = {self.armor_received_neg};
+                indirect_dmg = {self.indirect_dmg};
+                indirect_dmg_neg = {self.indirect_dmg_neg};
+                random_masteries = {self.random_masteries}; #num of random masteries allowed
+                random_resistances = {self.random_resistances}>
+                """
+    
+
+class Element(db.Model):
+    """The four elements used in masteries and resistances"""
+
+    __tablename__ = 'elements'
+
+    id = db.Column(db.Integer,
+                   autoincrement = True,
+                   primary_key = True)
+    name = db.Column(db.String,
+                     nullable = False)
+    
+    def __repr__(self):
+        return f'<Element id = {self.id}; name = {self.name}'
+    
+
+class Selected_mastery_element(db.Model):
+    """The mastery elements selected for the build"""
+
+    __tablename__ = 'selected_mastery_elements'
+
+    id = db.Column(db.Integer,
+                   autoincrement = True,
+                   primary_key = True)
+    build_id = db.Column(db.Integer,
+                          db.ForeignKey('builds.id'))
+    element_id = db.Column(db.Integer,
+                           db.ForeignKey('elements.id'))
+    
+    def __repr__(self):
+        return f"""
+                <Selected_mastery_element id = {self.id};
+                Build id = {self.build_id};
+                Element id = {self.element_id}>
+                """
+    
+
+class Equipment_random_mastery_element(db.Model):
+    """The elements assigned to the random mastery slots of an item"""
+
+    __tablename__ = 'equipment_random_mastery_elements'
+
+    id = db.Column(db.Integer,
+                   autoincrement = True,
+                   primary_key = True)
+    equipment_id = db.Column(db.Integer,
+                             db.ForeignKey('equipments.id'))
+    element_id = db.Column(db.Integer,
+                             db.ForeignKey('elements.id'))
+    
+    def __repr__(self):
+        return f"""
+                <Equipment_random_mastery_element id = {self.id};
+                Equipment id = {self.equipment_id};
+                Element id = {self.element_id}>
+                """
+    
+
+class Selected_resistance_element(db.Model):
+    """The resistance elements selected for the build"""
+
+    __tablename__ = 'selected_resistance_elements'
+
+    id = db.Column(db.Integer,
+                   autoincrement = True,
+                   primary_key = True)
+    build_id = db.Column(db.Integer,
+                          db.ForeignKey('builds.id'))
+    element_id = db.Column(db.Integer,
+                           db.ForeignKey('elements.id'))
+    
+    def __repr__(self):
+        return f"""
+                <Selected_resistance_element id = {self.id};
+                Build id = {self.build_id};
+                Element id = {self.element_id}>
+                """
+    
+
+class Equipment_random_resistance_element(db.Model):
+    """The elements assigned to the random resistance slots of an item"""
+
+    __tablename__ = 'equipment_random_resistance_elements'
+
+    id = db.Column(db.Integer,
+                   autoincrement = True,
+                   primary_key = True)
+    equipment_id = db.Column(db.Integer,
+                             db.ForeignKey('equipments.id'))
+    element_id = db.Column(db.Integer,
+                             db.ForeignKey('elements.id'))
+    
+    def __repr__(self):
+        return f"""
+                <Equipment_random_resistance_element id = {self.id};
+                Equipment id = {self.equipment_id};
+                Element id = {self.element_id}>
+                """
+
+
+class Character_class(db.Model):
+    """Selected character class"""
+
+    __tablename__ = 'character_classes'
+
+    id = db.Column(db.Integer,
+                   primary_key = True)
+    name = db.Column(db.String,
+                     nullable = False)
+    
+    def __repr__(self):
+        return f'<Character_class id = {self.id}; Name = {self.name}>'
+    
+
+class Base_stat(db.Model):
+    """Base stats without any equippable items, spells, or passives"""
+
+    __tablename__ = 'base_stats'
+
+    level = db.Column(db.Integer,
+                      primary_key = True)
+    hp = db.Column(db.Integer,
+                   nullable = False)
+    
+    def __repr__(self):
+        return f'<Base_stat level = {self.level}; HP = {self.hp}>'
+    
+
+
+
+def connect_to_db(flask_app, db_uri="postgresql:///wakfuData", echo=True):
+    flask_app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
+    flask_app.config["SQLALCHEMY_ECHO"] = echo
+    flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+    db.app = flask_app
+    db.init_app(flask_app)
+
+    print("Connected to the db!")
+
+if __name__ == "__main__":
+    from server import app
+    connect_to_db(app)
