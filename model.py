@@ -483,6 +483,20 @@ class Equipment_random_resistance_element(db.Model):
                 """
 
 
+class Base_stat(db.Model):
+    """Base stats without any equippable items, spells, or passives"""
+
+    __tablename__ = 'base_stats'
+
+    level = db.Column(db.Integer,
+                      primary_key = True)
+    hp = db.Column(db.Integer,
+                   nullable = False)
+    
+    def __repr__(self):
+        return f'<Base_stat level = {self.level}; HP = {self.hp}>'
+
+
 class Character_class(db.Model):
     """Selected character class"""
 
@@ -497,22 +511,203 @@ class Character_class(db.Model):
         return f'<Character_class id = {self.id}; Name = {self.name}>'
     
 
-class Base_stat(db.Model):
-    """Base stats without any equippable items, spells, or passives"""
+class Spell(db.Model):
+    """Spells available in the game"""
 
-    __tablename__ = 'base_stats'
+    __tablename__ = 'spells'
+
+    id = db.Column(db.Integer,
+                   primary_key = True)
+    character_class_id = db.Column(db.Integer,
+                                   db.ForeignKey('character_classes.id'))
+    spell_level = db.Column(db.Integer,
+                            nullable = False)
+    # Move to separate table with all names/descriptions in diff languages
+    # spell_name = db.Column(db.String)
+    # spell_description = db.Column(db.String)
+    ap_cost = db.Column(db.Integer)
+    mp_cost = db.Column(db.Integer)
+    wp_cost = db.Column(db.Integer)
+    sp_cost = db.Column(db.Integer)
+    cooldown = db.Column(db.Integer)
+    dmg = db.Column(db.Integer)
+    crit_dmg = db.Column(db.Integer)
+    conditional_dmg = db.Column(db.Integer)
+    crit_conditional_dmg = db.Column(db.Integer)
+
+    def __repr__(self):
+        return f"""
+                <Spell id = {self.id};
+                Spell level = {self.spell_level};
+                Character_class_id = {self.character_class_id}>
+                """
+
+
+class Selected_spell(db.Model):
+    """Spell selected for build"""
+
+    __tablename_ = 'selected_spells'
+
+    id = db.Column(db.Integer,
+                   autoincrement = True,
+                   primary_key = True)
+    build_id = db.Column(db.Integer,
+                         db.ForeignKey('builds.id'))
+    spell_id = db.Column(db.Integer,
+                         db.ForeignKey('spells.id'))
+    
+    def __repr__(self):
+        return f"""
+                <Selected_spell id {self.id}; 
+                Build id = {self.build_id};
+                Spell id = {self.spell_id}>
+                """
+
+
+class Spell_slot_cap(db.Model):
+    """Number of spells allowed at each level"""
+
+    __tablename__ = 'spell_slot_caps'
 
     level = db.Column(db.Integer,
                       primary_key = True)
-    hp = db.Column(db.Integer,
-                   nullable = False)
+    num_of_slots = db.Column(db.Integer,
+                             nullable = False)
+
+
+class Passive(db.Model):
+    """All spell passives in the game"""
+
+    __tablename__ = 'passives'
+
+    id = db.Column(db.Integer,
+                   primary_key = True)
+    character_class_id = db.Column(db.Integer,
+                                   db.ForeignKey('character_classes.id'))
+    passive_level = db.Column(db.Integer,
+                              nullable = False)
+    equip_type_id = db.Column(db.Integer)
+    level = db.Column(db.Integer)
+    hp = db.Column(db.Integer)
+    hp_neg = db.Column(db.Integer)
+    armor = db.Column(db.Integer)
+    armor_neg = db.Column(db.Integer)
+    ap = db.Column(db.Integer)
+    ap_neg = db.Column(db.Integer)
+    mp = db.Column(db.Integer)
+    mp_neg = db.Column(db.Integer)
+    wp = db.Column(db.Integer)
+    wp_neg = db.Column(db.Integer)
+    water_mastery = db.Column(db.Integer)
+    water_mastery_neg = db.Column(db.Integer)
+    air_mastery = db.Column(db.Integer)
+    air_mastery_neg = db.Column(db.Integer)
+    earth_mastery = db.Column(db.Integer)
+    earth_mastery_neg = db.Column(db.Integer)
+    fire_mastery = db.Column(db.Integer)
+    fire_mastery_neg = db.Column(db.Integer)
+    water_res  = db.Column(db.Integer)
+    water_res_neg = db.Column(db.Integer)
+    air_res = db.Column(db.Integer)
+    air_res_neg = db.Column(db.Integer)
+    earth_res = db.Column(db.Integer)
+    earth_res_neg = db.Column(db.Integer)
+    fire_res = db.Column(db.Integer)
+    fire_res_neg = db.Column(db.Integer)
+    dmg_inflicted = db.Column(db.Integer)
+    dmg_inflicted_neg = db.Column(db.Integer)
+    crit_hit = db.Column(db.Integer)
+    crit_hit_neg = db.Column(db.Integer)
+    initiative = db.Column(db.Integer)
+    initiative_neg = db.Column(db.Integer)
+    dodge = db.Column(db.Integer)
+    dodge_neg = db.Column(db.Integer)
+    wisdom = db.Column(db.Integer)
+    wisdom_neg = db.Column(db.Integer)
+    control = db.Column(db.Integer)
+    control_neg = db.Column(db.Integer)
+    heals_performed = db.Column(db.Integer)
+    heals_performed_neg = db.Column(db.Integer)
+    block = db.Column(db.Integer)
+    block_neg = db.Column(db.Integer)
+    spell_range = db.Column(db.Integer)
+    range__neg = db.Column(db.Integer)
+    lock = db.Column(db.Integer)
+    lock_neg = db.Column(db.Integer)
+    prospecting = db.Column(db.Integer)
+    prospecting_neg = db.Column(db.Integer)
+    force_of_will = db.Column(db.Integer)
+    force_of_will_neg = db.Column(db.Integer)
+    crit_mastery = db.Column(db.Integer)
+    crit_mastery_neg = db.Column(db.Integer)
+    rear_mastery = db.Column(db.Integer)
+    rear_mastery_neg = db.Column(db.Integer)
+    melee_mastery = db.Column(db.Integer)
+    melee_mastery_neg = db.Column(db.Integer)
+    distance_mastery = db.Column(db.Integer)
+    distance_mastery_neg = db.Column(db.Integer)
+    healing_mastery = db.Column(db.Integer)
+    healing_mastery_neg = db.Column(db.Integer)
+    berserk_mastery = db.Column(db.Integer)
+    berserk_mastery_neg = db.Column(db.Integer)
+    crit_res = db.Column(db.Integer)
+    crit_res_neg = db.Column(db.Integer)
+    rear_res = db.Column(db.Integer)
+    rear_res_neg = db.Column(db.Integer)
+    armor_given = db.Column(db.Integer)
+    armor_given_neg = db.Column(db.Integer)
+    armor_received = db.Column(db.Integer)
+    armor_received_neg = db.Column(db.Integer)
+    indirect_dmg = db.Column(db.Integer)
+    indirect_dmg_neg = db.Column(db.Integer)
+    sp = db.Column(db.Integer) #specific to fogger
+    sp_neg = db.Column(db.Integer)
+
+    def __repr__(self):
+        return f"""
+                <Passive id = {self.id};
+                Passive level = {self.spell_level};
+                Character_class_id = {self.character_class_id}>
+                """
+
+
+class Selected_passive(db.Model):
+    """Passive selected for build"""
+
+    __tablename_ = 'selected_passives'
+
+    id = db.Column(db.Integer,
+                   autoincrement = True,
+                   primary_key = True)
+    build_id = db.Column(db.Integer,
+                         db.ForeignKey('builds.id'))
+    passive_id = db.Column(db.Integer,
+                         db.ForeignKey('passives.id'))
     
     def __repr__(self):
-        return f'<Base_stat level = {self.level}; HP = {self.hp}>'
-    
+        return f"""
+                <Selected_passive id {self.id}; 
+                Build id = {self.build_id};
+                Passive id = {self.passive_id}>
+                """
+
+
+class Passive_slot_cap(db.Model):
+    """Number of passives allowed at each level"""
+
+    __tablename__ = 'passive_slot_caps'
+
+    level = db.Column(db.Integer,
+                      primary_key = True)
+    num_of_slots = db.Column(db.Integer,
+                             nullable = False)
 
 
 
+
+
+
+# Connect the db to flask server
 def connect_to_db(flask_app, db_uri="postgresql:///wakfuData", echo=True):
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
     flask_app.config["SQLALCHEMY_ECHO"] = echo
