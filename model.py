@@ -16,6 +16,8 @@ class User(db.Model):
                       unique = True)
     password = db.Column(db.String)
 
+    build = db.relationship('Build', back_populates='user')
+
     def __repr__(self):
         return f'<User id = {self.id}; email = {self.email}>'
 
@@ -32,7 +34,7 @@ class Build(db.Model):
                         db.ForeignKey('users.id'))
     equipment_set_id = db.Column(db.Integer,
                                  db.ForeignKey('equipment_sets.id'))
-    characteristics_id = db.Column(db.Integer,
+    characteristic_id = db.Column(db.Integer,
                                   db.ForeignKey('characteristics.id'))
     # base_stats_id = db.Column(db.Integer,
     #                          db.ForeignKy('base_stats.id'))
@@ -40,10 +42,28 @@ class Build(db.Model):
                          db.ForeignKey('character_classes.id'))
     level = db.Column(db.Integer, default = 1)
 
+    user = db.relationship('User', 
+                           back_populates='build')
+    equipment_set = db.relationship('Equipment_set', 
+                                    back_populates='build')
+    characteristic = db.relationship('Characteristic', 
+                                     back_populates='build')
+    character_class = db.relationship('Character_class', 
+                                      back_populates='build')
+    selected_mastery = db.relationship('Selected_mastery_element', 
+                                       back_populates='build')
+    selected_resistance = db.relationship('Selected_resistance_element', 
+                                          back_populates='build')
+    selected_spell = db.relationship('Selected_spell', 
+                                     back_populates='build')
+    selected_passive = db.relationship('Selected_passives', 
+                                       back_populates='build')
+
+
     def __repr__(self):
         return f"""
             <Build id = {self.id}; User id = {self.user_id};
-            Class id = {self.class_id}; Level = {self.level}>
+            Class id = {self.character_class_id}; Level = {self.level}>
             """ 
     
 
@@ -89,6 +109,8 @@ class Characteristic(db.Model):
     control = db.Column(db.Integer)
     dmg_inflicted = db.Column(db.Integer)
     resistance = db.Column(db.Integer)
+
+    build = db.relationship('Build', back_populates='charateristic')
 
     def __repr__(self):
         return f"""
@@ -198,6 +220,23 @@ class Equipment_set(db.Model):
     emblem_id = db.Column(db.Integer, db.ForeignKey('equipments.id'))
     mount_id = db.Column(db.Integer, db.ForeignKey('equipments.id'))
 
+    build = db.relationship('Build', back_populates='equipment_set')
+    helmet = db.relationship('Equipment', foreign_keys=[helmet_id], back_populates='equipment_set_helmet')
+    amulet = db.relationship('Equipment', foreign_keys=[amulet_id], back_populates='equipment_set_amulet')
+    breastplate = db.relationship('Equipment', foreign_keys=[breastplate_id], back_populates='equipment_set_breastplate')
+    boots = db.relationship('Equipment', foreign_keys=[boots_id], back_populates='equipment_set_boots')
+    ring1 = db.relationship('Equipment', foreign_keys=[ring1_id], back_populates='equipment_set_ring1')
+    ring2 = db.relationship('Equipment', foreign_keys=[ring2_id], back_populates='equipment_set_ring2')
+    cape = db.relationship('Equipment', foreign_keys=[cape_id], back_populates='equipment_set_cape')
+    epaulettes = db.relationship('Equipment', foreign_keys=[epaulettes_id], back_populates='equipment_set_epaulettes')
+    belt = db.relationship('Equipment', foreign_keys=[belt_id], back_populates='equipment_set_belt')
+    pet = db.relationship('Equipment', foreign_keys=[pet_id], back_populates='equipment_set_pet')
+    off_hand = db.relationship('Equipment', foreign_keys=[off_hand_id], back_populates='equipment_set_off_hand')
+    main_hand = db.relationship('Equipment', foreign_keys=[main_hand_id], back_populates='equipment_set_main_hand')
+    emblem = db.relationship('Equipment', foreign_keys=[emblem_id], back_populates='equipment_set_emblem')
+    mount = db.relationship('Equipment', foreign_keys=[mount_id], back_populates='equipment_set_mount')
+
+
     def __repr__(self):
         return f"""
                 <Equipment_set id = {self.id};
@@ -302,6 +341,39 @@ class Equipment(db.Model):
     random_masteries = db.Column(db.Integer) #num of random masteries allowed
     random_resistances = db.Column(db.Integer)
 
+    equipment_set_helmet = db.relationship('Equipment', 
+                                           back_populates='helmet')
+    equipment_set_amulet = db.relationship('Equipment', 
+                                           back_populates='amulet')
+    equipment_set_breastplate = db.relationship('Equipment', 
+                                                back_populates='breastplate')
+    equipment_set_boots = db.relationship('Equipment', 
+                                          back_populates='boots')
+    equipment_set_ring1 = db.relationship('Equipment', 
+                                          back_populates='ring1')
+    equipment_set_ring2 = db.relationship('Equipment', 
+                                          back_populates='ring2')
+    equipment_set_cape = db.relationship('Equipment', 
+                                         back_populates='cape')
+    equipment_set_epaulettes = db.relationship('Equipment', 
+                                               back_populates='epaulettes')
+    equipment_set_belt = db.relationship('Equipment', 
+                                         back_populates='belt')
+    equipment_set_pet = db.relationship('Equipment', 
+                                        back_populates='pet')
+    equipment_set_off_hand = db.relationship('Equipment', 
+                                             back_populates='off_hand')
+    equipment_set_main_hand = db.relationship('Equipment', 
+                                              back_populates='main_hand')
+    equipment_set_emblem = db.relationship('Equipment', 
+                                           back_populates='emblem')
+    equipment_set_mount = db.relationship('Equipment', 
+                                          back_populates='mount')
+    random_mastery = db.relationship('Equipment_random_mastery_element', 
+                                     back_populates='equipment')
+    random_resistance = db.relationship('Equipment_random_resistance_element', 
+                                     back_populates='equipment')
+
     def __repr__(self):
         return f"""
                 <id = {self.id};
@@ -394,6 +466,15 @@ class Element(db.Model):
                    primary_key = True)
     name = db.Column(db.String,
                      nullable = False)
+
+    selected_mastery = db.relationship('Selected_mastery_element', 
+                                       back_populates='element')
+    selected_resistance = db.relationship('Selected_resistance_element', 
+                                          back_populates='element')
+    random_mastery = db.relationship('Equipment_random_mastery_element', 
+                                     back_populates='element')
+    random_resistance = db.relationship('Equipment_random_resistance_element', 
+                                     back_populates='element')
     
     def __repr__(self):
         return f'<Element id = {self.id}; name = {self.name}'
@@ -411,6 +492,9 @@ class Selected_mastery_element(db.Model):
                           db.ForeignKey('builds.id'))
     element_id = db.Column(db.Integer,
                            db.ForeignKey('elements.id'))
+
+    build = db.relationship('Build', back_populates='selected_mastery')
+    element = db.relationship('Element', back_populates='selected_mastery')
     
     def __repr__(self):
         return f"""
@@ -432,6 +516,9 @@ class Equipment_random_mastery_element(db.Model):
                              db.ForeignKey('equipments.id'))
     element_id = db.Column(db.Integer,
                              db.ForeignKey('elements.id'))
+
+    equipment = db.relationship('Equipment', back_populates='random_mastery')
+    element = db.relationship('Element', back_populates='random_mastery')
     
     def __repr__(self):
         return f"""
@@ -454,6 +541,9 @@ class Selected_resistance_element(db.Model):
     element_id = db.Column(db.Integer,
                            db.ForeignKey('elements.id'))
     
+    build =  db.relationship('Build', back_populates='selected_resistance')
+    element = db.relationship('Element', back_populates='selected_resistance')
+    
     def __repr__(self):
         return f"""
                 <Selected_resistance_element id = {self.id};
@@ -474,6 +564,9 @@ class Equipment_random_resistance_element(db.Model):
                              db.ForeignKey('equipments.id'))
     element_id = db.Column(db.Integer,
                              db.ForeignKey('elements.id'))
+    
+    equipment = db.relationship('Equipment', back_populates='random_resistance')
+    element = db.relationship('Element', back_populates='random_resistance')
     
     def __repr__(self):
         return f"""
@@ -507,6 +600,10 @@ class Character_class(db.Model):
     name = db.Column(db.String,
                      nullable = False)
     
+    build = db.relationship('Build', back_populates='character_class')
+    spell = db.relationship('Spell', back_populates='charcter_class')
+    passive = db.relationship('Passive', back_populates='character_class')
+    
     def __repr__(self):
         return f'<Character_class id = {self.id}; Name = {self.name}>'
     
@@ -535,6 +632,9 @@ class Spell(db.Model):
     conditional_dmg = db.Column(db.Integer)
     crit_conditional_dmg = db.Column(db.Integer)
 
+    character_class = db.relationship('Character_class', back_populates='spell')
+    selected_spell = db.relationship('Selected_spell', back_populates='spell')
+
     def __repr__(self):
         return f"""
                 <Spell id = {self.id};
@@ -555,6 +655,9 @@ class Selected_spell(db.Model):
                          db.ForeignKey('builds.id'))
     spell_id = db.Column(db.Integer,
                          db.ForeignKey('spells.id'))
+    
+    build = db.relationship('Build', back_populates='selected_spell')
+    spell = db.relationship('Spell', back_populates='selected_spell')
     
     def __repr__(self):
         return f"""
@@ -663,6 +766,9 @@ class Passive(db.Model):
     sp = db.Column(db.Integer) #specific to fogger
     sp_neg = db.Column(db.Integer)
 
+    character_class = db.relationship('Character_class', back_populates='passive')
+    selected_passive = db.relationship('Selected_passive', back_populates='passive')
+
     def __repr__(self):
         return f"""
                 <Passive id = {self.id};
@@ -683,6 +789,9 @@ class Selected_passive(db.Model):
                          db.ForeignKey('builds.id'))
     passive_id = db.Column(db.Integer,
                          db.ForeignKey('passives.id'))
+
+    build = db.relationship('Build', back_populates='selected_spell')
+    passive = db.relationship('Spell', back_populates='selected_passive')
     
     def __repr__(self):
         return f"""
@@ -703,7 +812,26 @@ class Passive_slot_cap(db.Model):
                              nullable = False)
 
 
+class Name_translation(db.Model):
+    """All the names translated in English, French, Spanish, Portuguese"""
 
+    __tablename__ = 'name_translations'
+
+    id = db.Column(db.Integer,
+                   primary_key = True)
+    en = db.Column(db.String)
+    fr = db.Column(db.String)
+    es = db.Column(db.String)
+    pt = db.Column(db.String)
+
+    def __repr__(self):
+        return f"""
+                <Name_translation id = {self.id};
+                English = {self.en};
+                French = {self.fr};
+                Spanish = {self.es};
+                Portuguese = {self.pt}>
+                """
 
 
 
