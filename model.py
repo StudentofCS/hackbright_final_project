@@ -56,7 +56,7 @@ class Build(db.Model):
                                           back_populates='build')
     selected_spell = db.relationship('Selected_spell', 
                                      back_populates='build')
-    selected_passive = db.relationship('Selected_passives', 
+    selected_passive = db.relationship('Selected_passive', 
                                        back_populates='build')
 
 
@@ -110,7 +110,7 @@ class Characteristic(db.Model):
     dmg_inflicted = db.Column(db.Integer)
     resistance = db.Column(db.Integer)
 
-    build = db.relationship('Build', back_populates='charateristic')
+    build = db.relationship('Build', back_populates='characteristic')
 
     def __repr__(self):
         return f"""
@@ -341,38 +341,52 @@ class Equipment(db.Model):
     random_masteries = db.Column(db.Integer) #num of random masteries allowed
     random_resistances = db.Column(db.Integer)
 
-    equipment_set_helmet = db.relationship('Equipment', 
+    equipment_set_helmet = db.relationship('Equipment_set', 
+                                           foreign_keys=[Equipment_set.helmet_id],
                                            back_populates='helmet')
-    equipment_set_amulet = db.relationship('Equipment', 
+    equipment_set_amulet = db.relationship('Equipment_set', 
+                                           foreign_keys=[Equipment_set.amulet_id],
                                            back_populates='amulet')
-    equipment_set_breastplate = db.relationship('Equipment', 
+    equipment_set_breastplate = db.relationship('Equipment_set', 
+                                                foreign_keys=[Equipment_set.breastplate_id],
                                                 back_populates='breastplate')
-    equipment_set_boots = db.relationship('Equipment', 
+    equipment_set_boots = db.relationship('Equipment_set', 
+                                          foreign_keys=[Equipment_set.boots_id],
                                           back_populates='boots')
-    equipment_set_ring1 = db.relationship('Equipment', 
+    equipment_set_ring1 = db.relationship('Equipment_set', 
+                                          foreign_keys=[Equipment_set.ring1_id],
                                           back_populates='ring1')
-    equipment_set_ring2 = db.relationship('Equipment', 
+    equipment_set_ring2 = db.relationship('Equipment_set', 
+                                          foreign_keys=[Equipment_set.ring2_id],
                                           back_populates='ring2')
-    equipment_set_cape = db.relationship('Equipment', 
+    equipment_set_cape = db.relationship('Equipment_set', 
+                                         foreign_keys=[Equipment_set.cape_id],
                                          back_populates='cape')
-    equipment_set_epaulettes = db.relationship('Equipment', 
+    equipment_set_epaulettes = db.relationship('Equipment_set', 
+                                               foreign_keys=[Equipment_set.epaulettes_id],
                                                back_populates='epaulettes')
-    equipment_set_belt = db.relationship('Equipment', 
+    equipment_set_belt = db.relationship('Equipment_set', 
+                                         foreign_keys=[Equipment_set.belt_id],
                                          back_populates='belt')
-    equipment_set_pet = db.relationship('Equipment', 
+    equipment_set_pet = db.relationship('Equipment_set', 
+                                        foreign_keys=[Equipment_set.pet_id],
                                         back_populates='pet')
-    equipment_set_off_hand = db.relationship('Equipment', 
+    equipment_set_off_hand = db.relationship('Equipment_set', 
+                                             foreign_keys=[Equipment_set.off_hand_id],
                                              back_populates='off_hand')
-    equipment_set_main_hand = db.relationship('Equipment', 
+    equipment_set_main_hand = db.relationship('Equipment_set', 
+                                              foreign_keys=[Equipment_set.main_hand_id],
                                               back_populates='main_hand')
-    equipment_set_emblem = db.relationship('Equipment', 
+    equipment_set_emblem = db.relationship('Equipment_set', 
+                                           foreign_keys=[Equipment_set.emblem_id],
                                            back_populates='emblem')
-    equipment_set_mount = db.relationship('Equipment', 
+    equipment_set_mount = db.relationship('Equipment_set', 
+                                          foreign_keys=[Equipment_set.mount_id],
                                           back_populates='mount')
-    random_mastery = db.relationship('Equipment_random_mastery_element', 
+    random_mastery = db.relationship('Equipment_random_mastery_element',
                                      back_populates='equipment')
-    random_resistance = db.relationship('Equipment_random_resistance_element', 
-                                     back_populates='equipment')
+    random_resistance = db.relationship('Equipment_random_resistance_element',
+                                        back_populates='equipment')
 
     def __repr__(self):
         return f"""
@@ -462,10 +476,12 @@ class Element(db.Model):
     __tablename__ = 'elements'
 
     id = db.Column(db.Integer,
-                   autoincrement = True,
+                #    autoincrement = True,
                    primary_key = True)
     name = db.Column(db.String,
                      nullable = False)
+    resistance_id = db.Column(db.Integer)
+    mastery_id = db.Column(db.Integer)
 
     selected_mastery = db.relationship('Selected_mastery_element', 
                                        back_populates='element')
@@ -477,7 +493,11 @@ class Element(db.Model):
                                      back_populates='element')
     
     def __repr__(self):
-        return f'<Element id = {self.id}; name = {self.name}'
+        return f"""
+                <Element id = {self.id}; name = {self.name}
+                Resistance id = {self.resistance_id};
+                Mastery id = {self.mastery_id}>
+                """
     
 
 class Selected_mastery_element(db.Model):
@@ -492,6 +512,7 @@ class Selected_mastery_element(db.Model):
                           db.ForeignKey('builds.id'))
     element_id = db.Column(db.Integer,
                            db.ForeignKey('elements.id'))
+    position = db.Column(db.Integer)
 
     build = db.relationship('Build', back_populates='selected_mastery')
     element = db.relationship('Element', back_populates='selected_mastery')
@@ -540,6 +561,7 @@ class Selected_resistance_element(db.Model):
                           db.ForeignKey('builds.id'))
     element_id = db.Column(db.Integer,
                            db.ForeignKey('elements.id'))
+    position = db.Column(db.Integer)
     
     build =  db.relationship('Build', back_populates='selected_resistance')
     element = db.relationship('Element', back_populates='selected_resistance')
@@ -596,16 +618,19 @@ class Character_class(db.Model):
     __tablename__ = 'character_classes'
 
     id = db.Column(db.Integer,
+                   autoincrement = True,
                    primary_key = True)
     name = db.Column(db.String,
                      nullable = False)
     
     build = db.relationship('Build', back_populates='character_class')
-    spell = db.relationship('Spell', back_populates='charcter_class')
+    spell = db.relationship('Spell', back_populates='character_class')
     passive = db.relationship('Passive', back_populates='character_class')
     
     def __repr__(self):
-        return f'<Character_class id = {self.id}; Name = {self.name}>'
+        return f"""
+                <Character_class id = {self.id}; Name = {self.name}>
+                """
     
 
 class Spell(db.Model):
@@ -780,7 +805,7 @@ class Passive(db.Model):
 class Selected_passive(db.Model):
     """Passive selected for build"""
 
-    __tablename_ = 'selected_passives'
+    __tablename__ = 'selected_passives'
 
     id = db.Column(db.Integer,
                    autoincrement = True,
@@ -790,8 +815,8 @@ class Selected_passive(db.Model):
     passive_id = db.Column(db.Integer,
                          db.ForeignKey('passives.id'))
 
-    build = db.relationship('Build', back_populates='selected_spell')
-    passive = db.relationship('Spell', back_populates='selected_passive')
+    build = db.relationship('Build', back_populates='selected_passive')
+    passive = db.relationship('Passive', back_populates='selected_passive')
     
     def __repr__(self):
         return f"""
