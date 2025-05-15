@@ -33,185 +33,255 @@ def create_build(user, equipment_set, characteristic, character_class, level):
     
     return build
 
-def create_characteristic(intelligence, hp_percentage, elem_res,
-                          barrier, heals_received, armor_hp,
-                          strength, elem_mastery, melee,
-                          distance, hp, agility, 
-                          lock, dodge, initiative,
-                          lock_dodge, force_of_will, fortune,
-                          crit_hit, block, crit_mastery,
-                          rear_mastery, berserk_mastery, healing_mastery,
-                          rear_res, crit_res, major,
-                          action_points, movement_points, spell_range,
-                          wakfu_points, control, dmg_inflicted,
-                          resistance):
+# def create_characteristic(intelligence, hp_percentage, elem_res,
+#                           barrier, heals_received, armor_hp,
+#                           strength, elem_mastery, melee,
+#                           distance, hp, agility, 
+#                           lock, dodge, initiative,
+#                           lock_dodge, force_of_will, fortune,
+#                           crit_hit, block, crit_mastery,
+#                           rear_mastery, berserk_mastery, healing_mastery,
+#                           rear_res, crit_res, major,
+#                           action_points, movement_points, spell_range,
+#                           wakfu_points, control, dmg_inflicted,
+#                           resistance):
+#     """Create and return characteristic"""
+
+#     characteristic = Characteristic(intelligence=intelligence, 
+#                                     hp_percentage=hp_percentage, 
+#                                     elem_res=elem_res, 
+#                                     barrier=barrier, 
+#                                     heals_received=heals_received, 
+#                                     armor_hp=armor_hp,
+#                                     strength=strength, 
+#                                     elem_mastery=elem_mastery, 
+#                                     melee=melee,
+#                                     distance=distance, 
+#                                     hp=hp, 
+#                                     agility=agility, 
+#                                     lock=lock, 
+#                                     dodge=dodge, 
+#                                     initiative=initiative,
+#                                     lock_dodge=lock_dodge, 
+#                                     force_of_will=force_of_will, 
+#                                     fortune=fortune, 
+#                                     crit_hit=crit_hit, 
+#                                     block=block, 
+#                                     crit_mastery=crit_mastery,
+#                                     rear_mastery=rear_mastery, 
+#                                     berserk_mastery=berserk_mastery, 
+#                                     healing_mastery=healing_mastery,
+#                                     rear_res=rear_res, 
+#                                     crit_res=crit_res, 
+#                                     major=major,
+#                                     action_points=action_points, 
+#                                     movement_points=movement_points, 
+#                                     spell_range=spell_range,
+#                                     wakfu_points=wakfu_points, 
+#                                     control=control, 
+#                                     dmg_inflicted=dmg_inflicted,
+#                                     resistance=resistance)
+    
+#     return characteristic
+
+
+def create_characteristic(dict):
     """Create and return characteristic"""
 
-    characteristic = Characteristic(intelligence=intelligence, 
-                                    hp_percentage=hp_percentage, 
-                                    elem_res=elem_res, 
-                                    barrier=barrier, 
-                                    heals_received=heals_received, 
-                                    armor_hp=armor_hp,
-                                    strength=strength, 
-                                    elem_mastery=elem_mastery, 
-                                    melee=melee,
-                                    distance=distance, 
-                                    hp=hp, 
-                                    agility=agility, 
-                                    lock=lock, 
-                                    dodge=dodge, 
-                                    initiative=initiative,
-                                    lock_dodge=lock_dodge, 
-                                    force_of_will=force_of_will, 
-                                    fortune=fortune, 
-                                    crit_hit=crit_hit, 
-                                    block=block, 
-                                    crit_mastery=crit_mastery,
-                                    rear_mastery=rear_mastery, 
-                                    berserk_mastery=berserk_mastery, 
-                                    healing_mastery=healing_mastery,
-                                    rear_res=rear_res, 
-                                    crit_res=crit_res, 
-                                    major=major,
-                                    action_points=action_points, 
-                                    movement_points=movement_points, 
-                                    spell_range=spell_range,
-                                    wakfu_points=wakfu_points, 
-                                    control=control, 
-                                    dmg_inflicted=dmg_inflicted,
-                                    resistance=resistance)
+    characteristic = Characteristic(**dict)
     
     return characteristic
 
 
-def create_characteristic_cap(intelligence, hp_percentage, elem_res,
-                          barrier, heals_received, armor_hp,
-                          strength, elem_mastery, melee,
-                          distance, hp, agility, 
-                          lock, dodge, initiative,
-                          lock_dodge, force_of_will, fortune,
-                          crit_hit, block, crit_mastery,
-                          rear_mastery, berserk_mastery, healing_mastery,
-                          rear_res, crit_res, major,
-                          action_points, movement_points, spell_range,
-                          wakfu_points, control, dmg_inflicted,
-                          resistance):
-    """Create and return characteristic max values"""
+# def create_characteristic_cap(intelligence, hp_percentage, elem_res,
+#                           barrier, heals_received, armor_hp,
+#                           strength, elem_mastery, melee,
+#                           distance, hp, agility, 
+#                           lock, dodge, initiative,
+#                           lock_dodge, force_of_will, fortune,
+#                           crit_hit, block, crit_mastery,
+#                           rear_mastery, berserk_mastery, healing_mastery,
+#                           rear_res, crit_res, major,
+#                           action_points, movement_points, spell_range,
+#                           wakfu_points, control, dmg_inflicted,
+#                           resistance):
+#     """Create and return characteristic max values"""
 
-    characteristic_cap = Characteristic_cap(intelligence=intelligence, hp_percentage=hp_percentage, elem_res=elem_res,
-                          barrier=barrier, heals_received=heals_received, armor_hp=armor_hp,
-                          strength=strength, elem_mastery=elem_mastery, melee=melee,
-                          distance=distance, hp=hp, agility=agility, 
-                          lock=lock, dodge=dodge, initiative=initiative,
-                          lock_dodge=lock_dodge, force_of_will=force_of_will, fortune=fortune,
-                          crit_hit=crit_hit, block=block, crit_mastery=crit_mastery,
-                          rear_mastery=rear_mastery, berserk_mastery=berserk_mastery, healing_mastery=healing_mastery,
-                          rear_res=rear_res, crit_res=crit_res, major=major,
-                          action_points=action_points, movement_points=movement_points, spell_range=spell_range,
-                          wakfu_points=wakfu_points, control=control, dmg_inflicted=dmg_inflicted,
-                          resistance=resistance)
+#     characteristic_cap = Characteristic_cap(intelligence=intelligence, hp_percentage=hp_percentage, elem_res=elem_res,
+#                           barrier=barrier, heals_received=heals_received, armor_hp=armor_hp,
+#                           strength=strength, elem_mastery=elem_mastery, melee=melee,
+#                           distance=distance, hp=hp, agility=agility, 
+#                           lock=lock, dodge=dodge, initiative=initiative,
+#                           lock_dodge=lock_dodge, force_of_will=force_of_will, fortune=fortune,
+#                           crit_hit=crit_hit, block=block, crit_mastery=crit_mastery,
+#                           rear_mastery=rear_mastery, berserk_mastery=berserk_mastery, healing_mastery=healing_mastery,
+#                           rear_res=rear_res, crit_res=crit_res, major=major,
+#                           action_points=action_points, movement_points=movement_points, spell_range=spell_range,
+#                           wakfu_points=wakfu_points, control=control, dmg_inflicted=dmg_inflicted,
+#                           resistance=resistance)
     
-    return characteristic_cap
+#     return characteristic_cap
 
 
-def create_equipment_set(helmet, amulet, breastplate,
-                         boots, ring1, ring2,
-                         cape, epaulettes, belt,
-                         pet, off_hand, main_hand,
-                         two_hander, emblem, mount):
+def create_characteristic_cap():
+    """Create and return a list of characteristic max values"""
+
+    # Major caps 25,75,125,175
+    # Intelligence, strength, agility, fortune alternate getting 1 each 
+    sections = ['intelligence', 'strength', 'agility', 'fortune']
+    major_caps = [25, 75, 125, 175]
+    # Caps where -1 is unlimited
+    characterics = {
+        'level' : 1,
+        'intelligence' : 0, 'hp_percentage' : -1, 'elem_res' : 10,
+        'barrier' : 10, 'heals_received' : 5, 'armor_hp' : 10,
+        'strength' : 0, 'elem_mastery' : -1, 'melee' : 40,
+        'distance' : 40, 'hp' : -1, 'agility' : 0, 
+        'lock' : -1, 'dodge' : -1, 'initiative' : 20,
+        'lock_dodge' : -1, 'force_of_will' : 20, 'fortune' : 0,
+        'crit_hit' : 20, 'block' : 20, 'crit_mastery' : -1,
+        'rear_mastery' : -1, 'berserk_mastery' : -1, 'healing_mastery' : -1,
+        'rear_res' : 20, 'crit_res' : 20, 'major' : 0,
+        'action_points' : 1, 'movement_points' : 1, 'spell_range' : 1,
+        'wakfu_points' : 1, 'control' : 1, 'dmg_inflicted' : 1,
+        'resistance' : 1
+    }
+
+    characteristic_cap_list = [Characteristic_cap(**characterics)]
+    index = 0
+
+    for i in range(2,MAX_LEVEL + 1):
+        characterics['level'] = i
+
+        # Increase the major characteristic cap
+        if i in major_caps:
+            characterics['major'] += 1
+
+        # Update cap for sections
+        characterics[sections[index]] += 1
+        index += 1
+        characteristic_cap_list.append(Characteristic_cap(**characterics))
+        # Have index loop 0-3 for sections' indices
+        if index == 4:
+            index = 0
+    
+    
+    return characteristic_cap_list
+
+
+# def create_equipment_set(helmet, amulet, breastplate,
+#                          boots, ring1, ring2,
+#                          cape, epaulettes, belt,
+#                          pet, off_hand, main_hand,
+#                          two_hander, emblem, mount):
+#     """Create and return equipment set"""
+
+#     equipment_set = Equipment_set(helmet=helmet, amulet=amulet, 
+#                                   breastplate=breastplate, boots=boots, 
+#                                   ring1=ring1, ring2=ring2,
+#                                   cape=cape, epaulettes=epaulettes, 
+#                                   belt=belt, pet=pet, 
+#                                   off_hand=off_hand, main_hand=main_hand,
+#                                   two_hander=two_hander, emblem=emblem, 
+#                                   mount=mount)
+    
+#     return equipment_set
+
+
+def create_equipment_set(dict):
     """Create and return equipment set"""
 
-    equipment_set = Equipment_set(helmet=helmet, amulet=amulet, 
-                                  breastplate=breastplate, boots=boots, 
-                                  ring1=ring1, ring2=ring2,
-                                  cape=cape, epaulettes=epaulettes, 
-                                  belt=belt, pet=pet, 
-                                  off_hand=off_hand, main_hand=main_hand,
-                                  two_hander=two_hander, emblem=emblem, 
-                                  mount=mount)
+    equipment_set = Equipment_set(**dict)
     
     return equipment_set
 
 
-def create_equipment(id, equip_type_id, level,
-                     hp, hp_neg,
-                     armor, armor_neg,
-                     ap, ap_neg, 
-                     mp, mp_neg, 
-                     wp, wp_neg, 
-                     water_mastery, water_mastery_neg, 
-                     air_mastery, air_mastery_neg, 
-                     earth_mastery, earth_mastery_neg, 
-                     fire_mastery, fire_mastery_neg, 
-                     water_res, water_res_neg, 
-                     air_res, air_res_neg, 
-                     earth_res, earth_res_neg, 
-                     fire_res, fire_res_neg, 
-                     dmg_inflicted, dmg_inflicted_neg, 
-                     crit_hit, crit_hit_neg, 
-                     initiative, initiative_neg, 
-                     dodge, dodge_neg, 
-                     wisdom, wisdom_neg,
-                     control, control_neg, 
-                     heals_performed, heals_performed_neg, 
-                     block, block_neg, 
-                     spell_range, range__neg, 
-                     lock, lock_neg, 
-                     prospecting, prospecting_neg, 
-                     force_of_will, force_of_will_neg, 
-                     crit_mastery, crit_mastery_neg, 
-                     rear_mastery, rear_mastery_neg, 
-                     melee_mastery, melee_mastery_neg, 
-                     distance_mastery, distance_mastery_neg, 
-                     healing_mastery, healing_mastery_neg, 
-                     berserk_mastery, berserk_mastery_neg, 
-                     crit_res, crit_res_neg, 
-                     rear_res, rear_res_neg, 
-                     armor_given, armor_given_neg, 
-                     armor_received, armor_received_neg, 
-                     indirect_dmg, indirect_dmg_neg, 
-                     random_masteries, random_resistances):
+# def create_equipment(id, equip_type_id, level,
+#                      hp, hp_neg,
+#                      armor, armor_neg,
+#                      ap, ap_neg, 
+#                      mp, mp_neg, 
+#                      wp, wp_neg, 
+#                      water_mastery, water_mastery_neg, 
+#                      air_mastery, air_mastery_neg, 
+#                      earth_mastery, earth_mastery_neg, 
+#                      fire_mastery, fire_mastery_neg, 
+#                      water_res, water_res_neg, 
+#                      air_res, air_res_neg, 
+#                      earth_res, earth_res_neg, 
+#                      fire_res, fire_res_neg, 
+#                      dmg_inflicted, dmg_inflicted_neg, 
+#                      crit_hit, crit_hit_neg, 
+#                      initiative, initiative_neg, 
+#                      dodge, dodge_neg, 
+#                      wisdom, wisdom_neg,
+#                      control, control_neg, 
+#                      heals_performed, heals_performed_neg, 
+#                      block, block_neg, 
+#                      spell_range, range__neg, 
+#                      lock, lock_neg, 
+#                      prospecting, prospecting_neg, 
+#                      force_of_will, force_of_will_neg, 
+#                      crit_mastery, crit_mastery_neg, 
+#                      rear_mastery, rear_mastery_neg, 
+#                      melee_mastery, melee_mastery_neg, 
+#                      distance_mastery, distance_mastery_neg, 
+#                      healing_mastery, healing_mastery_neg, 
+#                      berserk_mastery, berserk_mastery_neg, 
+#                      crit_res, crit_res_neg, 
+#                      rear_res, rear_res_neg, 
+#                      armor_given, armor_given_neg, 
+#                      armor_received, armor_received_neg, 
+#                      indirect_dmg, indirect_dmg_neg, 
+#                      random_masteries, random_resistances):
+#     """Create and return equipment"""
+    
+#     equipment = Equipment(id=id, equip_type_id=equip_type_id, level=level,
+#                      hp=hp, hp_neg=hp_neg,
+#                      armor=armor, armor_neg=armor_neg,
+#                      ap=ap, ap_neg=ap_neg, 
+#                      mp=mp, mp_neg=mp_neg, 
+#                      wp=wp, wp_neg=wp_neg, 
+#                      water_mastery=water_mastery, water_mastery_neg=water_mastery_neg, 
+#                      air_mastery=air_mastery, air_mastery_neg=air_mastery_neg, 
+#                      earth_mastery=earth_mastery, earth_mastery_neg=earth_mastery_neg, 
+#                      fire_mastery=fire_mastery, fire_mastery_neg=fire_mastery_neg, 
+#                      water_res=water_res, water_res_neg=water_res_neg, 
+#                      air_res=air_res, air_res_neg=air_res_neg, 
+#                      earth_res=earth_res, earth_res_neg=earth_res_neg, 
+#                      fire_res=fire_res, fire_res_neg=fire_res_neg, 
+#                      dmg_inflicted=dmg_inflicted, dmg_inflicted_neg=dmg_inflicted_neg, 
+#                      crit_hit=crit_hit, crit_hit_neg=crit_hit_neg, 
+#                      initiative=initiative, initiative_neg=initiative_neg, 
+#                      dodge=dodge, dodge_neg=dodge_neg, 
+#                      wisdom=wisdom, wisdom_neg=wisdom_neg,
+#                      control=control, control_neg=control_neg, 
+#                      heals_performed=heals_performed, heals_performed_neg=heals_performed_neg, 
+#                      block=block, block_neg=block_neg, 
+#                      spell_range=spell_range, range__neg=range__neg, 
+#                      lock=lock, lock_neg=lock_neg, 
+#                      prospecting=prospecting, prospecting_neg=prospecting_neg, 
+#                      force_of_will=force_of_will, force_of_will_neg=force_of_will_neg, 
+#                      crit_mastery=crit_mastery, crit_mastery_neg=crit_mastery_neg, 
+#                      rear_mastery=rear_mastery, rear_mastery_neg=rear_mastery_neg, 
+#                      melee_mastery=melee_mastery, melee_mastery_neg=melee_mastery_neg, 
+#                      distance_mastery=distance_mastery, distance_mastery_neg=distance_mastery_neg, 
+#                      healing_mastery=healing_mastery, healing_mastery_neg=healing_mastery_neg, 
+#                      berserk_mastery=berserk_mastery, berserk_mastery_neg=berserk_mastery_neg, 
+#                      crit_res=crit_res, crit_res_neg=crit_res_neg, 
+#                      rear_res=rear_res, rear_res_neg=rear_res_neg, 
+#                      armor_given=armor_given, armor_given_neg=armor_given_neg, 
+#                      armor_received=armor_received, armor_received_neg=armor_received_neg, 
+#                      indirect_dmg=indirect_dmg, indirect_dmg_neg=indirect_dmg_neg, 
+#                      random_masteries=random_masteries, random_resistances=random_resistances)
+    
+#     return equipment
+
+
+def create_equipment(dict):
     """Create and return equipment"""
     
-    equipment = Equipment(id=id, equip_type_id=equip_type_id, level=level,
-                     hp=hp, hp_neg=hp_neg,
-                     armor=armor, armor_neg=armor_neg,
-                     ap=ap, ap_neg=ap_neg, 
-                     mp=mp, mp_neg=mp_neg, 
-                     wp=wp, wp_neg=wp_neg, 
-                     water_mastery=water_mastery, water_mastery_neg=water_mastery_neg, 
-                     air_mastery=air_mastery, air_mastery_neg=air_mastery_neg, 
-                     earth_mastery=earth_mastery, earth_mastery_neg=earth_mastery_neg, 
-                     fire_mastery=fire_mastery, fire_mastery_neg=fire_mastery_neg, 
-                     water_res=water_res, water_res_neg=water_res_neg, 
-                     air_res=air_res, air_res_neg=air_res_neg, 
-                     earth_res=earth_res, earth_res_neg=earth_res_neg, 
-                     fire_res=fire_res, fire_res_neg=fire_res_neg, 
-                     dmg_inflicted=dmg_inflicted, dmg_inflicted_neg=dmg_inflicted_neg, 
-                     crit_hit=crit_hit, crit_hit_neg=crit_hit_neg, 
-                     initiative=initiative, initiative_neg=initiative_neg, 
-                     dodge=dodge, dodge_neg=dodge_neg, 
-                     wisdom=wisdom, wisdom_neg=wisdom_neg,
-                     control=control, control_neg=control_neg, 
-                     heals_performed=heals_performed, heals_performed_neg=heals_performed_neg, 
-                     block=block, block_neg=block_neg, 
-                     spell_range=spell_range, range__neg=range__neg, 
-                     lock=lock, lock_neg=lock_neg, 
-                     prospecting=prospecting, prospecting_neg=prospecting_neg, 
-                     force_of_will=force_of_will, force_of_will_neg=force_of_will_neg, 
-                     crit_mastery=crit_mastery, crit_mastery_neg=crit_mastery_neg, 
-                     rear_mastery=rear_mastery, rear_mastery_neg=rear_mastery_neg, 
-                     melee_mastery=melee_mastery, melee_mastery_neg=melee_mastery_neg, 
-                     distance_mastery=distance_mastery, distance_mastery_neg=distance_mastery_neg, 
-                     healing_mastery=healing_mastery, healing_mastery_neg=healing_mastery_neg, 
-                     berserk_mastery=berserk_mastery, berserk_mastery_neg=berserk_mastery_neg, 
-                     crit_res=crit_res, crit_res_neg=crit_res_neg, 
-                     rear_res=rear_res, rear_res_neg=rear_res_neg, 
-                     armor_given=armor_given, armor_given_neg=armor_given_neg, 
-                     armor_received=armor_received, armor_received_neg=armor_received_neg, 
-                     indirect_dmg=indirect_dmg, indirect_dmg_neg=indirect_dmg_neg, 
-                     random_masteries=random_masteries, random_resistances=random_resistances)
+    equipment = Equipment(**dict)
     
     return equipment
 
@@ -307,10 +377,87 @@ def create_character_class():
     return char_classes
 
 
+def create_spell():
+    """Create and return list of all spells"""
 
+    pass
+
+
+def create_selected_spell(build, spell):
+    """Create and return a selected spell"""
+
+    selected_spell = Selected_spell(build=build, spell=spell)
+
+    return selected_spell
+
+
+def create_spell_slot_cap():
+    """Create and return a list of spell slot caps"""
+
+    spell_cap_levels = [10, 20, 30, 40, 60, 80]
+    spell_cap_list = []
+    current_spell_cap = 6
+
+    for i in range(1, MAX_LEVEL + 1):
+        if i in spell_cap_levels:
+            current_spell_cap += 1
+            spell_cap_list.append(
+                Spell_slot_cap(level=i, num_of_slots=current_spell_cap))
+        else:
+            spell_cap_list.append(
+                Spell_slot_cap(level=i, num_of_slots=current_spell_cap))
+            
+    return spell_cap_list
+            
+
+def create_passive():
+    """Create and return a list of all passives"""
+
+    pass
+
+
+def create_selected_passive(build, passive):
+    """Create and return a selected passive"""
+
+    selected_passive = Selected_passive(build=build, passive=passive)
+
+    return selected_passive
+
+
+def create_passive_slot_cap():
+    """Create and return a list of passive slot caps"""
+
+    passive_cap_levels = [10, 30, 50, 100, 150, 200]
+    passive_cap_list = []
+    current_passive_cap = 0
+
+    for i in range(1, MAX_LEVEL + 1):
+        if i in passive_cap_levels:
+            current_passive_cap += 1
+            passive_cap_list.append(
+                Passive_slot_cap(level=i, num_of_slots=current_passive_cap))
+        else:
+            passive_cap_list.append(
+                Passive_slot_cap(level=i, num_of_slots=current_passive_cap))
+            
+    return passive_cap_list
+        
+
+def create_name_translation(list_of_dicts):
+    """Create and return a list of all name translations"""
+
+    name_translation_list = []
+    
+    for dict in list_of_dicts:
+        # Name_translation(id=id, en=en, fr=fr, es=es, pt=pt)
+        name_translation_list.append(Name_translation(**dict))
+
+    return name_translation_list
 
 
 
 if __name__ == '__main__':
     from server import app
     connect_to_db(app)
+
+

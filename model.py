@@ -701,6 +701,12 @@ class Spell_slot_cap(db.Model):
                       primary_key = True)
     num_of_slots = db.Column(db.Integer,
                              nullable = False)
+    
+    def __repr__(self):
+        return f"""
+                <Spell_slot_cap level = {self.level};
+                <Num_of_slots = {self.num_of_slots}>
+                """
 
 
 class Passive(db.Model):
@@ -835,6 +841,12 @@ class Passive_slot_cap(db.Model):
                       primary_key = True)
     num_of_slots = db.Column(db.Integer,
                              nullable = False)
+    
+    def __repr__(self):
+        return f"""
+                <Passive_slot_cap level = {self.level};
+                <Num_of_slots = {self.num_of_slots}>
+                """
 
 
 class Name_translation(db.Model):
