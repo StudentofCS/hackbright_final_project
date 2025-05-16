@@ -1,5 +1,6 @@
 " Models for Wakfu character builder app"
 
+from datetime import datetime, timezone
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -40,7 +41,9 @@ class Build(db.Model):
     #                          db.ForeignKy('base_stats.id'))
     character_class_id = db.Column(db.Integer,
                          db.ForeignKey('character_classes.id'))
-    level = db.Column(db.Integer, default = 1)
+    level = db.Column(db.Integer, default=1)
+    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
     user = db.relationship('User', 
                            back_populates='build')
@@ -266,6 +269,7 @@ class Equipment(db.Model):
                    primary_key = True)
     equip_type_id = db.Column(db.Integer)
     level = db.Column(db.Integer)
+    rarity = db.Column(db.Integer)
     hp = db.Column(db.Integer)
     hp_neg = db.Column(db.Integer)
     armor = db.Column(db.Integer)
@@ -393,6 +397,7 @@ class Equipment(db.Model):
                 <id = {self.id};
                 equip_type_id = {self.equip_type_id};
                 level = {self.level};
+                rarity = {self.rarity}
                 hp = {self.hp};
                 hp_neg = {self.hp_neg};
                 armor = {self.armor};
@@ -860,6 +865,7 @@ class Name_translation(db.Model):
     fr = db.Column(db.String)
     es = db.Column(db.String)
     pt = db.Column(db.String)
+    # Search localization libraries
 
     def __repr__(self):
         return f"""

@@ -279,7 +279,7 @@ def create_equipment_set(dict):
 
 
 def create_equipment(dict):
-    """Create and return equipment"""
+    """Create and return an equipment"""
     
     equipment = Equipment(**dict)
     
@@ -443,16 +443,16 @@ def create_passive_slot_cap():
     return passive_cap_list
         
 
-def create_name_translation(list_of_dicts):
-    """Create and return a list of all name translations"""
+def create_name_translation(dict):
+    """Create and return a name translations"""
 
-    name_translation_list = []
-    
-    for dict in list_of_dicts:
-        # Name_translation(id=id, en=en, fr=fr, es=es, pt=pt)
-        name_translation_list.append(Name_translation(**dict))
+    # Columns: id, en, fr, es, pt
+    name_translation = Name_translation(**dict)
 
-    return name_translation_list
+    return name_translation
+
+
+
 
 
 
