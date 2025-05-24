@@ -280,6 +280,8 @@ class Equipment(db.Model):
     mp_neg = db.Column(db.Integer)
     wp = db.Column(db.Integer)
     wp_neg = db.Column(db.Integer)
+    elemental_mastery = db.Column(db.Integer)
+    elemental_mastery_neg = db.Column(db.Integer)
     water_mastery = db.Column(db.Integer)
     water_mastery_neg = db.Column(db.Integer)
     air_mastery = db.Column(db.Integer)
@@ -288,6 +290,8 @@ class Equipment(db.Model):
     earth_mastery_neg = db.Column(db.Integer)
     fire_mastery = db.Column(db.Integer)
     fire_mastery_neg = db.Column(db.Integer)
+    elemental_res = db.Column(db.Integer)
+    elemental_res_neg = db.Column(db.Integer)
     water_res  = db.Column(db.Integer)
     water_res_neg = db.Column(db.Integer)
     air_res = db.Column(db.Integer)
@@ -313,7 +317,7 @@ class Equipment(db.Model):
     block = db.Column(db.Integer)
     block_neg = db.Column(db.Integer)
     spell_range = db.Column(db.Integer)
-    range__neg = db.Column(db.Integer)
+    spell_range_neg = db.Column(db.Integer)
     lock = db.Column(db.Integer)
     lock_neg = db.Column(db.Integer)
     prospecting = db.Column(db.Integer)
@@ -342,8 +346,17 @@ class Equipment(db.Model):
     armor_received_neg = db.Column(db.Integer)
     indirect_dmg = db.Column(db.Integer)
     indirect_dmg_neg = db.Column(db.Integer)
-    random_masteries = db.Column(db.Integer) #num of random masteries allowed
+    random_masteries = db.Column(db.Integer) 
+    num_random_masteries = db.Column(db.Integer) #num of random masteries allowed
     random_resistances = db.Column(db.Integer)
+    num_random_resistances = db.Column(db.Integer)
+    state = db.Column(db.String)
+    farmer = db.Column(db.Integer)
+    lumberjack = db.Column(db.Integer)
+    herbalist = db.Column(db.Integer)
+    miner = db.Column(db.Integer)
+    trapper = db.Column(db.Integer)
+    fisherman = db.Column(db.Integer)
 
     equipment_set_helmet = db.relationship('Equipment_set', 
                                            foreign_keys=[Equipment_set.helmet_id],
@@ -408,6 +421,8 @@ class Equipment(db.Model):
                 mp_neg = {self.mp_neg};
                 wp = {self.wp};
                 wp_neg = {self.wp_neg};
+                elemental_mastery = {self.elemental_mastery};
+                elemental_mastery_neg = {self.elemental_mastery_neg};
                 water_mastery = {self.water_mastery};
                 water_mastery_neg = {self.water_mastery_neg};
                 air_mastery = {self.air_mastery};
@@ -416,6 +431,8 @@ class Equipment(db.Model):
                 earth_mastery_neg = {self.earth_mastery_neg};
                 fire_mastery = {self.fire_mastery};
                 fire_mastery_neg = {self.fire_mastery_neg};
+                elemental_res = {self.elemental_res};
+                elemental_res_neg = {self.elemental_res_neg};
                 water_res  = {self.water_res };
                 water_res_neg = {self.water_res_neg};
                 air_res = {self.air_res};
@@ -441,7 +458,7 @@ class Equipment(db.Model):
                 block = {self.block};
                 block_neg = {self.block_neg};
                 spell_range = {self.spell_range};
-                range__neg = {self.range__neg};
+                spell_range_neg = {self.spell_range_neg};
                 lock = {self.lock};
                 lock_neg = {self.lock_neg};
                 prospecting = {self.prospecting};
@@ -470,8 +487,17 @@ class Equipment(db.Model):
                 armor_received_neg = {self.armor_received_neg};
                 indirect_dmg = {self.indirect_dmg};
                 indirect_dmg_neg = {self.indirect_dmg_neg};
-                random_masteries = {self.random_masteries}; #num of random masteries allowed
-                random_resistances = {self.random_resistances}>
+                random_masteries = {self.random_masteries};
+                num_random_masteries = {self.num_random_masteries};
+                random_resistances = {self.random_resistances};
+                num_random_resistances = {self.num_random_resistances};
+                state = {self.state};
+                farmer = {self.farmer};
+                lumberjack = {self.lumberjack};
+                herbalist = {self.herbalist};
+                miner = {self.miner};
+                trapper = {self.trapper};
+                fisherman = {self.fisherman}>
                 """
     
 
@@ -860,11 +886,14 @@ class Name_translation(db.Model):
     __tablename__ = 'name_translations'
 
     id = db.Column(db.Integer,
+                   autoincrement = True,
                    primary_key = True)
-    en = db.Column(db.String)
-    fr = db.Column(db.String)
-    es = db.Column(db.String)
-    pt = db.Column(db.String)
+    name_id = db.Column(db.Integer, nullable = False) # ID of item
+    name_type = db.Column(db.String(20), nullable = False) # State, equipment, etc
+    en = db.Column(db.String, nullable = False)
+    fr = db.Column(db.String, nullable = False)
+    es = db.Column(db.String, nullable = False)
+    pt = db.Column(db.String, nullable = False)
     # Search localization libraries
 
     def __repr__(self):

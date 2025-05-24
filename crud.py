@@ -452,7 +452,84 @@ def create_name_translation(dict):
     return name_translation
 
 
+def get_users():
+    """Return a list of all users"""
+    
+    return db.session.query(User).all()
 
+
+def get_user_by_id(id):
+    """Return a user by their id"""
+
+    return db.session.query(User).filter(User.id == id).one()
+
+
+def get_builds():
+    """Return a list of all builds"""
+
+    return db.sesion.query(Build).all()
+
+
+def get_build_by_id(id):
+    """Return a build by it's id """
+
+    return db.session.query(Build).filter(Build.id == id).one()
+
+
+def get_characteristic_by_id(id):
+    """Return a characteristic by it's id"""
+
+    return db.session.query(Characteristic).filter(Characteristic.id == id).one()
+
+
+def get_characteristic_cap_by_level(level):
+    """Return charateristic caps by level"""
+
+    return (db.session.query(Characteristic_cap).
+            filter(Characteristic_cap.level == level).one())
+
+
+def get_equipments():
+    """Return a list of all equipments"""
+
+    return db.session.query(Equipment).all()
+
+
+def get_equipment_set_by_id(id):
+    """Return equipment_set by it's id"""
+
+    return (db.session.query(Equipment_set).filter(Equipment_set.id == id).
+            one())
+
+
+def get_equipment_by_level_range(min_level=None, max_level=None):
+    """Return all the equipment within a level range, inclusive"""
+
+    # If there is an min and max level input
+    if min_level and max_level:
+        return (db.session.query(Equipment).
+                filter(Equipment.level >= min_level, Equipment.level <= max_level)
+                .all())
+    # Get all equipment with a level at or higher than min        
+    elif min_level:
+        return (db.session.query(Equipment).
+                filter(Equipment.level >= min_level).all())
+    # Get all equipment with a level at or lower than max
+    elif max_level:
+        return (db.session.query(Equipment).
+                filter(Equipment.level >= max_level).all())
+    # Else return all equipment
+    else:
+        return get_equipments()
+
+
+def get_equipment_by_stats(stat_dict):
+    """Return all equipment with the stats in input dict"""
+
+    query_object = db.session.query(Equipment)
+
+    for key, value in stat_dict:
+        query_object = query_object.filter(key == stat_dict)
 
 
 

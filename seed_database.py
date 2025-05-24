@@ -13,7 +13,7 @@ os.system("createdb wakfuData")
 
 connect_to_db(app)
 app.app_context().push()
-db.create_all
+db.create_all()
     
 
 def calculate_params_stat(params, level, index):
@@ -89,7 +89,22 @@ def get_titles_from_actions(filename):
             titles_dict[line_id] = titles_dict.get(line_id, title) 
 
         return titles_dict
+    
 
+def get_titles_of_states():
+    """Return dict of state ids and their titles"""
+    data = get_data_from_json('states')
+    state_titles = {}
+
+    for line in data:
+        if 'title' in line.keys():
+            id = line['definition']['id']
+            title = line['title']['en']
+            state_titles[id] = line.get(id, '')
+            state_titles[id] = title
+
+    return state_titles
+    
 
 def seed_all_equipments():
     """Return a list of dicts of the id, level, and stats of all the equipable equipment."""
@@ -98,16 +113,19 @@ def seed_all_equipments():
     equip_dicts = get_ids_from_types_and_states('equipmentItemTypes')
     equip_ids = combine_dict_values_lists(equip_dicts)
     item_data = get_data_from_json('items')
-    action_titles = get_titles_from_actions('actions')
+    state_titles = get_titles_of_states()
 
     equipment_list = []
 
     # Loop through all the dicts in the items data
     for line in item_data:
-         equipment_dict = {}
-         item_type_id = line['definition']['item']['baseParameters']['itemTypeId']
-         # Check if the item id is the item id for an equipable item
-         if item_type_id in equip_ids and item_type_id not in non_equipment_ids:
+        equipment_dict = {}
+        item_type_id = line['definition']['item']['baseParameters']['itemTypeId']
+        # Check if item has a title, if not then skip (likely unfinished item)
+        if 'title' not in line.keys():
+             continue
+        # Check if the item id is the item id for an equipable item
+        if item_type_id in equip_ids and item_type_id not in non_equipment_ids:
             # Item id, level, and rarity
             id = line['definition']['item']['id']
             level = line['definition']['item']['level']
@@ -139,14 +157,226 @@ def seed_all_equipments():
                     if action_id == 20:
                         equipment_dict.update({'hp' : stat})
                     if action_id == 21:
-                        equipment_dict.update({'hp' : -stat})
+                        equipment_dict.update({'hp_neg' : stat})
                     if action_id == 26:
                         equipment_dict.update({'healing_mastery' : stat})
                     if action_id == 31:
                         equipment_dict.update({'ap' : stat})
                     if action_id == 39:
-                        print(id, effect['effect']['description']['en'])
-
-
-                # subequip_effects = equip_effects['subEffects']
+                        # if 'description' not in effect['effect'].keys():
+                        #     continue
+                        # if 'given' in effect['effect']['description']['en']:
+                        #     equipment_dict.update({'armor_given' : stat})
+                        # # If not armor given then it's armor received
+                        # else:
+                        #     equipment_dict.update({'armor_received' : stat})
+                        if (len(params) == 6 and 
+                            calculate_params_stat(params, level, 4) == 121):
+                            equipment_dict.update({'armor_received' : stat})
+                        if (len(params) == 6 and 
+                            calculate_params_stat(params, level, 4) == 120):
+                            equipment_dict.update({'armor_given' : stat})
+                    if action_id == 40:
+                        if (len(params) == 6 and 
+                            calculate_params_stat(params, level, 4) == 121):
+                            equipment_dict.update({'armor_received_neg' : stat})
+                        if (len(params) == 6 and 
+                            calculate_params_stat(params, level, 4) == 120):
+                            equipment_dict.update({'armor_given_neg' : stat})   
+                    if action_id == 41:
+                        equipment_dict.update({'mp' : stat})
+                    if action_id == 56:
+                        equipment_dict.update({'ap_neg' : stat})
+                    if action_id == 57:
+                        equipment_dict.update({'mp_neg' : stat})
+                    if action_id == 71:
+                        equipment_dict.update({'rear_res' : stat})
+                    if action_id == 80:
+                        equipment_dict.update({'elemental_res' : stat})
+                    if action_id == 82:
+                        equipment_dict.update({'fire_res' : stat})
+                    if action_id == 83:
+                        equipment_dict.update({'water_res' : stat})
+                    if action_id == 84:
+                        equipment_dict.update({'earth_res' : stat})
+                    if action_id == 85:
+                        equipment_dict.update({'air_res' : stat})
+                    if action_id == 90:
+                        equipment_dict.update({'elemental_res_neg' : stat})
+                    if action_id == 96:
+                        equipment_dict.update({'earth_res_neg' : stat})
+                    if action_id == 97:
+                        equipment_dict.update({'fire_res_neg' : stat})
+                    if action_id == 98:
+                        equipment_dict.update({'water_res_neg' : stat})
+                    if action_id == 100:
+                        equipment_dict.update({'elemental_res_neg' : stat})
+                    if action_id == 120:
+                        equipment_dict.update({'elemental_mastery' : stat})
+                    if action_id == 122:
+                        equipment_dict.update({'fire_mastery' : stat})
+                    if action_id == 123:
+                        equipment_dict.update({'earth_mastery' : stat})
+                    if action_id == 124:
+                        equipment_dict.update({'water_mastery' : stat})
+                    if action_id == 125:
+                        equipment_dict.update({'air_mastery' : stat})
+                    if action_id == 130:
+                        equipment_dict.update({'elemental_mastery_neg' : stat})
+                    if action_id == 132:
+                        equipment_dict.update({'fire_mastery_neg' : stat})
+                    if action_id == 149:
+                        equipment_dict.update({'crit_mastery' : stat})
+                    if action_id == 150:
+                        equipment_dict.update({'crit_hit' : stat})
+                    if action_id == 160:
+                        equipment_dict.update({'spell_range' : stat})
+                    if action_id == 161:
+                        equipment_dict.update({'spell_range_neg' : stat})
+                    if action_id == 162:
+                        equipment_dict.update({'prospecting' : stat})
+                    if action_id == 166:
+                        equipment_dict.update({'wisdom' : stat})
+                    if action_id == 168:
+                        equipment_dict.update({'crit_hit_neg' : stat})
+                    if action_id == 171:
+                        equipment_dict.update({'initiative' : stat})
+                    if action_id == 172:
+                        equipment_dict.update({'initiative_neg' : stat})
+                    if action_id == 173:
+                        equipment_dict.update({'lock' : stat})
+                    if action_id == 174:
+                        equipment_dict.update({'lock_neg' : stat})
+                    if action_id == 175:
+                        equipment_dict.update({'dodge' : stat})
+                    if action_id == 176:
+                        equipment_dict.update({'dodge_neg' : stat})
+                    if action_id == 177:
+                        equipment_dict.update({'force_of_will' : stat})
+                    if action_id == 180:
+                        equipment_dict.update({'rear_mastery' : stat})
+                    if action_id == 181:
+                        equipment_dict.update({'rear_mastery_neg' : stat})
+                    if action_id == 184:
+                        equipment_dict.update({'control' : stat})
+                    if action_id == 191:
+                        equipment_dict.update({'wp' : stat})
+                    if action_id == 192:
+                        equipment_dict.update({'wp_neg' : stat})
+                    # 193 and 194 are subeffects
+                    if action_id == 193:
+                        equipment_dict.update({'wp' : stat})
+                    if action_id == 194:
+                        equipment_dict.update({'wp_neg' : stat})
+                    if action_id == 304:
+                        # 1284 is Makabraktion Ring
+                        # if stat == 1284:
+                        #     equipment_dict({'level' : 100})
+                        if stat == 3416:
+                            equipment_dict.update({'state' : '1 AP'})
+                        elif stat == 4960:
+                            equipment_dict.update({'state' : '1 MP (1 Turn)'})
+                        else:
+                            equipment_dict.update({'state' : state_titles[int(stat)]})
+                    # if action_id == 330:
+                    #     # Empty as of 5/17/2025
+                        
+                    # if action_id == 400:
+                    #     # Empty as of 5/17/2025
+                    # if action_id == 843:
+                    #     # Empty as of 5/17/2025
+                    # if action_id == 865:
+                    #     # Empty as of 5/17/2025
+                    if action_id == 875:
+                        equipment_dict.update({'block' : stat})
+                    if action_id == 876:
+                        equipment_dict.update({'block_neg' : stat})
+                    if action_id == 1020:
+                        equipment_dict.update({'state' : 'Reflects 10% of damage'})
+                    if action_id == 1052:
+                        equipment_dict.update({'melee_mastery' : stat})
+                    if action_id == 1053:
+                        equipment_dict.update({'distance_mastery' : stat})
+                    if action_id == 1055:
+                        equipment_dict.update({'berserk_mastery' : stat})
+                    if action_id == 1056:
+                        equipment_dict.update({'crit_mastery_neg' : stat})
+                    if action_id == 1059:
+                        equipment_dict.update({'melee_mastery_neg' : stat})
+                    if action_id == 1060:
+                        equipment_dict.update({'distance_mastery_neg' : stat})
+                    if action_id == 1061:
+                        equipment_dict.update({'berserk_mastery_neg' : stat})
+                    if action_id == 1062:
+                        equipment_dict.update({'crit_res_neg' : stat})
+                    if action_id == 1063:
+                        equipment_dict.update({'rear_res_neg' : stat})
+                    if action_id == 1068:
+                        equipment_dict.update({'random_masteries' : stat})
+                        num_of_randoms = calculate_params_stat(params, level, 2)
+                        equipment_dict.update({'num_random_masteries' : num_of_randoms})
+                    if action_id == 1069:
+                        equipment_dict.update({'random_resistances' : stat})
+                        num_of_randoms = calculate_params_stat(params, level, 2)
+                        equipment_dict.update({'num_random_resistances' : num_of_randoms})
+                    # if action_id == 1083:
+                    #     # Empty for now
+                    # if action_id == 1084:
+                    #     # Empty for now
+                    if action_id == 2001:
+                        job = calculate_params_stat(params, level, 2)
+                        if job == 64:
+                            equipment_dict.update({'farmer' : stat})
+                        if job == 71:
+                            equipment_dict.update({'lumberjack' : stat})
+                        if job == 72:
+                            equipment_dict.update({'herbalist' : stat})
+                        if job == 73:
+                            equipment_dict.update({'miner' : stat})
+                        if job == 74:
+                            equipment_dict.update({'trapper' : stat})
+                        if job == 75:
+                            equipment_dict.update({'fisherman' : stat})
+                    
+        
+                    # subequip_effects = equip_effects['subEffects']
+        equipment_list.append(crud.create_equipment(equipment_dict))
     
+    db.session.add_all(equipment_list)
+    db.session.commit()
+
+
+def seed_equipment_name_translations():
+    """Seed the name_translations table"""
+
+    equips = crud.get_equipments()
+    data = get_data_from_json('items')
+
+    # Loop through equips and find them in items data
+    for equip in equips:
+        id = equip.id
+        translation = {'id' : id}
+
+        for line in data:
+            line_id = line['definition']['item']['id']
+            if line_id == id:
+                title = line['title']
+                translation.update({'en' : title['en']})
+                translation.update({'fr' : title['fr']})
+                translation.update({'es' : title['es']})
+                translation.update({'pt' : title['pt']})
+
+        translation_dict = crud.create_name_translation(translation)
+
+        db.session.add(translation_dict)
+
+    db.session.commit()
+
+        
+
+
+
+
+
+seed_all_equipments()
+seed_equipment_name_translations()
