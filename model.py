@@ -886,14 +886,13 @@ class Name_translation(db.Model):
     __tablename__ = 'name_translations'
 
     id = db.Column(db.Integer,
-                   autoincrement = True,
                    primary_key = True)
-    name_id = db.Column(db.Integer, nullable = False) # ID of item
-    name_type = db.Column(db.String(20), nullable = False) # State, equipment, etc
-    en = db.Column(db.String, nullable = False)
-    fr = db.Column(db.String, nullable = False)
-    es = db.Column(db.String, nullable = False)
-    pt = db.Column(db.String, nullable = False)
+    name_id = db.Column(db.Integer) # ID of item
+    name_type = db.Column(db.String(20)) # State, equipment, etc
+    en = db.Column(db.String)
+    fr = db.Column(db.String)
+    es = db.Column(db.String)
+    pt = db.Column(db.String)
     # Search localization libraries
 
     def __repr__(self):

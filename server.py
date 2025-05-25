@@ -14,6 +14,8 @@ app.secret_key = "is_this_secret_enough"
 app.jinja_env.undefined = StrictUndefined
 
 
+SEARCH_PARAMS = []
+
 def get_browser_lang():
     supported_languages = ['en', 'fr', 'es', 'pt']
     session['lang'] = request.accept_languages.best_match(supported_languages)
@@ -24,9 +26,31 @@ def get_browser_lang():
 @app.route('/')
 def homepage():
     get_browser_lang()
-    
-    return render_template('homepage.html')
+    character_classes = crud.get_character_classes()
+    db.session.add(character_classes)
+    db.session.commit()
 
+    if 'user_id' in session:
+        return redirect(f"/user/{session['user_id']}")
+
+    builds = crud.get_builds()
+    
+    return render_template('homepage.html', builds=builds, 
+                           character_classes=character_classes)
+
+
+@app.route('/search')
+def search_results():
+    pass
+    
+
+
+@app.route('/user/<user_id>')
+def get_user(user_id):
+    user = crud.get_user_by_id(user_id)
+    builds = crud.get_builds_by_user(user.id)
+
+    return render_template('user_builds.html', user=user, builds=builds)
 
 
 

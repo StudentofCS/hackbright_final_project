@@ -355,6 +355,8 @@ def seed_equipment_name_translations():
     # Loop through equips and find them in items data
     for equip in equips:
         id = equip.id
+        if id == 473:
+            return equip
         translation = {'id' : id}
 
         for line in data:
@@ -366,17 +368,65 @@ def seed_equipment_name_translations():
                 translation.update({'es' : title['es']})
                 translation.update({'pt' : title['pt']})
 
+        print(translation)
         translation_dict = crud.create_name_translation(translation)
 
         db.session.add(translation_dict)
 
     db.session.commit()
 
-        
+
+def seed_character_classes():
+    """Seed all the character classes"""
+
+    char_classes = crud.create_character_class
+
+    db.session.add_all(char_classes)
+    db.session.commit()
 
 
+def seed_characteristic_caps():
+    """Seed all the characteristic caps"""
 
+    characteristic_caps = crud.create_characteristic_cap
+
+    db.session.add_all(characteristic_caps)
+    db.session.commit()
+
+
+def seed_elements():
+    """Seed the elements"""
+
+    elements = crud.create_element()
+
+    db.session.add_all(elements)
+    db.session.commit()
+
+
+def seed_base_stats():
+    """Seed the base stats"""
+
+    base_stats = crud.create_base_stat()
+
+    db.session.add_all(base_stats)
+    db.session.commit()
+
+
+def seed_spell_and_passive_slot_caps():
+    """Seed the spell and passive slot caps"""
+
+    spell_slot_caps = crud.create_spell_slot_cap()
+    passive_slot_caps = crud.create_passive_slot_cap()
+
+    db.session.add_all(passive_slot_caps)
+    db.session.add_all(spell_slot_caps)
+    db.session.commit()
 
 
 seed_all_equipments()
-seed_equipment_name_translations()
+# seed_equipment_name_translations()
+# seed_character_classes()
+# seed_characteristic_caps()
+# seed_elements()
+# seed_base_stats()
+# seed_spell_and_passive_slot_caps()

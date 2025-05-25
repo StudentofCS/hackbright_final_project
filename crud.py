@@ -467,13 +467,19 @@ def get_user_by_id(id):
 def get_builds():
     """Return a list of all builds"""
 
-    return db.sesion.query(Build).all()
+    return db.session.query(Build).all()
 
 
 def get_build_by_id(id):
     """Return a build by it's id """
 
     return db.session.query(Build).filter(Build.id == id).one()
+
+
+def get_builds_by_user(user_id):
+    """Return all builds associated to a user id"""
+
+    return db.session.query(Build).filter(Build.user_id == user_id).all()
 
 
 def get_characteristic_by_id(id):
@@ -531,6 +537,11 @@ def get_equipment_by_stats(stat_dict):
     for key, value in stat_dict:
         query_object = query_object.filter(key == stat_dict)
 
+
+def get_character_classes():
+    """Return all character classes"""
+
+    return db.session.query(Character_class).all()
 
 
 if __name__ == '__main__':
