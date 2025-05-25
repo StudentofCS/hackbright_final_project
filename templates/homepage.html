@@ -2,80 +2,84 @@
 
 {% block title %}Wakfu Builds{% endblock %}
 {% block content %}
-    <div class="container">
-        Build Name: (input text)
-
-        
-
-        <div class="btn-group" role="group" aria-label="Radio toggle button group for character classes">
-            {% for character_class in character_classes %}
-            <input type="radio" class="btn-check" name="btnradio" id="character_class{{ character_class.id }}" autocomplete="off" checked>
-            <label class="btn btn-outline-primary" for="character_class{{ character_class.id }}">{{ character_class.name }}</label>
-            {% endfor %}
-        </div>
-
-
-
-        Level: (text input with arrow incrementing by 15)
-        <br/><br/>
-
-        Main Role: (*pick max 3* dpt-melee, dpt-distance, tank, healer, shielder, positioner, buff, debuff)
-        <br/><br/>
-
-        Content Focus: (pvm-solo, pvm-group, pvp, rift, ultimate boss)
-        <br/><br/>
-
-        Stats:
-        <!-- First 4 will be the "main" stats -->
-        <br/>
-        AP: min(text input) max(textinput)
-        <br/><br/> 
-        MP: min(text input) max(textinput)
-        <br/><br/>
-        WP: min(text input) max(textinput)
-        <br/><br/>
-        Range: min(text input) max(textinput)
-        <br/><br/>
-
-        <!-- Click on advanced button to reveal these -->
-        Resistance %: min(text input)
-        <br/><br/>
-        Total Mastery: min(text input)<br/>
-        - checkbox mastery types to include (
-            (**Will only return builds with equal mastery if more than one element selected**: fire, water, earth, air), crit, rear, melee, distance, healing, berserk)
-        <br/><br/>
-        DI: min(text input) max(textinput)
-        <br/><br/>
-        Heals Performed: min(text input) max(textinput)
-        <br/><br/>
-        Crit Hit: min(text input) max(textinput)
-        <br/><br/>
-        Block: min(text input) max(textinput)
-        <br/><br/>
-        Initiative: min(text input) max(textinput)
-        <br/><br/>
-        Dodge: min(text input) max(textinput)
-        <br/><br/>
-        Lock: min(text input) max(textinput)
-        <br/><br/>
-        Control: min(text input) max(textinput)
-        <br/><br/>
-        Force of Will: min(text input) max(textinput)
-        <br/><br/>
-        Armor: min(text input) max(text input)
-        <br/><br/>
-
-
-        <nav class="navbar bg-dark border-bottom border-body" data-bs-teme="dark">
-            <div class="container-fluid">
-                <div class="d-grid gap-2 d-md-flex justify-content-start">
-                    <button class="btn btn-success" type="button">New Build</button>
-                </div>
-                <div class="d-grid gap-2 d-md-flex justify-content-end">
-                    <button class="btn btn-primary" type="button">Search</button>
-                </div>
+    <br><br>
+    <div class="container row">
+        <div class="col-5">
+            <div class="row mb-3">
+                <label for="build_name" class="col-sm-2 col-form-label">Build Name:</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="build_name" placeholder="Build Name">
+                </div>    
             </div>
-        </nav>
+
+            <div class="btn-toolbar" role="group" aria-label="Radio toggle buttons for character class">
+                {% for character_class in character_classes %}
+                    <input type="radio" class="btn-check" name="char_class_btnradio" id="character_class{{ character_class.id }}" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="character_class{{ character_class.id }}">{{ character_class.name }}</label>
+                {% endfor %}
+            </div>
+
+            Level: (text input with arrow incrementing by 15)
+            <br/><br/>
+
+            Main Role: (*pick max 3* dpt-melee, dpt-distance, tank, healer, shielder, positioner, buff, debuff)
+            <br/><br/>
+
+            Content Focus: (pvm-solo, pvm-group, pvp, rift, ultimate boss)
+            <br/><br/>
+
+            Stats:
+            <!-- First 4 will be the "main" stats -->
+            <br/>
+            AP: min(text input) max(textinput)
+            <br/><br/> 
+            MP: min(text input) max(textinput)
+            <br/><br/>
+            WP: min(text input) max(textinput)
+            <br/><br/>
+            Range: min(text input) max(textinput)
+            <br/><br/>
+
+            <!-- Click on advanced button to reveal these -->
+            Resistance %: min(text input)
+            <br/><br/>
+            Total Mastery: min(text input)<br/>
+            - checkbox mastery types to include (
+                (**Will only return builds with equal mastery if more than one element selected**: fire, water, earth, air), crit, rear, melee, distance, healing, berserk)
+            <br/><br/>
+            DI: min(text input) max(textinput)
+            <br/><br/>
+            Heals Performed: min(text input) max(textinput)
+            <br/><br/>
+            Crit Hit: min(text input) max(textinput)
+            <br/><br/>
+            Block: min(text input) max(textinput)
+            <br/><br/>
+            Initiative: min(text input) max(textinput)
+            <br/><br/>
+            Dodge: min(text input) max(textinput)
+            <br/><br/>
+            Lock: min(text input) max(textinput)
+            <br/><br/>
+            Control: min(text input) max(textinput)
+            <br/><br/>
+            Force of Will: min(text input) max(textinput)
+            <br/><br/>
+            Armor: min(text input) max(text input)
+            <br/><br/>
+
+
+            <nav class="navbar bg-dark border-bottom border-body" data-bs-teme="dark">
+                <div class="container-fluid">
+                    <div class="d-grid gap-2 d-md-flex justify-content-start">
+                        <button class="btn btn-success" type="button">New Build</button>
+                    </div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-end">
+                        <button class="btn btn-primary" type="button">Search</button>
+                    </div>
+                </div>
+            </nav>
+        </div>
     </div>
 
 

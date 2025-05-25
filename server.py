@@ -27,8 +27,6 @@ def get_browser_lang():
 def homepage():
     get_browser_lang()
     character_classes = crud.get_character_classes()
-    db.session.add(character_classes)
-    db.session.commit()
 
     if 'user_id' in session:
         return redirect(f"/user/{session['user_id']}")

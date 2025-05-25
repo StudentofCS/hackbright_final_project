@@ -340,7 +340,8 @@ def seed_all_equipments():
                     
         
                     # subequip_effects = equip_effects['subEffects']
-        equipment_list.append(crud.create_equipment(equipment_dict))
+            
+            equipment_list.append(crud.create_equipment(equipment_dict))
     
     db.session.add_all(equipment_list)
     db.session.commit()
@@ -355,8 +356,13 @@ def seed_equipment_name_translations():
     # Loop through equips and find them in items data
     for equip in equips:
         id = equip.id
+
+        ######################
         if id == 473:
-            return equip
+            print(equip)
+            return
+        ######################
+
         translation = {'id' : id}
 
         for line in data:
@@ -368,7 +374,6 @@ def seed_equipment_name_translations():
                 translation.update({'es' : title['es']})
                 translation.update({'pt' : title['pt']})
 
-        print(translation)
         translation_dict = crud.create_name_translation(translation)
 
         db.session.add(translation_dict)
@@ -379,7 +384,7 @@ def seed_equipment_name_translations():
 def seed_character_classes():
     """Seed all the character classes"""
 
-    char_classes = crud.create_character_class
+    char_classes = crud.create_character_class()
 
     db.session.add_all(char_classes)
     db.session.commit()
@@ -388,7 +393,7 @@ def seed_character_classes():
 def seed_characteristic_caps():
     """Seed all the characteristic caps"""
 
-    characteristic_caps = crud.create_characteristic_cap
+    characteristic_caps = crud.create_characteristic_cap()
 
     db.session.add_all(characteristic_caps)
     db.session.commit()
@@ -424,9 +429,9 @@ def seed_spell_and_passive_slot_caps():
 
 
 seed_all_equipments()
-# seed_equipment_name_translations()
-# seed_character_classes()
-# seed_characteristic_caps()
-# seed_elements()
-# seed_base_stats()
-# seed_spell_and_passive_slot_caps()
+seed_equipment_name_translations()
+seed_character_classes()
+seed_characteristic_caps()
+seed_elements()
+seed_base_stats()
+seed_spell_and_passive_slot_caps()
