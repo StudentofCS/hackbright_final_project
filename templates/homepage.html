@@ -3,44 +3,99 @@
 {% block title %}Wakfu Builds{% endblock %}
 {% block content %}
     <br><br>
-    <div class="container row">
-        <div class="col-5">
-            <div class="row mb-3">
-                <label for="build_name" class="col-sm-2 col-form-label">Build Name:</label>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control" id="build_name" placeholder="Build Name">
-                </div>    
+    <form action="/search" method="get" class="container row">
+        <div class="col-5 border">
+
+            <div class="row mb-3 pt-3">    
+                <div class="col-lg-6 col-md-12 form-floating mb-3">
+                    <input type="text" class="form-control" id="build_name" name="build_name">
+                    <label for="build_name">Build Name</label>
+                </div>
+                <div class="col-lg-3 col-md-6 form-floating mb-3">
+                    <input type="number" class="form-control" id="min_level" name="min_level" value="20" step="15" min="5" max="{{ max_level }}">
+                    <label for="min_level">Min Level</label>
+                </div>
+                <div class="col-lg-3 col-md-6 form-floating mb-3">
+                    <input type="number" class="form-control" id="max_level" name="max_level" step="15" min="5" max="{{ max_level }}">
+                    <label for="max_level">Max Level</label>
+                </div>
             </div>
 
-            <div class="btn-toolbar" role="group" aria-label="Radio toggle buttons for character class">
+            <h5>Class:</h5>
+            <div class="btn-toolbar mb-3" role="group" aria-label="Radio toggle buttons for character class">                
                 {% for character_class in character_classes %}
                     <input type="radio" class="btn-check" name="char_class_btnradio" id="character_class{{ character_class.id }}" autocomplete="off">
                     <label class="btn btn-outline-primary" for="character_class{{ character_class.id }}">{{ character_class.name }}</label>
                 {% endfor %}
             </div>
 
-            Level: (text input with arrow incrementing by 15)
-            <br/><br/>
+            <h5>Main role:</h5>
+            <div class="btn-toolbar mb-3" role="group" aria-label="Checkbox buttons for main role">
+                    <input type="checkbox" class="btn-check" name="main_role" id="damage" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="damage">Damage</label>
+                    <input type="checkbox" class="btn-check" name="main_role" id="melee" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="melee">Melee Dmg</label>
+                    <input type="checkbox" class="btn-check" name="main_role" id="distance" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="distance">Distance Dmg</label>
+                    <input type="checkbox" class="btn-check" name="main_role" id="tank" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="tank">Tank</label>
+                    <input type="checkbox" class="btn-check" name="main_role" id="healer" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="healer">Healer</label>
+                    <input type="checkbox" class="btn-check" name="main_role" id="shielder" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="shielder">Shielder</label>
+                    <input type="checkbox" class="btn-check" name="main_role" id="positioner" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="positioner">Positioner</label>
+                    <input type="checkbox" class="btn-check" name="main_role" id="buffer" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="buffer">Buffer</label>
+                    <input type="checkbox" class="btn-check" name="main_role" id="debuffer" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="debuffer">Debuffer</label>
+            </div>
 
-            Main Role: (*pick max 3* dpt-melee, dpt-distance, tank, healer, shielder, positioner, buff, debuff)
-            <br/><br/>
+            <h5>Content Focus:</h5>
+            <div class="btn-toolbar mb-3" role="group" aria-label="Radio toggle buttons for content type">
+                    <input type="radio" class="btn-check" name="content_type" id="solo" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="solo">Solo PvM</label>
+                    <input type="radio" class="btn-check" name="content_type" id="group" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="group">Group PvM</label>
+                    <input type="radio" class="btn-check" name="content_type" id="pvp" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="pvp">PvP</label>
+                    <input type="radio" class="btn-check" name="content_type" id="rift" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="rift">Rift</label>
+                    <input type="radio" class="btn-check" name="content_type" id="ub" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="ub">Ultimate Boss</label>
+            </div>
 
-            Content Focus: (pvm-solo, pvm-group, pvp, rift, ultimate boss)
-            <br/><br/>
-
-            Stats:
+            <h5>Stats:</h5>
             <!-- First 4 will be the "main" stats -->
-            <br/>
-            AP: min(text input) max(textinput)
-            <br/><br/> 
-            MP: min(text input) max(textinput)
-            <br/><br/>
-            WP: min(text input) max(textinput)
-            <br/><br/>
-            Range: min(text input) max(textinput)
-            <br/><br/>
+            <div class="row mb-3 pt-3">    
+                <div class="input-group mb-3 col-auto">
+                    <span class="input-group-text bg-secondary border-secondary">AP:</span>
+                    <input type="number" class="form-control" name="min_ap" aria-label="Minimum AP">
+                    <span class="input-group-text bg-secondary border-secondary"> - </span>
+                    <input type="number" class="form-control" name="max_ap" aria-label="Maximum AP">
+                </div>
+                <div class="input-group mb-3 col-auto">
+                    <span class="input-group-text bg-secondary border-secondary">MP:</span>
+                    <input type="number" class="form-control" name="min_mp" aria-label="Minimum MP">
+                    <span class="input-group-text bg-secondary border-secondary"> - </span>
+                    <input type="number" class="form-control" name="max_mp" aria-label="Maximum MP">
+                </div>
+                <div class="input-group mb-3 col-auto">
+                    <span class="input-group-text bg-secondary border-secondary">WP:</span>
+                    <input type="number" class="form-control" name="min_wp" aria-label="Minimum WP">
+                    <span class="input-group-text bg-secondary border-secondary"> - </span>
+                    <input type="number" class="form-control" name="max_wp" aria-label="Maximum WP">
+                </div>
+                <div class="input-group mb-3 col-auto">
+                    <span class="input-group-text bg-secondary border-secondary">Range:</span>
+                    <input type="number" class="form-control" name="min_range" aria-label="Minimum range">
+                    <span class="input-group-text bg-secondary border-secondary"> - </span>
+                    <input type="number" class="form-control" name="max_range" aria-label="Maximum range">
+                </div>
 
             <!-- Click on advanced button to reveal these -->
+            These will be hidden with checkbox.
+            <!-- add collapse button here-->
             Resistance %: min(text input)
             <br/><br/>
             Total Mastery: min(text input)<br/>
@@ -68,14 +123,15 @@
             Armor: min(text input) max(text input)
             <br/><br/>
 
+            <span class="border-top"></span>
 
-            <nav class="navbar bg-dark border-bottom border-body" data-bs-teme="dark">
+            <nav class="navbar bg-dark border-top" data-bs-teme="dark">
                 <div class="container-fluid">
                     <div class="d-grid gap-2 d-md-flex justify-content-start">
-                        <button class="btn btn-success" type="button">New Build</button>
+                        <button class="btn btn-success" type="submit" formaction="/new_build">New Build</button>
                     </div>
                     <div class="d-grid gap-2 d-md-flex justify-content-end">
-                        <button class="btn btn-primary" type="button">Search</button>
+                        <button class="btn btn-primary" type="submit">Search</button>
                     </div>
                 </div>
             </nav>

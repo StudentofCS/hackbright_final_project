@@ -11,18 +11,21 @@
 <body class="text-bg-dark">
     
     <nav class="navbar bg-dark border-bottom border-body" data-bs-teme="dark">
-        <div class="container-fluid">
-            <a class="navbar-brand text-bg-dark" href="#">WakfuBuilds</a>
+        <div class="container-fluid row">
 
-            <div class="d-grid gap-2 d-md-flex mx-auto">
+            <div class="d-grid gap-2 d-md-flex mx-auto col-md-4 col-sm-12">
+            <a class="navbar-brand text-bg-dark" href="#">WakfuBuilds</a>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex mx-auto justify-content-center col-md-4 col-sm-12">
                 <div class="btn-group" role="group" aria-label="Main nav buttons">
                     <button class="btn btn-dark border-end" type="button">Home</button>
                     <button class="btn btn-dark border-start border-end" type="button">My Builds</button>
                     <button class="btn btn-dark border-start" type="button">New Build</button>
                 </div>  
             </div>
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end col-md-4 col-sm-12">
                 <div class="dropdown">
                     <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Languages
@@ -44,7 +47,7 @@
     <div class="container-fluid">
         {% block content %}{% endblock %}
     </div>
-    <br><br><br>
+    <br><br>
     <footer class="bg-dark d-flex flex-wrap justify-content-center border-top fixed-bottom">
         <p>WakfuBuilds is an independent website and is not affiliated with or endorsed by Ankama, the developer of Wakfu.</p>
     </footer>

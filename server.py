@@ -16,6 +16,7 @@ app.jinja_env.undefined = StrictUndefined
 
 SEARCH_PARAMS = []
 
+
 def get_browser_lang():
     supported_languages = ['en', 'fr', 'es', 'pt']
     session['lang'] = request.accept_languages.best_match(supported_languages)
@@ -34,12 +35,29 @@ def homepage():
     builds = crud.get_builds()
     
     return render_template('homepage.html', builds=builds, 
-                           character_classes=character_classes)
+                           character_classes=character_classes,
+                           max_level = crud.MAX_LEVEL)
 
 
 @app.route('/search')
 def search_results():
-    pass
+    min_level = request.args.get('min_level')
+    max_level = request.args.get('max_level')
+
+    if min_level == "" and max_level == "":
+        print('Both empty')
+    
+    elif min_level != "" and max_level != "":
+        print(f'Level: {min_level} to {max_level}')
+
+    elif min_level != "":
+        print(f'Min_level: {min_level}')
+
+    elif max_level != "":
+        print(f'Max_level: {max_level}')
+
+    
+    return redirect('/')
     
 
 
