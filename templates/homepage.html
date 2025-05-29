@@ -2,140 +2,223 @@
 
 {% block title %}Wakfu Builds{% endblock %}
 {% block content %}
-    <br><br>
-    <form action="/search" method="get" class="container row">
-        <div class="col-5 border">
+    <div class="container row mb-3 pt-5 justify-content-around">
+        <form action="/search" method="get" class="col-5 border">
+            <!-- <div class="col-5 border"> -->
 
-            <div class="row mb-3 pt-3">    
-                <div class="col-lg-6 col-md-12 form-floating mb-3">
-                    <input type="text" class="form-control" id="build_name" name="build_name">
-                    <label for="build_name">Build Name</label>
-                </div>
-                <div class="col-lg-3 col-md-6 form-floating mb-3">
-                    <input type="number" class="form-control" id="min_level" name="min_level" value="20" step="15" min="5" max="{{ max_level }}">
-                    <label for="min_level">Min Level</label>
-                </div>
-                <div class="col-lg-3 col-md-6 form-floating mb-3">
-                    <input type="number" class="form-control" id="max_level" name="max_level" step="15" min="5" max="{{ max_level }}">
-                    <label for="max_level">Max Level</label>
-                </div>
-            </div>
-
-            <h5>Class:</h5>
-            <div class="btn-toolbar mb-3" role="group" aria-label="Radio toggle buttons for character class">                
-                {% for character_class in character_classes %}
-                    <input type="radio" class="btn-check" name="char_class_btnradio" id="character_class{{ character_class.id }}" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="character_class{{ character_class.id }}">{{ character_class.name }}</label>
-                {% endfor %}
-            </div>
-
-            <h5>Main role:</h5>
-            <div class="btn-toolbar mb-3" role="group" aria-label="Checkbox buttons for main role">
-                    <input type="checkbox" class="btn-check" name="main_role" id="damage" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="damage">Damage</label>
-                    <input type="checkbox" class="btn-check" name="main_role" id="melee" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="melee">Melee Dmg</label>
-                    <input type="checkbox" class="btn-check" name="main_role" id="distance" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="distance">Distance Dmg</label>
-                    <input type="checkbox" class="btn-check" name="main_role" id="tank" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="tank">Tank</label>
-                    <input type="checkbox" class="btn-check" name="main_role" id="healer" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="healer">Healer</label>
-                    <input type="checkbox" class="btn-check" name="main_role" id="shielder" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="shielder">Shielder</label>
-                    <input type="checkbox" class="btn-check" name="main_role" id="positioner" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="positioner">Positioner</label>
-                    <input type="checkbox" class="btn-check" name="main_role" id="buffer" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="buffer">Buffer</label>
-                    <input type="checkbox" class="btn-check" name="main_role" id="debuffer" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="debuffer">Debuffer</label>
-            </div>
-
-            <h5>Content Focus:</h5>
-            <div class="btn-toolbar mb-3" role="group" aria-label="Radio toggle buttons for content type">
-                    <input type="radio" class="btn-check" name="content_type" id="solo" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="solo">Solo PvM</label>
-                    <input type="radio" class="btn-check" name="content_type" id="group" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="group">Group PvM</label>
-                    <input type="radio" class="btn-check" name="content_type" id="pvp" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="pvp">PvP</label>
-                    <input type="radio" class="btn-check" name="content_type" id="rift" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="rift">Rift</label>
-                    <input type="radio" class="btn-check" name="content_type" id="ub" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="ub">Ultimate Boss</label>
-            </div>
-
-            <h5>Stats:</h5>
-            <!-- First 4 will be the "main" stats -->
-            <div class="row mb-3 pt-3">    
-                <div class="input-group mb-3 col-auto">
-                    <span class="input-group-text bg-secondary border-secondary">AP:</span>
-                    <input type="number" class="form-control" name="min_ap" aria-label="Minimum AP">
-                    <span class="input-group-text bg-secondary border-secondary"> - </span>
-                    <input type="number" class="form-control" name="max_ap" aria-label="Maximum AP">
-                </div>
-                <div class="input-group mb-3 col-auto">
-                    <span class="input-group-text bg-secondary border-secondary">MP:</span>
-                    <input type="number" class="form-control" name="min_mp" aria-label="Minimum MP">
-                    <span class="input-group-text bg-secondary border-secondary"> - </span>
-                    <input type="number" class="form-control" name="max_mp" aria-label="Maximum MP">
-                </div>
-                <div class="input-group mb-3 col-auto">
-                    <span class="input-group-text bg-secondary border-secondary">WP:</span>
-                    <input type="number" class="form-control" name="min_wp" aria-label="Minimum WP">
-                    <span class="input-group-text bg-secondary border-secondary"> - </span>
-                    <input type="number" class="form-control" name="max_wp" aria-label="Maximum WP">
-                </div>
-                <div class="input-group mb-3 col-auto">
-                    <span class="input-group-text bg-secondary border-secondary">Range:</span>
-                    <input type="number" class="form-control" name="min_range" aria-label="Minimum range">
-                    <span class="input-group-text bg-secondary border-secondary"> - </span>
-                    <input type="number" class="form-control" name="max_range" aria-label="Maximum range">
-                </div>
-
-            <!-- Click on advanced button to reveal these -->
-            These will be hidden with checkbox.
-            <!-- add collapse button here-->
-            Resistance %: min(text input)
-            <br/><br/>
-            Total Mastery: min(text input)<br/>
-            - checkbox mastery types to include (
-                (**Will only return builds with equal mastery if more than one element selected**: fire, water, earth, air), crit, rear, melee, distance, healing, berserk)
-            <br/><br/>
-            DI: min(text input) max(textinput)
-            <br/><br/>
-            Heals Performed: min(text input) max(textinput)
-            <br/><br/>
-            Crit Hit: min(text input) max(textinput)
-            <br/><br/>
-            Block: min(text input) max(textinput)
-            <br/><br/>
-            Initiative: min(text input) max(textinput)
-            <br/><br/>
-            Dodge: min(text input) max(textinput)
-            <br/><br/>
-            Lock: min(text input) max(textinput)
-            <br/><br/>
-            Control: min(text input) max(textinput)
-            <br/><br/>
-            Force of Will: min(text input) max(textinput)
-            <br/><br/>
-            Armor: min(text input) max(text input)
-            <br/><br/>
-
-            <span class="border-top"></span>
-
-            <nav class="navbar bg-dark border-top" data-bs-teme="dark">
-                <div class="container-fluid">
-                    <div class="d-grid gap-2 d-md-flex justify-content-start">
-                        <button class="btn btn-success" type="submit" formaction="/new_build">New Build</button>
+                <div class="row mb-3 pt-3">    
+                    <div class="col-lg-6 col-md-12 form-floating mb-3">
+                        <input type="text" class="form-control" id="build_name" name="build_name">
+                        <label for="build_name">Build Name</label>
                     </div>
-                    <div class="d-grid gap-2 d-md-flex justify-content-end">
-                        <button class="btn btn-primary" type="submit">Search</button>
+                    <div class="col-lg-3 col-md-6 form-floating mb-3">
+                        <input type="number" class="form-control" id="min_level" name="min_level" value="20" step="15" min="5" max="{{ max_level }}">
+                        <label for="min_level">Min Level</label>
+                    </div>
+                    <div class="col-lg-3 col-md-6 form-floating mb-3">
+                        <input type="number" class="form-control" id="max_level" name="max_level" step="15" min="5" max="{{ max_level }}">
+                        <label for="max_level">Max Level</label>
                     </div>
                 </div>
-            </nav>
+
+                <h5>Class:</h5>
+                <div class="btn-toolbar mb-3" role="group" aria-label="Radio toggle buttons for character class">                
+                    {% for character_class in character_classes %}
+                        <input type="radio" class="btn-check" name="char_class" id="character_class{{ character_class.id }}" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="character_class{{ character_class.id }}">{{ character_class.name }}</label>
+                    {% endfor %}
+                </div>
+
+                <h5>Main role:</h5>
+                <div class="btn-toolbar mb-3" role="group" aria-label="Checkbox buttons for main role">
+                        <input type="checkbox" class="btn-check" name="main_role" id="damage" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="damage">Damage</label>
+                        <input type="checkbox" class="btn-check" name="main_role" id="melee" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="melee">Melee Dmg</label>
+                        <input type="checkbox" class="btn-check" name="main_role" id="distance" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="distance">Distance Dmg</label>
+                        <input type="checkbox" class="btn-check" name="main_role" id="tank" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="tank">Tank</label>
+                        <input type="checkbox" class="btn-check" name="main_role" id="healer" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="healer">Healer</label>
+                        <input type="checkbox" class="btn-check" name="main_role" id="shielder" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="shielder">Shielder</label>
+                        <input type="checkbox" class="btn-check" name="main_role" id="positioner" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="positioner">Positioner</label>
+                        <input type="checkbox" class="btn-check" name="main_role" id="buffer" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="buffer">Buffer</label>
+                        <input type="checkbox" class="btn-check" name="main_role" id="debuffer" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="debuffer">Debuffer</label>
+                </div>
+
+                <h5>Content Focus:</h5>
+                <div class="btn-toolbar mb-3" role="group" aria-label="Radio toggle buttons for content type">
+                        <input type="radio" class="btn-check" name="content_type" id="solo" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="solo">Solo PvM</label>
+                        <input type="radio" class="btn-check" name="content_type" id="group" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="group">Group PvM</label>
+                        <input type="radio" class="btn-check" name="content_type" id="pvp" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="pvp">PvP</label>
+                        <input type="radio" class="btn-check" name="content_type" id="rift" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="rift">Rift</label>
+                        <input type="radio" class="btn-check" name="content_type" id="ub" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="ub">Ultimate Boss</label>
+                </div>
+
+                <h5>Stats:</h5>
+                <!-- First 4 will be the "main" stats -->
+                <div class="row mb-3 pt-3">    
+                    <div class="input-group mb-3 col-auto">
+                        <span class="input-group-text bg-secondary border-secondary">AP:</span>
+                        <input type="number" class="form-control" name="min_ap" aria-label="Minimum AP">
+                        <span class="input-group-text bg-secondary border-secondary"> - </span>
+                        <input type="number" class="form-control" name="max_ap" aria-label="Maximum AP">
+                    </div>
+                    <div class="input-group mb-3 col-auto">
+                        <span class="input-group-text bg-secondary border-secondary">MP:</span>
+                        <input type="number" class="form-control" name="min_mp" aria-label="Minimum MP">
+                        <span class="input-group-text bg-secondary border-secondary"> - </span>
+                        <input type="number" class="form-control" name="max_mp" aria-label="Maximum MP">
+                    </div>
+                    <div class="input-group mb-3 col-auto">
+                        <span class="input-group-text bg-secondary border-secondary">WP:</span>
+                        <input type="number" class="form-control" name="min_wp" aria-label="Minimum WP">
+                        <span class="input-group-text bg-secondary border-secondary"> - </span>
+                        <input type="number" class="form-control" name="max_wp" aria-label="Maximum WP">
+                    </div>
+                    <div class="input-group mb-3 col-auto">
+                        <span class="input-group-text bg-secondary border-secondary">Range:</span>
+                        <input type="number" class="form-control" name="min_range" aria-label="Minimum range">
+                        <span class="input-group-text bg-secondary border-secondary"> - </span>
+                        <input type="number" class="form-control" name="max_range" aria-label="Maximum range">
+                    </div>
+
+
+                    <p class="d-inline-flex gap-1 justify-content-end">
+                        <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#advanced_stats" aria-expanded="false" aria-controls="advanced_stats">
+                            Advanced
+                        </button>
+                    </p>
+                    <div class="collapse" id="advanced_stats">
+                        <div class="input-group mb-3 col-auto">
+                            <span class="input-group-text bg-secondary border-secondary">Total Mastery:</span>
+                            <input type="number" class="form-control" name="min_mastery" aria-label="Minimum mastery">
+                            <span class="input-group-text bg-secondary border-secondary"> - </span>
+                            <input type="number" class="form-control" name="max_mastery" aria-label="Maximum mastery">
+                        </div>
+                        <div class="btn-toolbar mb-3" role="group" aria-label="Checkbox buttons for masteries to include for total mastery">
+                            <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Selecting multiple elements will only return builds with equal mastery in those elements.">
+                                ?*
+                            </button>
+                            <input type="checkbox" class="btn-check" name="mastery_type" id="fire_mastery" autocomplete="off">
+                            <label class="btn btn-sm btn-outline-primary" for="fire_mastery">Fire</label>
+                            <input type="checkbox" class="btn-check" name="mastery_type" id="water_mastery" autocomplete="off">
+                            <label class="btn btn-sm btn-outline-primary" for="water_mastery">Water</label>
+                            <input type="checkbox" class="btn-check" name="mastery_type" id="earth_mastery" autocomplete="off">
+                            <label class="btn btn-sm btn-outline-primary" for="earth_mastery">Earth</label>
+                            <input type="checkbox" class="btn-check" name="mastery_type" id="air_mastery" autocomplete="off">
+                            <label class="btn btn-sm btn-outline-primary" for="air_mastery">Air</label>
+                            <input type="checkbox" class="btn-check" name="mastery_type" id="crit_mastery" autocomplete="off">
+                            <label class="btn btn-sm btn-outline-primary" for="crit_mastery">Crit</label>
+                            <input type="checkbox" class="btn-check" name="mastery_type" id="rear_mastery" autocomplete="off">
+                            <label class="btn btn-sm btn-outline-primary" for="rear_mastery">Rear</label>
+                            <input type="checkbox" class="btn-check" name="mastery_type" id="melee_mastery" autocomplete="off">
+                            <label class="btn btn-sm btn-outline-primary" for="melee_mastery">Melee</label>
+                            <input type="checkbox" class="btn-check" name="mastery_type" id="distance_mastery" autocomplete="off">
+                            <label class="btn btn-sm btn-outline-primary" for="distance_mastery">Distance</label>
+                            <input type="checkbox" class="btn-check" name="mastery_type" id="healing_mastery" autocomplete="off">
+                            <label class="btn btn-sm btn-outline-primary" for="healing_mastery">Healing</label>
+                            <input type="checkbox" class="btn-check" name="mastery_type" id="berserk_mastery" autocomplete="off">
+                            <label class="btn btn-sm btn-outline-primary" for="berserk_mastery">Berserk</label>
+                        </div>
+                        <div class="input-group mb-3 col-auto">
+                            <span class="input-group-text bg-secondary border-secondary">Resistance %:</span>
+                            <input type="number" class="form-control" name="min_res" aria-label="Minimum resistance %">
+                            <span class="input-group-text bg-secondary border-secondary"> - </span>
+                            <input type="number" class="form-control" name="max_res" aria-label="Maximum resistance %">
+                        </div>
+                        <div class="input-group mb-3 col-auto">
+                            <span class="input-group-text bg-secondary border-secondary">Damage Inflicted %:</span>
+                            <input type="number" class="form-control" name="min_di" aria-label="Minimum damage inflicted %">
+                            <span class="input-group-text bg-secondary border-secondary"> - </span>
+                            <input type="number" class="form-control" name="max_di" aria-label="Maximum damage inflicted %">
+                        </div>
+                        <div class="input-group mb-3 col-auto">
+                            <span class="input-group-text bg-secondary border-secondary">Heals Performed:</span>
+                            <input type="number" class="form-control" name="min_heals_performed" aria-label="Minimum heals performed">
+                            <span class="input-group-text bg-secondary border-secondary"> - </span>
+                            <input type="number" class="form-control" name="max_heals_performed" aria-label="Maximum heals performed">
+                        </div>
+                        <div class="input-group mb-3 col-auto">
+                            <span class="input-group-text bg-secondary border-secondary">Critical Hit:</span>
+                            <input type="number" class="form-control" name="min_crit_hit" aria-label="Minimum critical hit">
+                            <span class="input-group-text bg-secondary border-secondary"> - </span>
+                            <input type="number" class="form-control" name="max_crit_hit" aria-label="Maximum critical hit">
+                        </div>
+                        <div class="input-group mb-3 col-auto">
+                            <span class="input-group-text bg-secondary border-secondary">Block:</span>
+                            <input type="number" class="form-control" name="min_block" aria-label="Minimum block">
+                            <span class="input-group-text bg-secondary border-secondary"> - </span>
+                            <input type="number" class="form-control" name="max_block" aria-label="Maximum block">
+                        </div>
+                        <div class="input-group mb-3 col-auto">
+                            <span class="input-group-text bg-secondary border-secondary">Initiative:</span>
+                            <input type="number" class="form-control" name="min_initiative" aria-label="Minimum initiative">
+                            <span class="input-group-text bg-secondary border-secondary"> - </span>
+                            <input type="number" class="form-control" name="max_initiative" aria-label="Maximum initiative">
+                        </div>
+                        <div class="input-group mb-3 col-auto">
+                            <span class="input-group-text bg-secondary border-secondary">Dodge:</span>
+                            <input type="number" class="form-control" name="min_dodge" aria-label="Minimum dodge">
+                            <span class="input-group-text bg-secondary border-secondary"> - </span>
+                            <input type="number" class="form-control" name="max_dodge" aria-label="Maximum dodge">
+                        </div>
+                        <div class="input-group mb-3 col-auto">
+                            <span class="input-group-text bg-secondary border-secondary">Lock:</span>
+                            <input type="number" class="form-control" name="min_lock" aria-label="Minimum lock">
+                            <span class="input-group-text bg-secondary border-secondary"> - </span>
+                            <input type="number" class="form-control" name="max_lock" aria-label="Maximum lock">
+                        </div>
+                        <div class="input-group mb-3 col-auto">
+                            <span class="input-group-text bg-secondary border-secondary">Control:</span>
+                            <input type="number" class="form-control" name="min_control" aria-label="Minimum control">
+                            <span class="input-group-text bg-secondary border-secondary"> - </span>
+                            <input type="number" class="form-control" name="max_control" aria-label="Maximum control">
+                        </div>
+                        <div class="input-group mb-3 col-auto">
+                            <span class="input-group-text bg-secondary border-secondary">Force of Will:</span>
+                            <input type="number" class="form-control" name="min_fow" aria-label="Minimum force of will">
+                            <span class="input-group-text bg-secondary border-secondary"> - </span>
+                            <input type="number" class="form-control" name="max_fow" aria-label="Maximum force of will">
+                        </div>
+                        <div class="input-group mb-3 col-auto">
+                            <span class="input-group-text bg-secondary border-secondary">Armor:</span>
+                            <input type="number" class="form-control" name="min_armor" aria-label="Minimum armor">
+                            <span class="input-group-text bg-secondary border-secondary"> - </span>
+                            <input type="number" class="form-control" name="max_armor" aria-label="Maximum armor">
+                        </div>
+                    </div>
+
+                    <span class="border-top"></span>
+
+                    <nav class="navbar bg-dark border-top" data-bs-teme="dark">
+                        <div class="container-fluid">
+                            <div class="d-grid gap-2 d-md-flex justify-content-start">
+                                <button class="btn btn-success" type="submit" formaction="/new_build">New Build</button>
+                            </div>
+                            <div class="d-grid gap-2 d-md-flex justify-content-end">
+                                <button class="btn btn-primary" type="submit">Search</button>
+                            </div>
+                        </div>
+                    </nav>
+                <!-- </div> -->
+            </div>
+        </form>
+
+        <div class="col-6 border">
+            <h5>Results:</h5>
         </div>
+
     </div>
 
 

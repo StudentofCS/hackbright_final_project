@@ -356,13 +356,7 @@ def seed_equipment_name_translations():
     # Loop through equips and find them in items data
     for equip in equips:
         id = equip.id
-
-        ######################
-        if id == 473:
-            print(equip)
-            return
-        ######################
-
+        
         translation = {'id' : id}
 
         for line in data:
