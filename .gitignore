@@ -2,3 +2,4 @@ testing/
 venv
 __pycache__
 data/
+seed_test_data.py

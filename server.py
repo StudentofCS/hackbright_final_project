@@ -24,6 +24,17 @@ def get_browser_lang():
         session['lang'] = 'en'
 
 
+def get_build_search_args(form):
+    """Return a dict of the non-null form values for build search"""
+
+    build_search_args = {}
+
+    for key, value in form.items():
+        if form.get(key):
+            
+
+
+
 @app.route('/')
 def homepage():
     get_browser_lang()

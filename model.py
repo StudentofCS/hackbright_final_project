@@ -44,6 +44,7 @@ class Build(db.Model):
     level = db.Column(db.Integer, default=1)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    build_name = db.Column(db.String)
 
     user = db.relationship('User', 
                            back_populates='build')

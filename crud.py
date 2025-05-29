@@ -12,9 +12,151 @@ from model import (db, connect_to_db, User, Build,
                    Selected_passive, Passive_slot_cap,
                    Name_translation
                    )
+from sqlalchemy import func
 
 MAX_LEVEL = 245
 
+EQUIPMENT_SEARCH_PARAMS_DICT = {
+    'id' : None,
+    'equip_type_id' : None,
+    'level' : None,
+    'rarity' : None,
+    'hp' : None,
+    'hp_neg' : None,
+    'armor' : None,
+    'armor_neg' : None,
+    'ap' : None,
+    'ap_neg' : None,
+    'mp' : None,
+    'mp_neg' : None,
+    'wp' : None,
+    'wp_neg' : None,
+    'elemental_mastery' : None,
+    'elemental_mastery_neg' : None,
+    'water_mastery' : None,
+    'water_mastery_neg' : None,
+    'air_mastery' : None,
+    'air_mastery_neg' : None,
+    'earth_mastery' : None,
+    'earth_mastery_neg' : None,
+    'fire_mastery' : None,
+    'fire_mastery_neg' : None,
+    'elemental_res' : None,
+    'elemental_res_neg' : None,
+    'water_res' : None,
+    'water_res_neg' : None,
+    'air_res' : None,
+    'air_res_neg' : None,
+    'earth_res' : None,
+    'earth_res_neg' : None,
+    'fire_res' : None,
+    'fire_res_neg' : None,
+    'dmg_inflicted' : None,
+    'dmg_inflicted_neg' : None,
+    'crit_hit' : None,
+    'crit_hit_neg' : None,
+    'initiative' : None,
+    'initiative_neg' : None,
+    'dodge' : None,
+    'dodge_neg' : None,
+    'wisdom' : None,
+    'wisdom_neg' : None,
+    'control' : None,
+    'control_neg' : None,
+    'heals_performed' : None,
+    'heals_performed_neg' : None,
+    'block' : None,
+    'block_neg' : None,
+    'spell_range' : None,
+    'spell_range_neg' : None,
+    'lock' : None,
+    'lock_neg' : None,
+    'prospecting' : None, 
+    'prospecting_neg' : None, 
+    'force_of_will' : None, 
+    'force_of_will_neg' : None, 
+    'crit_mastery' : None, 
+    'crit_mastery_neg' : None, 
+    'rear_mastery' : None, 
+    'rear_mastery_neg' : None, 
+    'melee_mastery' : None, 
+    'melee_mastery_neg' : None, 
+    'distance_mastery' : None, 
+    'distance_mastery_neg' : None, 
+    'healing_mastery' : None, 
+    'healing_mastery_neg' : None, 
+    'berserk_mastery' : None, 
+    'berserk_mastery_neg' : None, 
+    'crit_res' : None, 
+    'crit_res_neg' : None, 
+    'rear_res' : None, 
+    'rear_res_neg' : None, 
+    'armor_given' : None, 
+    'armor_given_neg' : None, 
+    'armor_received' : None, 
+    'armor_received_neg' : None, 
+    'indirect_dmg' : None, 
+    'indirect_dmg_neg' : None, 
+    'random_masteries' : None, 
+    'num_random_masteries' : None, 
+    'random_resistances' : None, 
+    'num_random_resistances' : None, 
+    'state' : None, 
+    'farmer' : None, 
+    'lumberjack' : None, 
+    'herbalist' : None, 
+    'miner' : None, 
+    'trapper' : None, 
+    'fisherman' : None
+    }
+
+BUILD_SEARCH_PARAMS_DICT = {
+    'build_name' : None,
+    'character_class' : None,
+    'level' : None,
+    'hp' : None,
+    'armor' : None,
+    'ap' : None,
+    'mp' : None,
+    'wp' : None,
+    'elemental_mastery' : None,
+    'water_mastery' : None,
+    'air_mastery' : None,
+    'earth_mastery' : None,
+    'fire_mastery' : None,
+    'elemental_res' : None,
+    'water_res' : None,
+    'air_res' : None,
+    'earth_res' : None,
+    'fire_res' : None,
+    'dmg_inflicted' : None,
+    'crit_hit' : None,
+    'initiative' : None,
+    'dodge' : None,
+    'wisdom' : None,
+    'control' : None,
+    'heals_performed' : None,
+    'block' : None,
+    'spell_range' : None,
+    'lock' : None,
+    'prospecting' : None, 
+    'force_of_will' : None, 
+    'crit_mastery' : None, 
+    'rear_mastery' : None, 
+    'melee_mastery' : None,
+    'distance_mastery' : None,
+    'healing_mastery' : None,
+    'berserk_mastery' : None,
+    'crit_res' : None,
+    'rear_res' : None,
+    'armor_given' : None,
+    'armor_received' : None,
+    'indirect_dmg' : None,
+    'random_masteries' : None, 
+    'num_random_masteries' : None, 
+    'random_resistances' : None, 
+    'num_random_resistances' : None, 
+    }
 
 def create_user(email, password):
     """Create and return a new user"""
@@ -24,12 +166,13 @@ def create_user(email, password):
     return user
 
 
-def create_build(user, equipment_set, characteristic, character_class, level):
+def create_build(user, equipment_set, characteristic, character_class, level, build_name):
     """Create and return a build"""
 
     build = Build(user=user, equipment_set=equipment_set, 
                   characteristic=characteristic, 
-                  character_class=character_class, level=level)
+                  character_class=character_class, level=level,
+                  build_name=build_name)
     
     return build
 
@@ -534,8 +677,23 @@ def get_equipment_by_stats(stat_dict):
 
     query_object = db.session.query(Equipment)
 
-    for key, value in stat_dict:
-        query_object = query_object.filter(key == stat_dict)
+    non_neg_stats = ['id', 'equip_type_id', 'level', 'rarity']
+
+    for key, value in stat_dict.items():
+        if key not in non_neg_stats:
+            stat = key
+            stat_neg = f'{key}_neg'
+            # Func.coalesce replaces nulls with 0 while getattr allows variables
+            query_object = query_object.filter(
+                (func.coalesce(getattr(Equipment, stat), 0) 
+                - func.coalesce(getattr(Equipment, stat_neg), 0))
+                == value)
+        else:
+            stat = key
+            query_object = query_object.filter(
+                getattr(Equipment, stat) == value)
+
+    return query_object.all()
 
 
 def get_character_classes():
@@ -547,5 +705,6 @@ def get_character_classes():
 if __name__ == '__main__':
     from server import app
     connect_to_db(app)
+
 
 
