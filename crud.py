@@ -701,8 +701,45 @@ def get_character_classes():
 
 def get_total_build_stats(build):
     """Return a dict with the total stats of a build"""
+
+    total_stats = {}
+
+    for stat in BUILD_SEARCH_PARAMS_DICT:
     
-    pass
+        pass
+
+
+
+def get_specific_stat_total_from_equipment(equipment, stat_string):
+    """Return the total of adding stat column with stat_neg column"""
+
+    stat = stat_string
+    stat_neg = stat_string + '_neg'
+
+    if stat_neg in EQUIPMENT_SEARCH_PARAMS_DICT:
+        positive = (getattr(equipment, stat))
+        negative = (getattr(equipment, stat_neg))
+
+        if positive and not negative:
+            return -negative
+        elif negative and not positive:
+            return positive
+        elif positive and negative:
+            return  positive - negative
+    
+    else:
+        return getattr(equipment, stat)
+
+
+def get_total_equipment_stats(equipment):
+    """Return a dict with the total stats of an equipment"""
+
+    total_stats = {}
+
+    for stat in EQUIPMENT_SEARCH_PARAMS_DICT:
+    
+        pass
+
 
 
 def update_equipment_set(dict):
