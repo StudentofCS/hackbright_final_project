@@ -41,10 +41,13 @@ class Build(db.Model):
     #                          db.ForeignKy('base_stats.id'))
     character_class_id = db.Column(db.Integer,
                          db.ForeignKey('character_classes.id'))
-    level = db.Column(db.Integer, default=1)
+    level = db.Column(db.Integer, default=20)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-    updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    updated_at = db.Column(db.DateTime, 
+                           default=datetime.now(timezone.utc),
+                           onupdate=datetime.now(timezone.utc))
     build_name = db.Column(db.String)
+    public = db.Column(db.Boolean, default=True)
 
     user = db.relationship('User', 
                            back_populates='build')

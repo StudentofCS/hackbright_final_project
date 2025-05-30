@@ -48,7 +48,7 @@ def homepage():
     
     return render_template('homepage.html', builds=builds, 
                            character_classes=character_classes,
-                           max_level = crud.MAX_LEVEL)
+                           max_level=crud.MAX_LEVEL)
 
 
 @app.route('/search')
@@ -79,6 +79,17 @@ def get_user(user_id):
     builds = crud.get_builds_by_user(user.id)
 
     return render_template('user_builds.html', user=user, builds=builds)
+
+
+@app.route('/new_build')
+def create_new_build():
+    if request.form.get(session['user']):
+        build = crud.create_build(user=session['user'])
+    
+    else:
+        build = crud.create_build()
+
+    return render_template('build.html', build=build)
 
 
 

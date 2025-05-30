@@ -151,11 +151,7 @@ BUILD_SEARCH_PARAMS_DICT = {
     'rear_res' : None,
     'armor_given' : None,
     'armor_received' : None,
-    'indirect_dmg' : None,
-    'random_masteries' : None, 
-    'num_random_masteries' : None, 
-    'random_resistances' : None, 
-    'num_random_resistances' : None, 
+    'indirect_dmg' : None 
     }
 
 def create_user(email, password):
@@ -166,7 +162,8 @@ def create_user(email, password):
     return user
 
 
-def create_build(user, equipment_set, characteristic, character_class, level, build_name):
+def create_build(user=0, equipment_set=None, characteristic=None, 
+                 character_class=None, level=None, build_name=None):
     """Create and return a build"""
 
     build = Build(user=user, equipment_set=equipment_set, 
@@ -700,6 +697,27 @@ def get_character_classes():
     """Return all character classes"""
 
     return db.session.query(Character_class).all()
+
+
+def get_total_build_stats(build):
+    """Return a dict with the total stats of a build"""
+    
+    pass
+
+
+def update_equipment_set(dict):
+    """Update and return equipment set"""
+
+    if 'id' not in dict:
+        return
+
+    equipment_set = Equipment_set(**dict)
+    
+    return equipment_set
+
+
+
+
 
 
 if __name__ == '__main__':
