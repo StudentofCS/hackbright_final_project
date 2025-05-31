@@ -119,6 +119,19 @@ class Characteristic(db.Model):
 
     build = db.relationship('Build', back_populates='characteristic')
 
+
+    def show(self):
+        """Return a dict of non-empty attributes"""
+        attributes = {}
+
+        for key, value in self.__dict__.items():
+            # Remove _sa_instance_state attr and values with None
+            if value != None and not key.startswith('_'):
+                attributes.update({key : value})
+
+        return attributes
+
+
     def __repr__(self):
         return f"""
                 <Characteristic id = {self.id}; 
@@ -242,6 +255,18 @@ class Equipment_set(db.Model):
     main_hand = db.relationship('Equipment', foreign_keys=[main_hand_id], back_populates='equipment_set_main_hand')
     emblem = db.relationship('Equipment', foreign_keys=[emblem_id], back_populates='equipment_set_emblem')
     mount = db.relationship('Equipment', foreign_keys=[mount_id], back_populates='equipment_set_mount')
+
+
+    def show(self):
+        """Return a dict of non-empty attributes"""
+        attributes = {}
+
+        for key, value in self.__dict__.items():
+            # Remove _sa_instance_state attr and values with None
+            if value != None and not key.startswith('_'):
+                attributes.update({key : value})
+
+        return attributes
 
 
     def __repr__(self):
@@ -408,6 +433,18 @@ class Equipment(db.Model):
                                      back_populates='equipment')
     random_resistance = db.relationship('Equipment_random_resistance_element',
                                         back_populates='equipment')
+
+    def show(self):
+        """Return a dict of non-empty attributes"""
+        attributes = {}
+
+        for key, value in self.__dict__.items():
+            # Remove _sa_instance_state attr and values with None
+            if value != None and not key.startswith('_'):
+                attributes.update({key : value})
+
+        return attributes
+
 
     def __repr__(self):
         return f"""

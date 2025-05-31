@@ -22,81 +22,43 @@ EQUIPMENT_SEARCH_PARAMS_DICT = {
     'level' : None,
     'rarity' : None,
     'hp' : None,
-    'hp_neg' : None,
     'armor' : None,
-    'armor_neg' : None,
     'ap' : None,
-    'ap_neg' : None,
     'mp' : None,
-    'mp_neg' : None,
     'wp' : None,
-    'wp_neg' : None,
     'elemental_mastery' : None,
-    'elemental_mastery_neg' : None,
     'water_mastery' : None,
-    'water_mastery_neg' : None,
     'air_mastery' : None,
-    'air_mastery_neg' : None,
     'earth_mastery' : None,
-    'earth_mastery_neg' : None,
     'fire_mastery' : None,
-    'fire_mastery_neg' : None,
     'elemental_res' : None,
-    'elemental_res_neg' : None,
     'water_res' : None,
-    'water_res_neg' : None,
     'air_res' : None,
-    'air_res_neg' : None,
     'earth_res' : None,
-    'earth_res_neg' : None,
     'fire_res' : None,
-    'fire_res_neg' : None,
     'dmg_inflicted' : None,
-    'dmg_inflicted_neg' : None,
     'crit_hit' : None,
-    'crit_hit_neg' : None,
     'initiative' : None,
-    'initiative_neg' : None,
     'dodge' : None,
-    'dodge_neg' : None,
     'wisdom' : None,
-    'wisdom_neg' : None,
     'control' : None,
-    'control_neg' : None,
     'heals_performed' : None,
-    'heals_performed_neg' : None,
     'block' : None,
-    'block_neg' : None,
     'spell_range' : None,
-    'spell_range_neg' : None,
     'lock' : None,
-    'lock_neg' : None,
-    'prospecting' : None, 
-    'prospecting_neg' : None, 
-    'force_of_will' : None, 
-    'force_of_will_neg' : None, 
-    'crit_mastery' : None, 
-    'crit_mastery_neg' : None, 
-    'rear_mastery' : None, 
-    'rear_mastery_neg' : None, 
-    'melee_mastery' : None, 
-    'melee_mastery_neg' : None, 
-    'distance_mastery' : None, 
-    'distance_mastery_neg' : None, 
-    'healing_mastery' : None, 
-    'healing_mastery_neg' : None, 
-    'berserk_mastery' : None, 
-    'berserk_mastery_neg' : None, 
-    'crit_res' : None, 
-    'crit_res_neg' : None, 
-    'rear_res' : None, 
-    'rear_res_neg' : None, 
-    'armor_given' : None, 
-    'armor_given_neg' : None, 
-    'armor_received' : None, 
-    'armor_received_neg' : None, 
-    'indirect_dmg' : None, 
-    'indirect_dmg_neg' : None, 
+    'prospecting' : None,  
+    'force_of_will' : None,  
+    'crit_mastery' : None,  
+    'rear_mastery' : None,  
+    'melee_mastery' : None,  
+    'distance_mastery' : None,  
+    'healing_mastery' : None,  
+    'berserk_mastery' : None,  
+    'crit_res' : None,  
+    'rear_res' : None,  
+    'armor_given' : None,  
+    'armor_received' : None,  
+    'indirect_dmg' : None,  
     'random_masteries' : None, 
     'num_random_masteries' : None, 
     'random_resistances' : None, 
@@ -641,12 +603,30 @@ def get_equipments():
     return db.session.query(Equipment).all()
 
 
+def get_equipment_by_id(id):
+    """Return a single equipment by id"""
+
+    return db.session.query(Equipment).filter(Equipment.id == id).one()
+
+
 def get_equipment_set_by_id(id):
     """Return equipment_set by it's id"""
 
     return (db.session.query(Equipment_set).filter(Equipment_set.id == id).
             one())
 
+def get_equipments_by_name(name, language):
+    """Return a list of equipment by name"""
+
+    equips = []
+    name_ids = db.session.query(Name_translation.id).filter(
+        getattr(Name_translation, language).ilike(f'%{name}%')).all()
+
+    for item in name_ids:
+        equips.append(get_equipment_by_id(item.id))
+    
+    return equips
+    
 
 def get_equipment_by_level_range(min_level=None, max_level=None):
     """Return all the equipment within a level range, inclusive"""
@@ -710,7 +690,7 @@ def get_total_build_stats(build):
 
 
 
-def get_specific_stat_total_from_equipment(equipment, stat_string):
+def get_stat_combined_with_neg_from_equipment(equipment, stat_string):
     """Return the total of adding stat column with stat_neg column"""
 
     stat = stat_string
@@ -720,10 +700,14 @@ def get_specific_stat_total_from_equipment(equipment, stat_string):
         positive = (getattr(equipment, stat))
         negative = (getattr(equipment, stat_neg))
 
+        print(f'postive: {positive}')
+        print(type(positive))
+        print(f'negative: {negative}')
+        print(type(negative))
         if positive and not negative:
-            return -negative
-        elif negative and not positive:
             return positive
+        elif negative and not positive:
+            return -(negative)
         elif positive and negative:
             return  positive - negative
     
@@ -731,14 +715,49 @@ def get_specific_stat_total_from_equipment(equipment, stat_string):
         return getattr(equipment, stat)
 
 
-def get_total_equipment_stats(equipment):
+def get_equipment_stat_totals(equipment):
     """Return a dict with the total stats of an equipment"""
+    """ex. (ap : 3), (ap_neg : 1) return (ap : 2)"""
 
     total_stats = {}
+    
 
     for stat in EQUIPMENT_SEARCH_PARAMS_DICT:
+        combined_stat = get_stat_combined_with_neg_from_equipment(equipment, stat)
+
+        # Don't create dict entry for stats with None
+        if combined_stat:
+            total_stats[stat] = total_stats.get(stat, combined_stat)
+            total_stats[stat] = combined_stat
+
+    return total_stats
+
+
+def get_stat_dict_sum(dict1, dict2):
+    """Add the values of shared keys in dicts"""
+
+    for key,value in dict2.items():
+        dict1[key] = dict1.get(key, 0)
+        dict1[key] += value
+    return dict1
+
+
+def get_equipment_set_stat_totals(equipment_set_id):
+    """Return dict of stat totals from all equipment in a set"""
+
+    equipment_set = get_equipment_set_by_id(equipment_set_id)
+    stat_totals = {}
+
+    for key,value in equipment_set.show().items():
+        item = get_equipment_by_id(value)
+        item_totals = get_equipment_stat_totals(item)
+        stat_totals = get_stat_dict_sum(stat_totals, item_totals)
     
-        pass
+    return stat_totals
+
+
+def get_characteristic_stat_totals(characteristic_id):
+    """Return dict of stat totals from characteristics"""
 
 
 
