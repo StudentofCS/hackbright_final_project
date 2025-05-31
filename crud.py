@@ -742,10 +742,9 @@ def get_stat_dict_sum(dict1, dict2):
     return dict1
 
 
-def get_equipment_set_stat_totals(equipment_set_id):
+def get_equipment_set_stat_totals(equipment_set):
     """Return dict of stat totals from all equipment in a set"""
 
-    equipment_set = get_equipment_set_by_id(equipment_set_id)
     stat_totals = {}
 
     for key,value in equipment_set.show().items():
@@ -756,9 +755,84 @@ def get_equipment_set_stat_totals(equipment_set_id):
     return stat_totals
 
 
-def get_characteristic_stat_totals(characteristic_id):
+def get_characteristic_stat_totals(characteristic):
     """Return dict of stat totals from characteristics"""
+    # If I put {dict : dict} for the majors with 2 values,
+    # I can use sample characteristic with all 1 values to dynamically
+    # show how much they increment by on the html templates
 
+    stat_totals = {}
+    non_stats = ['intelligence', 'strength', 'agility',
+                 'fortune', 'major']
+
+    stat_multiplier_4 = ['hp_percentage', 'armor_hp', 'crit_mastery', 'rear_res', 'crit_res']
+    stat_multiplier_5 = ['elemental_mastery']
+    stat_multiplier_6 = ['healing_received', 'lock', 'dodge', 'rear_mastery', 'healing_mastery']
+    stat_multiplier_8 = ['melee_mastery', 'distance_mastery', 'berserk_mastery']
+    stat_multiplier_10 = ['elemental_res', 'dmg_inflicted']
+
+    for key,value in characteristic.show().items():
+        # Skip non-stat attributes
+        if key not in non_stats:
+            if key == 'lock_dodge':
+                stat_totals['lock'] = stat_totals.get('lock', 0)
+                stat_totals['lock'] += value * 4
+                stat_totals['dodge'] = stat_totals.get('dodge', 0)
+                stat_totals['dodge'] += value * 4
+            elif key == 'mp':
+                stat_totals['mp'] = stat_totals.get('mp', 0)
+                stat_totals['mp'] += value
+                stat_totals['elemental_mastery'] = stat_totals.get(
+                    'elemental_mastery', 0)
+                stat_totals['elemental'] += value * 20
+            elif key == 'spell_range':
+                stat_totals['spell_range'] = stat_totals.get('spell_range', 0)
+                stat_totals['spell_range'] += value
+                stat_totals['elemental_mastery'] = stat_totals.get(
+                    'elemental_mastery', 0)
+                stat_totals['elemental_mastery'] += value * 40
+            elif key == 'wp':
+                stat_totals['wp'] = stat_totals.get('wp', 0)
+                stat_totals['wp'] += value * 2
+            elif key == 'control':
+                stat_totals['control'] = stat_totals.get('control', 0)
+                stat_totals['control'] += value * 2
+                stat_totals['elemental_mastery'] = stat_totals.get('elemental_mastery', 0)
+                stat_totals['elemental_mastery'] += value * 40
+            elif key == 'hp':
+                stat_totals['hp'] = stat_totals.get('hp', 0)
+                stat_totals['hp'] += value * 20
+            elif key == 'resistance':
+                stat_totals['elemental_res'] = stat_totals.get('elemental_res', 0)
+                stat_totals['elemental_res'] += value * 50
+            elif key in stat_multiplier_4:
+                stat_totals[key] = stat_totals.get(key, 0)
+                stat_totals[key] += value * 4
+            elif key in stat_multiplier_5:
+                stat_totals[key] = stat_totals.get(key, 0)
+                stat_totals[key] += value * 5
+            elif key in stat_multiplier_6:
+                stat_totals[key] = stat_totals.get(key, 0)
+                stat_totals[key] += value * 6
+            elif key in stat_multiplier_8:
+                stat_totals[key] = stat_totals.get(key, 0)
+                stat_totals[key] += value * 8
+            elif key in stat_multiplier_10:
+                stat_totals[key] = stat_totals.get(key, 0)
+                stat_totals[key] += value * 10
+            else:
+                stat_totals[key] = stat_totals.get(key, 0)
+                stat_totals[key] += value
+
+    return stat_totals
+
+
+def get_base_stat_by_level(level):
+    """Return a dict of the base stat by level"""
+
+    base_stat = db.session.query(Base_stat).filter(Base_stat.level == level).one()
+
+    return {'hp' : base_stat.hp}
 
 
 def update_equipment_set(dict):
