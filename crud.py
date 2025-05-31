@@ -4,6 +4,7 @@ from model import (db, connect_to_db, User, Build,
                    Characteristic, Characteristic_cap,
                    Equipment_set, Equipment,
                    Element, Selected_mastery_element,
+                   Selected_element,
                    Equipment_random_mastery_element,
                    Selected_resistance_element,
                    Equipment_random_resistance_element,
@@ -124,16 +125,31 @@ def create_user(email, password):
     return user
 
 
-def create_build(user=0, equipment_set=None, characteristic=None, 
-                 character_class=None, level=None, build_name=None):
+# def create_build(user=0, equipment_set=None, characteristic=None, 
+#                  character_class=None, level=None, build_name=None):
+#     """Create and return a build"""
+
+#     build = Build(user=user, equipment_set=equipment_set, 
+#                   characteristic=characteristic, 
+#                   character_class=character_class, level=level,
+#                   build_name=build_name)
+    
+#     return build
+
+
+def create_build(user=None):
     """Create and return a build"""
 
+    equipment_set = create_equipment_set()
+    characteristic = create_characteristic()
+
     build = Build(user=user, equipment_set=equipment_set, 
-                  characteristic=characteristic, 
-                  character_class=character_class, level=level,
-                  build_name=build_name)
+                  characteristic=characteristic)
+    
+    create_selected_element(build)
     
     return build
+
 
 # def create_characteristic(intelligence, hp_percentage, elem_res,
 #                           barrier, heals_received, armor_hp,
@@ -187,10 +203,10 @@ def create_build(user=0, equipment_set=None, characteristic=None,
 #     return characteristic
 
 
-def create_characteristic(dict):
+def create_characteristic():
     """Create and return characteristic"""
 
-    characteristic = Characteristic(**dict)
+    characteristic = Characteristic()
     
     return characteristic
 
@@ -235,17 +251,17 @@ def create_characteristic_cap():
     # Caps where -1 is unlimited
     characterics = {
         'level' : 1,
-        'intelligence' : 0, 'hp_percentage' : -1, 'elem_res' : 10,
+        'intelligence' : 0, 'hp_percentage' : -1, 'elemental_res' : 10,
         'barrier' : 10, 'heals_received' : 5, 'armor_hp' : 10,
-        'strength' : 0, 'elem_mastery' : -1, 'melee' : 40,
-        'distance' : 40, 'hp' : -1, 'agility' : 0, 
+        'strength' : 0, 'elemental_mastery' : -1, 'melee_mastery' : 40,
+        'distance_mastery' : 40, 'hp' : -1, 'agility' : 0, 
         'lock' : -1, 'dodge' : -1, 'initiative' : 20,
         'lock_dodge' : -1, 'force_of_will' : 20, 'fortune' : 0,
         'crit_hit' : 20, 'block' : 20, 'crit_mastery' : -1,
         'rear_mastery' : -1, 'berserk_mastery' : -1, 'healing_mastery' : -1,
         'rear_res' : 20, 'crit_res' : 20, 'major' : 0,
-        'action_points' : 1, 'movement_points' : 1, 'spell_range' : 1,
-        'wakfu_points' : 1, 'control' : 1, 'dmg_inflicted' : 1,
+        'ap' : 1, 'mp' : 1, 'spell_range' : 1,
+        'wp' : 1, 'control' : 1, 'dmg_inflicted' : 1,
         'resistance' : 1
     }
 
@@ -290,10 +306,10 @@ def create_characteristic_cap():
 #     return equipment_set
 
 
-def create_equipment_set(dict):
+def create_equipment_set():
     """Create and return equipment set"""
 
-    equipment_set = Equipment_set(**dict)
+    equipment_set = Equipment_set()
     
     return equipment_set
 
@@ -392,20 +408,50 @@ def create_element():
     """Create and return list of elements"""
     # order: fire > water > earth > air
 
-    element_dicts = [{ 'id' : 1, 'name' : 'fire',
-                      'resistance_id' : 82, 'mastery_id' : 122},
-                     { 'id' : 2, 'name' : 'water',
-                      'resistance_id' : 83, 'mastery_id' : 124}, 
-                     { 'id' : 3, 'name' : 'earth',
-                      'resistance_id' : 84, 'mastery_id' : 123}, 
-                     { 'id' : 4, 'name' : 'air',
-                      'resistance_id' : 85, 'mastery_id' : 125}]
+    element_dicts = [
+                    # { 'id' : 1, 'name' : 'fire',
+                    #   'resistance_id' : 82, 'mastery_id' : 122},
+                    #  { 'id' : 2, 'name' : 'water',
+                    #   'resistance_id' : 83, 'mastery_id' : 124}, 
+                    #  { 'id' : 3, 'name' : 'earth',
+                    #   'resistance_id' : 84, 'mastery_id' : 123}, 
+                    #  { 'id' : 4, 'name' : 'air',
+                    #   'resistance_id' : 85, 'mastery_id' : 125},
+                      {'id' : 82, 'name' : 'fire_res'},
+                      {'id' : 83, 'name' : 'water_res'},
+                      {'id' : 84, 'name' : 'earth_res'},
+                      {'id' : 85, 'name' : 'air_res'},
+                      {'id' : 122, 'name' : 'fire_mastery'},
+                      {'id' : 124, 'name' : 'water_mastery'},
+                      {'id' : 123, 'name' : 'earth_mastery'},
+                      {'id' : 125, 'name' : 'air_mastery'}]
+                    
     elements = []
 
     for dict in element_dicts:
         elements.append(Element(**dict))
 
     return elements
+
+
+def create_selected_element(build):
+    """Create and return a list of selected element"""
+    # order: fire > water > earth > air
+
+    default_elements = db.session.query(Element).all()
+    selected_elements = []
+    # Index for position
+    i = 0
+    for element in default_elements:
+        selected_elements.append(Selected_element(build=build, 
+                                                  element=element,
+                                                  position=i))
+        i += 1
+
+    return selected_elements
+
+
+
 
 
 def create_selected_mastery_element(build, element, position):
@@ -696,7 +742,7 @@ def get_stat_combined_with_neg_from_equipment(equipment, stat_string):
     stat = stat_string
     stat_neg = stat_string + '_neg'
 
-    if stat_neg in EQUIPMENT_SEARCH_PARAMS_DICT:
+    if stat_neg in equipment.show():
         positive = (getattr(equipment, stat))
         negative = (getattr(equipment, stat_neg))
 
@@ -722,13 +768,16 @@ def get_equipment_stat_totals(equipment):
     total_stats = {}
     
 
-    for stat in EQUIPMENT_SEARCH_PARAMS_DICT:
+    for stat in equipment.show():
         combined_stat = get_stat_combined_with_neg_from_equipment(equipment, stat)
 
         # Don't create dict entry for stats with None
         if combined_stat:
             total_stats[stat] = total_stats.get(stat, combined_stat)
             total_stats[stat] = combined_stat
+        
+            if stat == 'num_random_masteries':
+                pass
 
     return total_stats
 

@@ -32,7 +32,8 @@ class Build(db.Model):
                    autoincrement = True,
                    primary_key = True)
     user_id = db.Column(db.Integer,
-                        db.ForeignKey('users.id'))
+                        db.ForeignKey('users.id'),
+                        default=0)
     equipment_set_id = db.Column(db.Integer,
                                  db.ForeignKey('equipment_sets.id'))
     characteristic_id = db.Column(db.Integer,
@@ -65,6 +66,8 @@ class Build(db.Model):
                                      back_populates='build')
     selected_passive = db.relationship('Selected_passive', 
                                        back_populates='build')
+    selected_elements = db.relationship('Selected_element', 
+                                       back_populates='build')
 
 
     def __repr__(self):
@@ -82,40 +85,40 @@ class Characteristic(db.Model):
     id = db.Column(db.Integer,
                    autoincrement = True,
                    primary_key = True)
-    intelligence = db.Column(db.Integer)
-    hp_percentage = db.Column(db.Integer)
-    elemental_res = db.Column(db.Integer)
-    barrier = db.Column(db.Integer)
-    heals_received = db.Column(db.Integer)
-    armor_hp = db.Column(db.Integer)
-    strength = db.Column(db.Integer)
-    elemental_mastery = db.Column(db.Integer)
-    melee_mastery = db.Column(db.Integer)
-    distance_mastery = db.Column(db.Integer)
-    hp = db.Column(db.Integer)
-    agility = db.Column(db.Integer)
-    lock = db.Column(db.Integer)
-    dodge = db.Column(db.Integer)
-    initiative = db.Column(db.Integer)
-    lock_dodge = db.Column(db.Integer)
-    force_of_will = db.Column(db.Integer)
-    fortune = db.Column(db.Integer)
-    crit_hit = db.Column(db.Integer)
-    block = db.Column(db.Integer)
-    crit_mastery = db.Column(db.Integer)
-    rear_mastery = db.Column(db.Integer)
-    berserk_mastery = db.Column(db.Integer)
-    healing_mastery = db.Column(db.Integer)
-    rear_res = db.Column(db.Integer)
-    crit_res = db.Column(db.Integer)
-    major = db.Column(db.Integer)
-    ap = db.Column(db.Integer)
-    mp = db.Column(db.Integer)
-    spell_range = db.Column(db.Integer)
-    wp = db.Column(db.Integer)
-    control = db.Column(db.Integer)
-    dmg_inflicted = db.Column(db.Integer)
-    resistance = db.Column(db.Integer)
+    intelligence = db.Column(db.Integer, default=0)
+    hp_percentage = db.Column(db.Integer, default=0)
+    elemental_res = db.Column(db.Integer, default=0)
+    barrier = db.Column(db.Integer, default=0)
+    heals_received = db.Column(db.Integer, default=0)
+    armor_hp = db.Column(db.Integer, default=0)
+    strength = db.Column(db.Integer, default=0)
+    elemental_mastery = db.Column(db.Integer, default=0)
+    melee_mastery = db.Column(db.Integer, default=0)
+    distance_mastery = db.Column(db.Integer, default=0)
+    hp = db.Column(db.Integer, default=0)
+    agility = db.Column(db.Integer, default=0)
+    lock = db.Column(db.Integer, default=0)
+    dodge = db.Column(db.Integer, default=0)
+    initiative = db.Column(db.Integer, default=0)
+    lock_dodge = db.Column(db.Integer, default=0)
+    force_of_will = db.Column(db.Integer, default=0)
+    fortune = db.Column(db.Integer, default=0)
+    crit_hit = db.Column(db.Integer, default=0)
+    block = db.Column(db.Integer, default=0)
+    crit_mastery = db.Column(db.Integer, default=0)
+    rear_mastery = db.Column(db.Integer, default=0)
+    berserk_mastery = db.Column(db.Integer, default=0)
+    healing_mastery = db.Column(db.Integer, default=0)
+    rear_res = db.Column(db.Integer, default=0)
+    crit_res = db.Column(db.Integer, default=0)
+    major = db.Column(db.Integer, default=0)
+    ap = db.Column(db.Integer, default=0)
+    mp = db.Column(db.Integer, default=0)
+    spell_range = db.Column(db.Integer, default=0)
+    wp = db.Column(db.Integer, default=0)
+    control = db.Column(db.Integer, default=0)
+    dmg_inflicted = db.Column(db.Integer, default=0)
+    resistance = db.Column(db.Integer, default=0)
 
     build = db.relationship('Build', back_populates='characteristic')
 
@@ -545,6 +548,8 @@ class Element(db.Model):
                                      back_populates='element')
     random_resistance = db.relationship('Equipment_random_resistance_element', 
                                      back_populates='element')
+    selected_elements = db.relationship('Selected_element', 
+                                          back_populates='element')
     
     def __repr__(self):
         return f"""
@@ -553,6 +558,33 @@ class Element(db.Model):
                 Mastery id = {self.mastery_id}>
                 """
     
+
+class Selected_element(db.Model):
+    """The elements selected for random mastery and resistance 
+    for the build"""
+
+    __tablename__ = 'selected_elements'
+
+    id = db.Column(db.Integer,
+                   autoincrement = True,
+                   primary_key = True)
+    build_id = db.Column(db.Integer,
+                          db.ForeignKey('builds.id'))
+    element_id = db.Column(db.Integer,
+                           db.ForeignKey('elements.id'))
+    position = db.Column(db.Integer)
+
+    build = db.relationship('Build', back_populates='selected_elements')
+    element = db.relationship('Element', back_populates='selected_elements')
+    
+    def __repr__(self):
+        return f"""
+                <Selected_mastery_element id = {self.id};
+                Build id = {self.build_id};
+                Element id = {self.element_id}>
+                """
+
+
 
 class Selected_mastery_element(db.Model):
     """The mastery elements selected for the build"""

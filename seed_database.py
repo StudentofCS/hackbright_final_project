@@ -347,30 +347,58 @@ def seed_all_equipments():
     db.session.commit()
 
 
+# def seed_equipment_name_translations():
+#     """Seed the name_translations table"""
+
+#     equips = crud.get_equipments()
+#     data = get_data_from_json('items')
+
+#     # Loop through equips and find them in items data
+#     for equip in equips:
+#         id = equip.id
+        
+#         translation = {'id' : id}
+
+#         for line in data:
+#             line_id = line['definition']['item']['id']
+#             if line_id == id:
+#                 title = line['title']
+#                 translation.update({'en' : title['en']})
+#                 translation.update({'fr' : title['fr']})
+#                 translation.update({'es' : title['es']})
+#                 translation.update({'pt' : title['pt']})
+
+#         translation_dict = crud.create_name_translation(translation)
+
+#         db.session.add(translation_dict)
+
+#     db.session.commit()
+
+
 def seed_equipment_name_translations():
     """Seed the name_translations table"""
 
-    equips = crud.get_equipments()
+    non_equipment_ids = [525, 647, 837]
+    equip_dicts = get_ids_from_types_and_states('equipmentItemTypes')
+    equip_ids = combine_dict_values_lists(equip_dicts)
     data = get_data_from_json('items')
 
     # Loop through equips and find them in items data
-    for equip in equips:
-        id = equip.id
+    for line in data:
+        item_type = line['definition']['item']['baseParameters']['itemTypeId']
         
-        translation = {'id' : id}
+        if (item_type in equip_ids and item_type not in non_equipment_ids
+            and 'title' in line):
+            item_id = line['definition']['item']['id']
+            translation = {'id' : item_id}
+            title = line['title']
+            translation.update({'en' : title['en']})
+            translation.update({'fr' : title['fr']})
+            translation.update({'es' : title['es']})
+            translation.update({'pt' : title['pt']})
 
-        for line in data:
-            line_id = line['definition']['item']['id']
-            if line_id == id:
-                title = line['title']
-                translation.update({'en' : title['en']})
-                translation.update({'fr' : title['fr']})
-                translation.update({'es' : title['es']})
-                translation.update({'pt' : title['pt']})
-
-        translation_dict = crud.create_name_translation(translation)
-
-        db.session.add(translation_dict)
+            translation_dict = crud.create_name_translation(translation)
+            db.session.add(translation_dict)
 
     db.session.commit()
 
@@ -422,6 +450,15 @@ def seed_spell_and_passive_slot_caps():
     db.session.commit()
 
 
+def seed_user():
+    """Seed user 0 for non-logged in builds"""
+
+    user = crud.User(id=0,
+                     email='noneatnonedotnone',
+                     password='alsononeatnonedotnone')
+    db.session.add(user)
+    db.session.commit()
+
 seed_all_equipments()
 seed_equipment_name_translations()
 seed_character_classes()
@@ -429,3 +466,4 @@ seed_characteristic_caps()
 seed_elements()
 seed_base_stats()
 seed_spell_and_passive_slot_caps()
+seed_user()
