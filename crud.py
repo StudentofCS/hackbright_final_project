@@ -761,7 +761,40 @@ def get_stat_combined_with_neg_from_equipment(equipment, stat_string):
         return getattr(equipment, stat)
 
 
-def get_equipment_stat_totals(equipment):
+def get_random_stats_from_equipment(stat_name, equipment, equipment_set):
+    """Return a dict of the stat for the selected build elements"""
+
+    stat_value = equipment[stat_name]
+    num_random_stat = f'num_{stat_name}'
+    num_randoms = equipment[num_random_stat]
+
+    stats_dict = {}
+    base = 0
+
+    # if 'masteries' in stat_name:
+    #     # Masteries are positions 0-3
+    #     for i in range(num_randoms):
+    #         selected_element = db.session.query(Selected_element).filter(
+    #             Selected_element.build_id == equipment_set.build.id).filter(
+    #                 Selected_element.position == i).one()
+    #         element = selected_element.element.name
+    #         stats_dict.update({element : stat_value})
+
+    if 'resistances' in stat_name:
+        # Resistances are positions 4-7
+        base = 4
+
+    for i in range(num_randoms):
+        selected_element = db.session.query(Selected_element).filter(
+            Selected_element.build_id == equipment_set.build.id).filter(
+                Selected_element.position == (base + i)).one()
+        element = selected_element.element.name
+        stats_dict.update({element : stat_value})
+    
+    return stats_dict
+
+
+def get_equipment_stat_totals(equipment, equipment_set):
     """Return a dict with the total stats of an equipment"""
     """ex. (ap : 3), (ap_neg : 1) return (ap : 2)"""
 
@@ -769,10 +802,18 @@ def get_equipment_stat_totals(equipment):
     
 
     for stat in equipment.show():
-        combined_stat = get_stat_combined_with_neg_from_equipment(equipment, stat)
+        combined_stat = get_stat_combined_with_neg_from_equipment(
+            equipment, stat)
 
-        # Don't create dict entry for stats with None
-        if combined_stat:
+        if stat == 'random_masteries':
+            random_masteries = get_random_stats_from_equipment(
+                stat, equipment, equipment_set)
+            total_stats = get_stat_dict_sum(total_stats, random_masteries)
+        elif stat == 'random_resistances':
+            random_resistances = get_random_stats_from_equipment(
+                stat, equipment, equipment_set)
+            total_stats = get_stat_dict_sum(total_stats, random_resistances)
+        else:
             total_stats[stat] = total_stats.get(stat, combined_stat)
             total_stats[stat] = combined_stat
         
@@ -798,7 +839,7 @@ def get_equipment_set_stat_totals(equipment_set):
 
     for key,value in equipment_set.show().items():
         item = get_equipment_by_id(value)
-        item_totals = get_equipment_stat_totals(item)
+        item_totals = get_equipment_stat_totals(item, equipment_set)
         stat_totals = get_stat_dict_sum(stat_totals, item_totals)
     
     return stat_totals

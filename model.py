@@ -581,7 +581,8 @@ class Selected_element(db.Model):
         return f"""
                 <Selected_mastery_element id = {self.id};
                 Build id = {self.build_id};
-                Element id = {self.element_id}>
+                Element id = {self.element_id};
+                Position = {self.position}>
                 """
 
 
