@@ -3,11 +3,11 @@
 from model import (db, connect_to_db, User, Build,
                    Characteristic, Characteristic_cap,
                    Equipment_set, Equipment,
-                   Element, Selected_mastery_element,
-                   Selected_element,
-                   Equipment_random_mastery_element,
-                   Selected_resistance_element,
-                   Equipment_random_resistance_element,
+                   Element, Selected_element, 
+                #    Selected_mastery_element,
+                #    Equipment_random_mastery_element,
+                #    Selected_resistance_element,
+                #    Equipment_random_resistance_element,
                    Base_stat, Character_class, Spell,
                    Selected_spell, Spell_slot_cap, Passive,
                    Selected_passive, Passive_slot_cap,
@@ -454,42 +454,42 @@ def create_selected_element(build):
 
 
 
-def create_selected_mastery_element(build, element, position):
-    """Create and return a selected mastery element"""
+# def create_selected_mastery_element(build, element, position):
+#     """Create and return a selected mastery element"""
     
-    mastery_element = Selected_mastery_element(build=build, 
-                                               element=element, 
-                                               position=position)
+#     mastery_element = Selected_mastery_element(build=build, 
+#                                                element=element, 
+#                                                position=position)
 
-    return mastery_element
+#     return mastery_element
 
 
-def create_equipment_random_mastery_element(equipment, element):
-    """Create and return an equipment random mastery element"""
+# def create_equipment_random_mastery_element(equipment, element):
+#     """Create and return an equipment random mastery element"""
 
-    random_mastery_element = Equipment_random_mastery_element(
-        equipment=equipment, element=element)
+#     random_mastery_element = Equipment_random_mastery_element(
+#         equipment=equipment, element=element)
     
-    return random_mastery_element
+#     return random_mastery_element
 
 
-def create_selected_resistance_element(build, element, position):
-    """Create and return a selected resistance element"""
+# def create_selected_resistance_element(build, element, position):
+#     """Create and return a selected resistance element"""
     
-    resistance_element = Selected_resistance_element(build=build, 
-                                               element=element, 
-                                               position=position)
+#     resistance_element = Selected_resistance_element(build=build, 
+#                                                element=element, 
+#                                                position=position)
 
-    return resistance_element
+#     return resistance_element
 
 
-def create_equipment_random_resistance_element(equipment, element):
-    """Create and return an equipment random resistance element"""
+# def create_equipment_random_resistance_element(equipment, element):
+#     """Create and return an equipment random resistance element"""
 
-    random_resistance_element = Equipment_random_resistance_element(
-        equipment=equipment, element=element)
+#     random_resistance_element = Equipment_random_resistance_element(
+#         equipment=equipment, element=element)
     
-    return random_resistance_element
+#     return random_resistance_element
 
 
 def create_base_stat():
@@ -728,45 +728,46 @@ def get_character_classes():
 def get_total_build_stats(build):
     """Return a dict with the total stats of a build"""
 
-    total_stats = {}
+    characteristic_totals = get_characteristic_stat_totals(
+        build.characteristic)
+    equipment_totals = get_equipment_set_stat_totals(build.equipment_set)
+    base_hp = get_base_stat_by_level(build.level)
 
-    for stat in BUILD_SEARCH_PARAMS_DICT:
-    
-        pass
+    total_stats = get_stat_dict_sum(
+        get_stat_dict_sum(characteristic_totals, equipment_totals), 
+        base_hp)
 
+    return total_stats
 
 
 def get_stat_combined_with_neg_from_equipment(equipment, stat_string):
     """Return the total of adding stat column with stat_neg column"""
-
-    stat = stat_string
-    stat_neg = stat_string + '_neg'
-
-    if stat_neg in equipment.show():
-        positive = (getattr(equipment, stat))
-        negative = (getattr(equipment, stat_neg))
-
-        print(f'postive: {positive}')
-        print(type(positive))
-        print(f'negative: {negative}')
-        print(type(negative))
-        if positive and not negative:
-            return positive
-        elif negative and not positive:
-            return -(negative)
-        elif positive and negative:
-            return  positive - negative
-    
+  
+    # If stat_string is _neg column
+    if '_neg' in stat_string:
+        stat = stat_string[:-4]
+        stat_neg = stat_string
     else:
-        return getattr(equipment, stat)
+        stat = stat_string
+        stat_neg = stat_string + '_neg'
+
+    positive = (getattr(equipment, stat))
+    negative = (getattr(equipment, stat_neg))
+
+    if positive and not negative:
+        return {stat : positive}
+    elif negative and not positive:
+        return {stat : -(negative)}
+    elif positive and negative:
+        return  {stat : positive - negative}
 
 
 def get_random_stats_from_equipment(stat_name, equipment, equipment_set):
     """Return a dict of the stat for the selected build elements"""
 
-    stat_value = equipment[stat_name]
+    stat_value = getattr(equipment, stat_name)
     num_random_stat = f'num_{stat_name}'
-    num_randoms = equipment[num_random_stat]
+    num_randoms = getattr(equipment, num_random_stat)
 
     stats_dict = {}
     base = 0
@@ -786,7 +787,7 @@ def get_random_stats_from_equipment(stat_name, equipment, equipment_set):
 
     for i in range(num_randoms):
         selected_element = db.session.query(Selected_element).filter(
-            Selected_element.build_id == equipment_set.build.id).filter(
+            Selected_element.build_id == equipment_set.build[0].id).filter(
                 Selected_element.position == (base + i)).one()
         element = selected_element.element.name
         stats_dict.update({element : stat_value})
@@ -799,26 +800,29 @@ def get_equipment_stat_totals(equipment, equipment_set):
     """ex. (ap : 3), (ap_neg : 1) return (ap : 2)"""
 
     total_stats = {}
+    non_stats = ['id', 'equip_type_id', 'level', 'rarity',
+                 'num_random_masteries', 'num_random_resistances',
+                 'state', 'farmer', 'lumberjack', 'herbalist',
+                 'miner', 'trapper', 'fisherman']
     
 
     for stat in equipment.show():
-        combined_stat = get_stat_combined_with_neg_from_equipment(
-            equipment, stat)
+        if stat not in non_stats:
 
-        if stat == 'random_masteries':
-            random_masteries = get_random_stats_from_equipment(
-                stat, equipment, equipment_set)
-            total_stats = get_stat_dict_sum(total_stats, random_masteries)
-        elif stat == 'random_resistances':
-            random_resistances = get_random_stats_from_equipment(
-                stat, equipment, equipment_set)
-            total_stats = get_stat_dict_sum(total_stats, random_resistances)
-        else:
-            total_stats[stat] = total_stats.get(stat, combined_stat)
-            total_stats[stat] = combined_stat
-        
-            if stat == 'num_random_masteries':
-                pass
+            if stat == 'random_masteries':
+                random_masteries = get_random_stats_from_equipment(
+                    stat, equipment, equipment_set)
+                total_stats = get_stat_dict_sum(total_stats, random_masteries)
+            elif stat == 'random_resistances':
+                random_resistances = get_random_stats_from_equipment(
+                    stat, equipment, equipment_set)
+                total_stats = get_stat_dict_sum(total_stats, random_resistances)
+            else:
+                combined_stat = get_stat_combined_with_neg_from_equipment(
+                equipment, stat)
+                total_stats = get_stat_dict_sum(total_stats, combined_stat)
+                # total_stats[stat] = total_stats.get(stat, combined_stat)
+                # total_stats[stat] = combined_stat
 
     return total_stats
 
@@ -826,10 +830,15 @@ def get_equipment_stat_totals(equipment, equipment_set):
 def get_stat_dict_sum(dict1, dict2):
     """Add the values of shared keys in dicts"""
 
-    for key,value in dict2.items():
-        dict1[key] = dict1.get(key, 0)
-        dict1[key] += value
-    return dict1
+    if dict1 and dict2:
+        for key,value in dict2.items():
+            dict1[key] = dict1.get(key, 0)
+            dict1[key] += value
+        return dict1
+    elif dict1:
+        return dict1
+    elif dict2:
+        return dict2
 
 
 def get_equipment_set_stat_totals(equipment_set):
@@ -838,9 +847,10 @@ def get_equipment_set_stat_totals(equipment_set):
     stat_totals = {}
 
     for key,value in equipment_set.show().items():
-        item = get_equipment_by_id(value)
-        item_totals = get_equipment_stat_totals(item, equipment_set)
-        stat_totals = get_stat_dict_sum(stat_totals, item_totals)
+        if not key == 'id':
+            item = get_equipment_by_id(value)
+            item_totals = get_equipment_stat_totals(item, equipment_set)
+            stat_totals = get_stat_dict_sum(stat_totals, item_totals)
     
     return stat_totals
 
@@ -874,7 +884,7 @@ def get_characteristic_stat_totals(characteristic):
                 stat_totals['mp'] += value
                 stat_totals['elemental_mastery'] = stat_totals.get(
                     'elemental_mastery', 0)
-                stat_totals['elemental'] += value * 20
+                stat_totals['elemental_mastery'] += value * 20
             elif key == 'spell_range':
                 stat_totals['spell_range'] = stat_totals.get('spell_range', 0)
                 stat_totals['spell_range'] += value
@@ -920,9 +930,13 @@ def get_characteristic_stat_totals(characteristic):
 def get_base_stat_by_level(level):
     """Return a dict of the base stat by level"""
 
+    base_stats = {'ap' : 6,
+                  'mp' : 3,
+                  'wp' : 6}
+    
     base_stat = db.session.query(Base_stat).filter(Base_stat.level == level).one()
 
-    return {'hp' : base_stat.hp}
+    return base_stats.update({'hp' : base_stat.hp})
 
 
 def update_equipment_set(dict):

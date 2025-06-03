@@ -14,9 +14,6 @@ app.secret_key = "is_this_secret_enough"
 app.jinja_env.undefined = StrictUndefined
 
 
-SEARCH_PARAMS = []
-
-
 def get_browser_lang():
     supported_languages = ['en', 'fr', 'es', 'pt']
     session['lang'] = request.accept_languages.best_match(supported_languages)
@@ -34,6 +31,16 @@ def get_build_search_args(form):
             pass
             
 
+@app.context_processor
+def inject_main_stats_max_level_and_name_translations():
+
+    main_stats = ['ap', 'mp', 'wp', 'spell_range']
+    max_level = crud.MAX_LEVEL
+    # translations = 
+
+    return dict(main_stats=main_stats, 
+                max_level=max_level)
+
 
 
 @app.route('/')
@@ -46,9 +53,14 @@ def homepage():
 
     builds = crud.get_builds()
     
+    build_stats = {}
+    for build in builds:
+        stats = crud.get_total_build_stats(build)
+        build_stats.update({build.id : stats})
+    
     return render_template('homepage.html', builds=builds, 
                            character_classes=character_classes,
-                           max_level=crud.MAX_LEVEL)
+                           build_stats=build_stats)
 
 
 @app.route('/search')
@@ -67,6 +79,8 @@ def search_results():
 
     elif max_level != "":
         print(f'Max_level: {max_level}')
+
+    session['build_results'] = crud.get_builds()
 
     
     return redirect('/')

@@ -58,16 +58,28 @@ class Build(db.Model):
                                      back_populates='build')
     character_class = db.relationship('Character_class', 
                                       back_populates='build')
-    selected_mastery = db.relationship('Selected_mastery_element', 
-                                       back_populates='build')
-    selected_resistance = db.relationship('Selected_resistance_element', 
-                                          back_populates='build')
+    # selected_mastery = db.relationship('Selected_mastery_element', 
+    #                                    back_populates='build')
+    # selected_resistance = db.relationship('Selected_resistance_element', 
+    #                                       back_populates='build')
     selected_spell = db.relationship('Selected_spell', 
                                      back_populates='build')
     selected_passive = db.relationship('Selected_passive', 
                                        back_populates='build')
     selected_elements = db.relationship('Selected_element', 
                                        back_populates='build')
+
+
+    def show(self):
+        """Return a dict of non-empty attributes"""
+        attributes = {}
+
+        for key, value in self.__dict__.items():
+            # Remove _sa_instance_state attr and values with None
+            if value != None and not key.startswith('_'):
+                attributes.update({key : value})
+
+        return attributes
 
 
     def __repr__(self):
@@ -418,10 +430,10 @@ class Equipment(db.Model):
     equipment_set_mount = db.relationship('Equipment_set', 
                                           foreign_keys=[Equipment_set.mount_id],
                                           back_populates='mount')
-    random_mastery = db.relationship('Equipment_random_mastery_element',
-                                     back_populates='equipment')
-    random_resistance = db.relationship('Equipment_random_resistance_element',
-                                        back_populates='equipment')
+    # random_mastery = db.relationship('Equipment_random_mastery_element',
+    #                                  back_populates='equipment')
+    # random_resistance = db.relationship('Equipment_random_resistance_element',
+    #                                     back_populates='equipment')
 
     def show(self):
         """Return a dict of non-empty attributes"""
@@ -544,14 +556,14 @@ class Element(db.Model):
     resistance_id = db.Column(db.Integer)
     mastery_id = db.Column(db.Integer)
 
-    selected_mastery = db.relationship('Selected_mastery_element', 
-                                       back_populates='element')
-    selected_resistance = db.relationship('Selected_resistance_element', 
-                                          back_populates='element')
-    random_mastery = db.relationship('Equipment_random_mastery_element', 
-                                     back_populates='element')
-    random_resistance = db.relationship('Equipment_random_resistance_element', 
-                                     back_populates='element')
+    # selected_mastery = db.relationship('Selected_mastery_element', 
+    #                                    back_populates='element')
+    # selected_resistance = db.relationship('Selected_resistance_element', 
+    #                                       back_populates='element')
+    # random_mastery = db.relationship('Equipment_random_mastery_element', 
+    #                                  back_populates='element')
+    # random_resistance = db.relationship('Equipment_random_resistance_element', 
+    #                                  back_populates='element')
     selected_elements = db.relationship('Selected_element', 
                                           back_populates='element')
     
