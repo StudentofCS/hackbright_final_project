@@ -236,6 +236,7 @@ class Equipment_set(db.Model):
     pet = db.relationship('Equipment', foreign_keys=[pet_id], back_populates='equipment_set_pet')
     off_hand = db.relationship('Equipment', foreign_keys=[off_hand_id], back_populates='equipment_set_off_hand')
     main_hand = db.relationship('Equipment', foreign_keys=[main_hand_id], back_populates='equipment_set_main_hand')
+    two_hand = db.relationship('Equipment', foreign_keys=[two_hander_id], back_populates='equipment_set_two_hand')
     emblem = db.relationship('Equipment', foreign_keys=[emblem_id], back_populates='equipment_set_emblem')
     mount = db.relationship('Equipment', foreign_keys=[mount_id], back_populates='equipment_set_mount')
 
@@ -408,6 +409,9 @@ class Equipment(db.Model):
     equipment_set_main_hand = db.relationship('Equipment_set', 
                                               foreign_keys=[Equipment_set.main_hand_id],
                                               back_populates='main_hand')
+    equipment_set_two_hand = db.relationship('Equipment_set', 
+                                              foreign_keys=[Equipment_set.two_hander_id],
+                                              back_populates='two_hand')
     equipment_set_emblem = db.relationship('Equipment_set', 
                                            foreign_keys=[Equipment_set.emblem_id],
                                            back_populates='emblem')
@@ -587,102 +591,102 @@ class Selected_element(db.Model):
 
 
 
-class Selected_mastery_element(db.Model):
-    """The mastery elements selected for the build"""
+# class Selected_mastery_element(db.Model):
+#     """The mastery elements selected for the build"""
 
-    __tablename__ = 'selected_mastery_elements'
+#     __tablename__ = 'selected_mastery_elements'
 
-    id = db.Column(db.Integer,
-                   autoincrement = True,
-                   primary_key = True)
-    build_id = db.Column(db.Integer,
-                          db.ForeignKey('builds.id'))
-    element_id = db.Column(db.Integer,
-                           db.ForeignKey('elements.id'))
-    position = db.Column(db.Integer)
+#     id = db.Column(db.Integer,
+#                    autoincrement = True,
+#                    primary_key = True)
+#     build_id = db.Column(db.Integer,
+#                           db.ForeignKey('builds.id'))
+#     element_id = db.Column(db.Integer,
+#                            db.ForeignKey('elements.id'))
+#     position = db.Column(db.Integer)
 
-    build = db.relationship('Build', back_populates='selected_mastery')
-    element = db.relationship('Element', back_populates='selected_mastery')
+#     build = db.relationship('Build', back_populates='selected_mastery')
+#     element = db.relationship('Element', back_populates='selected_mastery')
     
-    def __repr__(self):
-        return f"""
-                <Selected_mastery_element id = {self.id};
-                Build id = {self.build_id};
-                Element id = {self.element_id}>
-                """
-    
-
-class Equipment_random_mastery_element(db.Model):
-    """The elements assigned to the random mastery slots of an item"""
-
-    __tablename__ = 'equipment_random_mastery_elements'
-
-    id = db.Column(db.Integer,
-                   autoincrement = True,
-                   primary_key = True)
-    equipment_id = db.Column(db.Integer,
-                             db.ForeignKey('equipments.id'))
-    element_id = db.Column(db.Integer,
-                             db.ForeignKey('elements.id'))
-
-    equipment = db.relationship('Equipment', back_populates='random_mastery')
-    element = db.relationship('Element', back_populates='random_mastery')
-    
-    def __repr__(self):
-        return f"""
-                <Equipment_random_mastery_element id = {self.id};
-                Equipment id = {self.equipment_id};
-                Element id = {self.element_id}>
-                """
+#     def __repr__(self):
+#         return f"""
+#                 <Selected_mastery_element id = {self.id};
+#                 Build id = {self.build_id};
+#                 Element id = {self.element_id}>
+#                 """
     
 
-class Selected_resistance_element(db.Model):
-    """The resistance elements selected for the build"""
+# class Equipment_random_mastery_element(db.Model):
+#     """The elements assigned to the random mastery slots of an item"""
 
-    __tablename__ = 'selected_resistance_elements'
+#     __tablename__ = 'equipment_random_mastery_elements'
 
-    id = db.Column(db.Integer,
-                   autoincrement = True,
-                   primary_key = True)
-    build_id = db.Column(db.Integer,
-                          db.ForeignKey('builds.id'))
-    element_id = db.Column(db.Integer,
-                           db.ForeignKey('elements.id'))
-    position = db.Column(db.Integer)
+#     id = db.Column(db.Integer,
+#                    autoincrement = True,
+#                    primary_key = True)
+#     equipment_id = db.Column(db.Integer,
+#                              db.ForeignKey('equipments.id'))
+#     element_id = db.Column(db.Integer,
+#                              db.ForeignKey('elements.id'))
+
+#     equipment = db.relationship('Equipment', back_populates='random_mastery')
+#     element = db.relationship('Element', back_populates='random_mastery')
     
-    build =  db.relationship('Build', back_populates='selected_resistance')
-    element = db.relationship('Element', back_populates='selected_resistance')
-    
-    def __repr__(self):
-        return f"""
-                <Selected_resistance_element id = {self.id};
-                Build id = {self.build_id};
-                Element id = {self.element_id}>
-                """
+#     def __repr__(self):
+#         return f"""
+#                 <Equipment_random_mastery_element id = {self.id};
+#                 Equipment id = {self.equipment_id};
+#                 Element id = {self.element_id}>
+#                 """
     
 
-class Equipment_random_resistance_element(db.Model):
-    """The elements assigned to the random resistance slots of an item"""
+# class Selected_resistance_element(db.Model):
+#     """The resistance elements selected for the build"""
 
-    __tablename__ = 'equipment_random_resistance_elements'
+#     __tablename__ = 'selected_resistance_elements'
 
-    id = db.Column(db.Integer,
-                   autoincrement = True,
-                   primary_key = True)
-    equipment_id = db.Column(db.Integer,
-                             db.ForeignKey('equipments.id'))
-    element_id = db.Column(db.Integer,
-                             db.ForeignKey('elements.id'))
+#     id = db.Column(db.Integer,
+#                    autoincrement = True,
+#                    primary_key = True)
+#     build_id = db.Column(db.Integer,
+#                           db.ForeignKey('builds.id'))
+#     element_id = db.Column(db.Integer,
+#                            db.ForeignKey('elements.id'))
+#     position = db.Column(db.Integer)
     
-    equipment = db.relationship('Equipment', back_populates='random_resistance')
-    element = db.relationship('Element', back_populates='random_resistance')
+#     build =  db.relationship('Build', back_populates='selected_resistance')
+#     element = db.relationship('Element', back_populates='selected_resistance')
     
-    def __repr__(self):
-        return f"""
-                <Equipment_random_resistance_element id = {self.id};
-                Equipment id = {self.equipment_id};
-                Element id = {self.element_id}>
-                """
+#     def __repr__(self):
+#         return f"""
+#                 <Selected_resistance_element id = {self.id};
+#                 Build id = {self.build_id};
+#                 Element id = {self.element_id}>
+#                 """
+    
+
+# class Equipment_random_resistance_element(db.Model):
+#     """The elements assigned to the random resistance slots of an item"""
+
+#     __tablename__ = 'equipment_random_resistance_elements'
+
+#     id = db.Column(db.Integer,
+#                    autoincrement = True,
+#                    primary_key = True)
+#     equipment_id = db.Column(db.Integer,
+#                              db.ForeignKey('equipments.id'))
+#     element_id = db.Column(db.Integer,
+#                              db.ForeignKey('elements.id'))
+    
+#     equipment = db.relationship('Equipment', back_populates='random_resistance')
+#     element = db.relationship('Element', back_populates='random_resistance')
+    
+#     def __repr__(self):
+#         return f"""
+#                 <Equipment_random_resistance_element id = {self.id};
+#                 Equipment id = {self.equipment_id};
+#                 Element id = {self.element_id}>
+#                 """
 
 
 class Base_stat(db.Model):
