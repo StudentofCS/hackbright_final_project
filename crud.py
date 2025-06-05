@@ -76,6 +76,8 @@ EQUIPMENT_SEARCH_PARAMS_DICT = {
 BUILD_SEARCH_PARAMS_DICT = {
     'build_name' : None,
     'character_class' : None,
+    'main_role' : None,
+    'content_type' : None,
     'level' : None,
     'hp' : None,
     'armor' : None,
@@ -618,6 +620,12 @@ def get_builds():
     return db.session.query(Build).all()
 
 
+def get_public_builds():
+    """Return a list of all public builds"""
+
+    return db.session.query(Build).filter(Build.public == True).all()
+
+
 def get_build_by_id(id):
     """Return a build by it's id """
 
@@ -736,6 +744,13 @@ def get_total_build_stats(build):
     total_stats = get_stat_dict_sum(
         get_stat_dict_sum(characteristic_totals, equipment_totals), 
         base_hp)
+    
+    # Add build level, name, character_class
+    if build.build_name:
+        total_stats.update({'build_name' : build.build_name})
+    if build.character_class:
+        total_stats.update({'character_class' : build.character_class})
+    total_stats.update({'level' : build.level})
 
     return total_stats
 
@@ -950,7 +965,46 @@ def update_equipment_set(dict):
     return equipment_set
 
 
+def get_build_ids_with_search_params(build_stats, search_params_dict):
+    """Return a list of build ids that meet search params"""
 
+    searched_build_ids_list = []
+
+    for build_id in build_stats:
+        meet_params = False
+        
+        for param in search_params_dict:
+            build = build_stats[build_id]
+            search = search_params_dict[param]
+            if param in build:
+                if not search['min'] and build[param] <= search['max']:
+                    meet_params = True
+                    continue
+                elif not search['max'] and build[param] >= search['min']:
+                    meet_params = True
+                    continue
+                elif (build[param] >= search['min'] 
+                      and build[param] <= search['max']):
+                    meet_params = True
+                else:
+                    meet_params = False
+                    break
+            else:
+                meet_params = False
+                break
+        if meet_params == True:
+            searched_build_ids_list.append(build_id)
+                    
+    return searched_build_ids_list
+
+
+# def get_builds_by_search_params(search_params_dict):
+#     """Return a list of builds filtered by the search params"""
+
+#     query = db.session.query(Build)
+#     #######################
+#     # Doesn't seem to work unless I store the build_stats into db
+#     #######################
 
 
 

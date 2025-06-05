@@ -49,6 +49,8 @@ class Build(db.Model):
                            onupdate=datetime.now(timezone.utc))
     build_name = db.Column(db.String)
     public = db.Column(db.Boolean, default=True)
+    main_role = db.Column(db.Integer)
+    content_type = db.Column(db.Integer)
 
     user = db.relationship('User', 
                            back_populates='build')

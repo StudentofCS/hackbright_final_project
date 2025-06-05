@@ -1,7 +1,7 @@
 """Server for character builder app"""
 
 from flask import (Flask, render_template, request, flash, 
-                   session, redirect, jsonify)
+                   session, redirect, jsonify, url_for)
 from jinja2 import StrictUndefined
 from model import connect_to_db, db
 import crud
@@ -23,12 +23,30 @@ def get_browser_lang():
 
 def get_build_search_args(form):
     """Return a dict of the non-null form values for build search"""
+    """ex1. {'level' : {'min' : 5, 'max' : 50}}"""
+    """ex2. {'build_name' : 'eca build'}"""
 
     build_search_args = {}
+    non_min_max_params = ['build_name', 'character_class',
+                          'main_role', 'content_type']
 
-    for key, value in form.items():
+    for key in crud.BUILD_SEARCH_PARAMS_DICT:
+
         if form.get(key):
-            pass
+            if key in non_min_max_params:
+                form_stat = form.get(key)
+                build_search_args.update(key, form_stat)
+            else:
+                min_key = 'min_' + key
+                max_key = 'max_' + key
+                if form.get(min_key):
+                    min_stat = form.get(min_key)
+                    build_search_args.update(key, {'min' : min_stat})
+                if form.get(max_key):
+                    max_stat = form.get(max_key)
+                    build_search_args.update(key, {'max' : max_stat})
+
+    return build_search_args
             
 
 @app.context_processor
@@ -51,39 +69,28 @@ def homepage():
     if 'user_id' in session:
         return redirect(f"/user/{session['user_id']}")
 
-    builds = crud.get_builds()
+    if not isinstance(builds):
+        builds = crud.get_public_builds()
     
-    build_stats = {}
+    session['build_stats'] = {}
     for build in builds:
         stats = crud.get_total_build_stats(build)
-        build_stats.update({build.id : stats})
+        session['build_stats'].update({build.id : stats})
     
     return render_template('homepage.html', builds=builds, 
-                           character_classes=character_classes,
-                           build_stats=build_stats)
+                           character_classes=character_classes)
 
 
 @app.route('/search')
 def search_results():
-    min_level = request.args.get('min_level')
-    max_level = request.args.get('max_level')
-
-    if min_level == "" and max_level == "":
-        print('Both empty')
     
-    elif min_level != "" and max_level != "":
-        print(f'Level: {min_level} to {max_level}')
+    search_params = get_build_search_args()
 
-    elif min_level != "":
-        print(f'Min_level: {min_level}')
-
-    elif max_level != "":
-        print(f'Max_level: {max_level}')
-
-    session['build_results'] = crud.get_builds()
+    results = crud.get_build_ids_with_search_params()
 
     
-    return redirect('/')
+    return redirect(url_for('homepage',
+                            builds=results))
     
 
 
@@ -97,7 +104,7 @@ def get_user(user_id):
 
 @app.route('/new_build')
 def create_new_build():
-    if request.form.get(session['user']):
+    if 'user_id' in session:
         build = crud.create_build(user=session['user'])
     
     else:
