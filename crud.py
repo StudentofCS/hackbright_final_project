@@ -733,23 +733,23 @@ def get_character_classes():
     return db.session.query(Character_class).all()
 
 
-def get_total_build_stats(build):
+def get_total_stats_by_build(build):
     """Return a dict with the total stats of a build"""
 
     characteristic_totals = get_characteristic_stat_totals(
         build.characteristic)
     equipment_totals = get_equipment_set_stat_totals(build.equipment_set)
-    base_hp = get_base_stat_by_level(build.level)
+    base_stats = get_base_stat_by_level(build.level)
 
     total_stats = get_stat_dict_sum(
         get_stat_dict_sum(characteristic_totals, equipment_totals), 
-        base_hp)
+        base_stats)
     
     # Add build level, name, character_class
     if build.build_name:
         total_stats.update({'build_name' : build.build_name})
-    if build.character_class:
-        total_stats.update({'character_class' : build.character_class})
+    if build.character_class_id:
+        total_stats.update({'character_class' : build.character_class_id})
     total_stats.update({'level' : build.level})
 
     return total_stats
@@ -967,35 +967,48 @@ def update_equipment_set(dict):
 
 def get_build_ids_with_search_params(build_stats, search_params_dict):
     """Return a list of build ids that meet search params"""
+    
+    result_build_ids_list = []
+    non_min_max_params = ['build_name', 'character_class',
+                          'main_role', 'content_type']
 
-    searched_build_ids_list = []
+    # search_params_dict for testing {'ap': {'max': 9, 'min': 1}, 'character_class': 6, 'level': {'max': 50, 'min': 20}, 'mp': {'min': 1}}
 
-    for build_id in build_stats:
+    for build in build_stats:
         meet_params = False
         
         for param in search_params_dict:
-            build = build_stats[build_id]
+            # Get search paramater value or dict if a min/max parameter
             search = search_params_dict[param]
-            if param in build:
-                if not search['min'] and build[param] <= search['max']:
-                    meet_params = True
-                    continue
-                elif not search['max'] and build[param] >= search['min']:
-                    meet_params = True
-                    continue
-                elif (build[param] >= search['min'] 
-                      and build[param] <= search['max']):
-                    meet_params = True
+            if param not in non_min_max_params:
+                if param in build:
+                    if not search.get('min') and build[param] <= search.get('max'):
+                        meet_params = True
+                        continue
+                    elif not search.get('max') and build[param] >= search.get('min'):
+                        meet_params = True
+                        continue
+                    elif (build[param] >= search.get('min') 
+                        and build[param] <= search.get('max')):
+                        meet_params = True
+                    else:
+                        meet_params = False
+                        break
                 else:
                     meet_params = False
                     break
             else:
-                meet_params = False
-                break
+                if param in build:
+                    if build[param] == search:
+                        meet_params = True
+                        continue
+                    else:
+                        meet_params = False
+                        break
         if meet_params == True:
-            searched_build_ids_list.append(build_id)
+            result_build_ids_list.append(build['id'])
                     
-    return searched_build_ids_list
+    return result_build_ids_list
 
 
 # def get_builds_by_search_params(search_params_dict):

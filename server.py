@@ -31,20 +31,23 @@ def get_build_search_args(form):
                           'main_role', 'content_type']
 
     for key in crud.BUILD_SEARCH_PARAMS_DICT:
-
+        min_key = 'min_' + key
+        max_key = 'max_' + key
         if form.get(key):
-            if key in non_min_max_params:
+            if key in non_min_max_params and key != 'build_name':
+                form_stat = int(form.get(key))
+                build_search_args.update({key : form_stat})
+            elif key in non_min_max_params:
                 form_stat = form.get(key)
-                build_search_args.update(key, form_stat)
-            else:
-                min_key = 'min_' + key
-                max_key = 'max_' + key
-                if form.get(min_key):
-                    min_stat = form.get(min_key)
-                    build_search_args.update(key, {'min' : min_stat})
-                if form.get(max_key):
-                    max_stat = form.get(max_key)
-                    build_search_args.update(key, {'max' : max_stat})
+                build_search_args.update({key : form_stat})
+        if form.get(min_key):
+            min_stat = int(form.get(min_key))
+            build_search_args[key] = build_search_args.get(key, {})
+            build_search_args[key].update({'min' : min_stat})
+        if form.get(max_key):
+            max_stat = int(form.get(max_key))
+            build_search_args[key] = build_search_args.get(key, {})
+            build_search_args[key].update({'max' : max_stat})
 
     return build_search_args
             
@@ -69,12 +72,15 @@ def homepage():
     if 'user_id' in session:
         return redirect(f"/user/{session['user_id']}")
 
-    if not isinstance(builds):
+    builds = None
+    if not session.get('build_results'):
         builds = crud.get_public_builds()
+    else:
+        builds = session.get('build_results')
     
     session['build_stats'] = {}
     for build in builds:
-        stats = crud.get_total_build_stats(build)
+        stats = crud.get_total_stats_by_build(build)
         session['build_stats'].update({build.id : stats})
     
     return render_template('homepage.html', builds=builds, 
@@ -83,23 +89,32 @@ def homepage():
 
 @app.route('/search')
 def search_results():
+    session['request_args'] = request.args
     
-    search_params = get_build_search_args()
+    session['build_params'] = get_build_search_args(request.args)
 
-    results = crud.get_build_ids_with_search_params()
+    result_ids = crud.get_build_ids_with_search_params(
+        session['build_stats'], session['build_params'])
+    ###
+    session['result_ids'] = result_ids
+    ###
+    session['build_results'] = []
+
+    for result_id in result_ids:
+        session['build_results'].append(crud.get_build_by_id(result_id))
 
     
-    return redirect(url_for('homepage',
-                            builds=results))
+    return redirect('/')
     
 
 
 @app.route('/user/<user_id>')
 def get_user(user_id):
     user = crud.get_user_by_id(user_id)
-    builds = crud.get_builds_by_user(user.id)
+    session['user_builds'] = crud.get_builds_by_user(user.id)
 
-    return render_template('user_builds.html', user=user, builds=builds)
+    return render_template('user_builds.html', 
+                           user=user, builds=session['user_builds'])
 
 
 @app.route('/new_build')
