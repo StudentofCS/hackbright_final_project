@@ -751,7 +751,6 @@ def get_total_stats_by_build(build):
     if build.character_class_id:
         total_stats.update({'character_class' : build.character_class_id})
     total_stats.update({'level' : build.level})
-
     return total_stats
 
 
@@ -967,7 +966,7 @@ def update_equipment_set(dict):
 
 def get_build_ids_with_search_params(build_stats, search_params_dict):
     """Return a list of build ids that meet search params"""
-    
+
     result_build_ids_list = []
     non_min_max_params = ['build_name', 'character_class',
                           'main_role', 'content_type']
