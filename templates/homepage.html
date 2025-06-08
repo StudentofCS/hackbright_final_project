@@ -2,10 +2,6 @@
 
 {% block title %}Wakfu Builds{% endblock %}
 {% block content %}
-    session['request_args'] = {{session['request_args']}}<br/><br/>
-    session[build_params] = {{ session['build_params']}}<br/><br/>
-    session['result_ids'] = {{ session['result_ids'] }}<br/><br/>
-    session['build_results'] = {{ session['build_results'] }}
     <div class="container row mb-3 pt-5 justify-content-around">
         <form action="/search" method="get" class="col-5 border">
             <!-- <div class="col-5 border"> -->

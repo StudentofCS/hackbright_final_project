@@ -712,7 +712,22 @@ class Base_stat(db.Model):
                       primary_key = True)
     hp = db.Column(db.Integer,
                    nullable = False)
+    ap = db.Column(db.Integer, default=6)
+    mp = db.Column(db.Integer, default=3)
+    wp = db.Column(db.Integer, default=6)
+
     
+    def show(self):
+        """Return a dict of non-empty attributes"""
+        attributes = {}
+
+        for key, value in self.__dict__.items():
+            # Remove _sa_instance_state attr and values with None
+            if value != None and not key.startswith('_'):
+                attributes.update({key : value})
+
+        return attributes
+
     def __repr__(self):
         return f'<Base_stat level = {self.level}; HP = {self.hp}>'
 

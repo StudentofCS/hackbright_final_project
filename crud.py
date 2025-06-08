@@ -13,7 +13,7 @@ from model import (db, connect_to_db, User, Build,
                    Selected_passive, Passive_slot_cap,
                    Name_translation
                    )
-from sqlalchemy import func
+from sqlalchemy import func, case
 
 MAX_LEVEL = 245
 
@@ -116,7 +116,7 @@ BUILD_SEARCH_PARAMS_DICT = {
     'rear_res' : None,
     'armor_given' : None,
     'armor_received' : None,
-    'indirect_dmg' : None 
+    'indirect_dmg' : None
     }
 
 def create_user(email, password):
@@ -208,7 +208,18 @@ def create_build(user=None):
 def create_characteristic():
     """Create and return characteristic"""
 
+    sections = ['intelligence', 'strength', 'agility', 'fortune']
+
     characteristic = Characteristic()
+
+    # for section in sections:
+    #     section_cap_column = getattr(Characteristic_cap, section)
+    #     print(characteristic)
+    #     section_column = getattr(characteristic, section)
+    #     section_points = db.session.query(section_cap_column).filter(
+    #         Characteristic_cap.level == characteristic.build.level).scalar()
+        
+    #     section_column = section_points
     
     return characteristic
 
@@ -743,7 +754,7 @@ def get_total_stats_by_build(build):
 
     total_stats = get_stat_dict_sum(
         get_stat_dict_sum(characteristic_totals, equipment_totals), 
-        base_stats)
+        base_stats.show())
     
     # Add build level, name, character_class
     if build.build_name:
@@ -943,14 +954,10 @@ def get_characteristic_stat_totals(characteristic):
 
 def get_base_stat_by_level(level):
     """Return a dict of the base stat by level"""
-
-    base_stats = {'ap' : 6,
-                  'mp' : 3,
-                  'wp' : 6}
     
     base_stat = db.session.query(Base_stat).filter(Base_stat.level == level).one()
 
-    return base_stats.update({'hp' : base_stat.hp})
+    return base_stat
 
 
 def update_equipment_set(dict):
@@ -1017,6 +1024,90 @@ def get_build_ids_with_search_params(build_stats, search_params_dict):
 #     #######################
 #     # Doesn't seem to work unless I store the build_stats into db
 #     #######################
+
+def get_query_case_for_equipment_column_with_neg(param):
+    """Return query case for difference of columns with '_neg'
+    in the Equipment table"""
+
+    stat = getattr(Equipment, param)
+    stat_neg = getattr(Equipment, (param + '_neg'))
+
+    param_case = case(
+        (stat.isnot(None) & stat_neg.isnot(None), stat - stat_neg),
+        (stat.isnot(None) & stat_neg.is_(None), stat),
+        (stat.is_(None) & stat_neg.isnot(None), -stat_neg),
+        else_=0
+    )
+    return param_case
+
+
+def get_equipments_with_search_params(search_params_dict, language):
+    """Return list of equipments which meet search params"""
+    
+    search_query = db.session.query(Equipment, Name_translation)
+    list_type_params = ['equip_type_id', 'rarity']
+    boolean_params = ['state', 'farmer','lumberjack',
+                      'herbalist', 'miner', 'trapper',
+                      'fisherman']
+    
+
+    for param in search_params_dict:
+        searched_values = search_params_dict[param]
+        column = getattr(Equipment, param)
+
+        if '_mastery' in param:
+            # Handle mastery searches
+            continue
+        elif "_res" in  param:
+            # Handle resistance searches
+            continue
+        elif param == 'equipment_name':
+            # Search for name of equip by user language
+            name_column = getattr(Name_translation, language)
+            search_query = search_query.filter(
+                name_column.ilike(f'%{searched_values}%'))
+        elif param in list_type_params:
+            # Search params that have a list of types
+            for value in searched_values:     
+                search_query = search_query.filter(column == value)
+        elif param in boolean_params:
+            # User wants to search for equipment where param exists
+            search_query = search_query.filter(column != None)
+        elif param == 'level':
+            # Find equips with level range, which doesn't have _neg
+            if 'min' in searched_values:
+                search_query = search_query.filter(
+                    column >= searched_values['min'])
+            if 'max' in searched_values:
+                search_query = search_query.filter(
+                    column <= searched_values['max'])
+        else:
+            # Find the params with min and max ranges
+            column_cases = get_query_case_for_equipment_column_with_neg(param)
+            if 'min' in searched_values:
+                search_query = search_query.filter(
+                    column_cases >= searched_values['min'])
+            if 'max' in searched_values:
+                search_query = search_query.filter(
+                    column_cases <= searched_values['max'])
+        
+    return search_query.all()
+
+                
+
+def get_total_stats_by_build_query(build):
+    """Return query for total stats in a build"""
+    
+    # Xelor (id=5) gets +6 wp
+    list_type_params = ['character_class', 'main_role'
+                        'content_type'] 
+    
+
+    for param in BUILD_SEARCH_PARAMS_DICT:
+        pass
+
+
+
 
 
 
