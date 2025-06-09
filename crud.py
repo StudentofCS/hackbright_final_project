@@ -1041,10 +1041,10 @@ def get_query_case_for_equipment_column_with_neg(param):
     return param_case
 
 
-def get_equipments_with_search_params(search_params_dict, language):
+def get_equipments_by_search_params_and_language(search_params_dict, language):
     """Return list of equipments which meet search params"""
     
-    search_query = db.session.query(Equipment, Name_translation)
+    search_query = db.session.query(Equipment)
     list_type_params = ['equip_type_id', 'rarity']
     boolean_params = ['state', 'farmer','lumberjack',
                       'herbalist', 'miner', 'trapper',
@@ -1064,8 +1064,11 @@ def get_equipments_with_search_params(search_params_dict, language):
         elif param == 'equipment_name':
             # Search for name of equip by user language
             name_column = getattr(Name_translation, language)
+            name_subquery = db.session.query(name_column).filter(
+                name_column.ilike(f'%{searched_values}%')).subquery(
+                    'name_subquery')
             search_query = search_query.filter(
-                name_column.ilike(f'%{searched_values}%'))
+                Equipment.id.in_(name_subquery))
         elif param in list_type_params:
             # Search params that have a list of types
             for value in searched_values:     

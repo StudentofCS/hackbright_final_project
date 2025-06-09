@@ -390,7 +390,8 @@ def seed_equipment_name_translations():
         if (item_type in equip_ids and item_type not in non_equipment_ids
             and 'title' in line):
             item_id = line['definition']['item']['id']
-            translation = {'id' : item_id}
+            translation = {'name_id' : item_id,
+                           'name_type' : 'equipment'}
             title = line['title']
             translation.update({'en' : title['en']})
             translation.update({'fr' : title['fr']})

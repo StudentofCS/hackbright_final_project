@@ -977,6 +977,7 @@ class Name_translation(db.Model):
     __tablename__ = 'name_translations'
 
     id = db.Column(db.Integer,
+                   autoincrement = True,
                    primary_key = True)
     name_id = db.Column(db.Integer) # ID of item
     name_type = db.Column(db.String(20)) # State, equipment, etc
