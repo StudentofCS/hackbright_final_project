@@ -84,12 +84,12 @@ BUILD_SEARCH_PARAMS_DICT = {
     'ap' : None,
     'mp' : None,
     'wp' : None,
-    'elemental_mastery' : None,
+    # 'elemental_mastery' : None,
     'water_mastery' : None,
     'air_mastery' : None,
     'earth_mastery' : None,
     'fire_mastery' : None,
-    'elemental_res' : None,
+    # 'elemental_res' : None,
     'water_res' : None,
     'air_res' : None,
     'earth_res' : None,
@@ -116,7 +116,8 @@ BUILD_SEARCH_PARAMS_DICT = {
     'rear_res' : None,
     'armor_given' : None,
     'armor_received' : None,
-    'indirect_dmg' : None
+    'indirect_dmg' : None,
+    'barrier' : None
     }
 
 def create_user(email, password):
@@ -1025,26 +1026,33 @@ def get_build_ids_with_search_params(build_stats, search_params_dict):
 #     # Doesn't seem to work unless I store the build_stats into db
 #     #######################
 
-def get_query_case_for_equipment_column_with_neg(param):
+def get_query_case_for_equipment_column_with_neg(param, equipment=None):
     """Return query case for difference of columns with '_neg'
     in the Equipment table"""
 
-    stat = getattr(Equipment, param)
-    stat_neg = getattr(Equipment, (param + '_neg'))
+    stat = None
+    stat_neg = None
+
+    if equipment:
+        stat = getattr(equipment, param)
+        stat_neg = getattr(equipment, (param + '_neg'))
+    else:
+        stat = getattr(Equipment, param)
+        stat_neg = getattr(Equipment, (param + '_neg'))
 
     param_case = case(
         (stat.isnot(None) & stat_neg.isnot(None), stat - stat_neg),
         (stat.isnot(None) & stat_neg.is_(None), stat),
         (stat.is_(None) & stat_neg.isnot(None), -stat_neg),
-        else_=0
-    )
+        else_=0)
     return param_case
 
 
 def get_equipments_by_search_params_and_language(search_params_dict, language):
     """Return list of equipments which meet search params"""
     
-    search_query = db.session.query(Equipment)
+    search_query = db.session.query(Equipment, Name_translation).join(
+        Name_translation, Name_translation.name_id == Equipment.id)
     list_type_params = ['equip_type_id', 'rarity']
     boolean_params = ['state', 'farmer','lumberjack',
                       'herbalist', 'miner', 'trapper',
@@ -1064,11 +1072,8 @@ def get_equipments_by_search_params_and_language(search_params_dict, language):
         elif param == 'equipment_name':
             # Search for name of equip by user language
             name_column = getattr(Name_translation, language)
-            name_subquery = db.session.query(name_column).filter(
-                name_column.ilike(f'%{searched_values}%')).subquery(
-                    'name_subquery')
             search_query = search_query.filter(
-                Equipment.id.in_(name_subquery))
+                name_column.ilike(f'%{searched_values}%'))
         elif param in list_type_params:
             # Search params that have a list of types
             for value in searched_values:     
@@ -1094,23 +1099,51 @@ def get_equipments_by_search_params_and_language(search_params_dict, language):
                 search_query = search_query.filter(
                     column_cases <= searched_values['max'])
         
-    return search_query.all()
+    return search_query.all()           
 
-                
 
-def get_total_stats_by_build_query(build):
-    """Return query for total stats in a build"""
+def get_build_with_total_stats_by_build(build):
+    """Return a build with added attributes for the total
+    of each stat"""
     
     # Xelor (id=5) gets +6 wp
-    list_type_params = ['character_class', 'main_role'
-                        'content_type'] 
-    
+    # Hupper QB = 50 base + 75/wp. 999 max, 50 min
+    build_params_not_totaled = ['character_class', 'main_role'
+                        'content_type', 'build_name',
+                        'level']
+    base_stat_list = ['hp', 'ap', 'mp', 'wp']
+    characteristic_stat_list = ['barrier', 'heals_received',
+                                'armor', 'melee_mastery',
+                                'distance_mastery', 'hp',
+                                'lock', 'dodge', 'initiative',
+                                'force_of_will', 'crit_hit',
+                                'block', 'crit_mastery',
+                                'rear_mastery', 'berserk_mastery',
+                                'rear_res', 'crit_res', 'ap',
+                                'mp', 'spell_range',
+                                'wp', 'control', 'dmg_inflicted']
+
+    stats_query = db.session.query(Build)
 
     for param in BUILD_SEARCH_PARAMS_DICT:
-        pass
+        if param not in build_params_not_totaled:
+            total_name = 'total_' + param
+            total_value = 0
 
+            if param in base_stat_list:
+                total_value += db.session.query(
+                    getattr(Base_stat, param)).filter(
+                        Base_stat.level == build.level).scalar()
+            if param in characteristic_stat_list:
+                total_value += db.session.query(
+                    getattr(build.characteristic, param)).scalar()
+                
+            for equip_slot, equip_id in build.equipment_set.show().items():
+                if equip_slot != 'id':
+                    total_value = db.scalar()
 
-
+            
+            
 
 
 

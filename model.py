@@ -96,6 +96,8 @@ class Characteristic(db.Model):
 
     __tablename__ = 'characteristics'
 
+    test_dict = {'int' : 4}
+
     id = db.Column(db.Integer,
                    autoincrement = True,
                    primary_key = True)
@@ -104,7 +106,7 @@ class Characteristic(db.Model):
     elemental_res = db.Column(db.Integer, default=0)
     barrier = db.Column(db.Integer, default=0)
     heals_received = db.Column(db.Integer, default=0)
-    armor_hp = db.Column(db.Integer, default=0)
+    armor = db.Column(db.Integer, default=0)
     strength = db.Column(db.Integer, default=0)
     elemental_mastery = db.Column(db.Integer, default=0)
     melee_mastery = db.Column(db.Integer, default=0)
@@ -172,7 +174,7 @@ class Characteristic_cap(db.Model):
     elemental_res = db.Column(db.Integer)
     barrier = db.Column(db.Integer)
     heals_received = db.Column(db.Integer)
-    armor_hp = db.Column(db.Integer)
+    armor = db.Column(db.Integer)
     strength = db.Column(db.Integer)
     elemental_mastery = db.Column(db.Integer)
     melee_mastery = db.Column(db.Integer)
@@ -990,6 +992,8 @@ class Name_translation(db.Model):
     def __repr__(self):
         return f"""
                 <Name_translation id = {self.id};
+                Name_id = {self.name_id};
+                Name_type = {self.name_type};
                 English = {self.en};
                 French = {self.fr};
                 Spanish = {self.es};
