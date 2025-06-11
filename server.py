@@ -55,7 +55,23 @@ def get_build_search_args(form):
 @app.context_processor
 def inject_main_stats_max_level_and_name_translations():
 
-    main_stats = ['ap', 'mp', 'wp', 'spell_range']
+    main_stats_order = ['hp', 'ap', 'mp', 'wp', 'armor', 'spell_range']
+    elemental_mastery_order =['water_mastery', 'earth_mastery',
+                              'air_mastery', 'fire_mastery']
+    elemental_res_order = ['water_res', 'earth_res',
+                           'air_res', 'fire_res']
+    battle_stat_order = ['dmg_inflicted', 'heals_performed',
+                         'crit_hit', 'block',
+                         'initiative', 'spell_range',
+                         'dodge', 'lock',
+                         'wisdom', 'prospecting',
+                         'control', 'force_of_will']
+    secondary_stat_order = ['crit_mastery', 'crit_res',
+                            'rear_mastery', 'rear_res',
+                            'melee_mastery', 'armor_given',
+                            'distance_mastery', 'armor_received',
+                            'healing_mastery', 'indirect_dmg',
+                            'berserk_mastery', 'barrier']
     max_level = crud.MAX_LEVEL
     # translations = 
 

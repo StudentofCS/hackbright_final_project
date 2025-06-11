@@ -55,9 +55,11 @@ class Build(db.Model):
     user = db.relationship('User', 
                            back_populates='build')
     equipment_set = db.relationship('Equipment_set', 
-                                    back_populates='build')
+                                    back_populates='build', 
+                                    lazy='joined')
     characteristic = db.relationship('Characteristic', 
-                                     back_populates='build')
+                                     back_populates='build', 
+                                    lazy='joined')
     character_class = db.relationship('Character_class', 
                                       back_populates='build')
     # selected_mastery = db.relationship('Selected_mastery_element', 
@@ -68,8 +70,9 @@ class Build(db.Model):
                                      back_populates='build')
     selected_passive = db.relationship('Selected_passive', 
                                        back_populates='build')
-    selected_elements = db.relationship('Selected_element', 
-                                       back_populates='build')
+    selected_elements = db.relationship('Selected_element',
+                                        back_populates='build',
+                                        lazy='joined')
 
 
     def show(self):
@@ -239,22 +242,68 @@ class Equipment_set(db.Model):
     emblem_id = db.Column(db.Integer, db.ForeignKey('equipments.id'))
     mount_id = db.Column(db.Integer, db.ForeignKey('equipments.id'))
 
-    build = db.relationship('Build', back_populates='equipment_set')
-    helmet = db.relationship('Equipment', foreign_keys=[helmet_id], back_populates='equipment_set_helmet')
-    amulet = db.relationship('Equipment', foreign_keys=[amulet_id], back_populates='equipment_set_amulet')
-    breastplate = db.relationship('Equipment', foreign_keys=[breastplate_id], back_populates='equipment_set_breastplate')
-    boots = db.relationship('Equipment', foreign_keys=[boots_id], back_populates='equipment_set_boots')
-    ring1 = db.relationship('Equipment', foreign_keys=[ring1_id], back_populates='equipment_set_ring1')
-    ring2 = db.relationship('Equipment', foreign_keys=[ring2_id], back_populates='equipment_set_ring2')
-    cape = db.relationship('Equipment', foreign_keys=[cape_id], back_populates='equipment_set_cape')
-    epaulettes = db.relationship('Equipment', foreign_keys=[epaulettes_id], back_populates='equipment_set_epaulettes')
-    belt = db.relationship('Equipment', foreign_keys=[belt_id], back_populates='equipment_set_belt')
-    pet = db.relationship('Equipment', foreign_keys=[pet_id], back_populates='equipment_set_pet')
-    off_hand = db.relationship('Equipment', foreign_keys=[off_hand_id], back_populates='equipment_set_off_hand')
-    main_hand = db.relationship('Equipment', foreign_keys=[main_hand_id], back_populates='equipment_set_main_hand')
-    two_hand = db.relationship('Equipment', foreign_keys=[two_hander_id], back_populates='equipment_set_two_hand')
-    emblem = db.relationship('Equipment', foreign_keys=[emblem_id], back_populates='equipment_set_emblem')
-    mount = db.relationship('Equipment', foreign_keys=[mount_id], back_populates='equipment_set_mount')
+    build = db.relationship('Build',
+                            back_populates='equipment_set')
+    helmet = db.relationship('Equipment',
+                             foreign_keys=[helmet_id], 
+                             back_populates='equipment_set_helmet', 
+                             lazy="joined")
+    amulet = db.relationship('Equipment',
+                             foreign_keys=[amulet_id],
+                             back_populates='equipment_set_amulet',
+                             lazy='joined')
+    breastplate = db.relationship('Equipment', 
+                                  foreign_keys=[breastplate_id],
+                                  back_populates='equipment_set_breastplate',
+                                  lazy='joined')
+    boots = db.relationship('Equipment',
+                            foreign_keys=[boots_id],
+                            back_populates='equipment_set_boots',
+                            lazy='joined')
+    ring1 = db.relationship('Equipment',
+                            foreign_keys=[ring1_id],
+                            back_populates='equipment_set_ring1',
+                            lazy='joined')
+    ring2 = db.relationship('Equipment',
+                            foreign_keys=[ring2_id],
+                            back_populates='equipment_set_ring2',
+                            lazy='joined')
+    cape = db.relationship('Equipment',
+                           foreign_keys=[cape_id],
+                           back_populates='equipment_set_cape',
+                           lazy='joined')
+    epaulettes = db.relationship('Equipment',
+                                 foreign_keys=[epaulettes_id],
+                                 back_populates='equipment_set_epaulettes',
+                                 lazy='joined')
+    belt = db.relationship('Equipment',
+                           foreign_keys=[belt_id],
+                           back_populates='equipment_set_belt',
+                           lazy='joined')
+    pet = db.relationship('Equipment',
+                          foreign_keys=[pet_id],
+                          back_populates='equipment_set_pet',
+                          lazy='joined')
+    off_hand = db.relationship('Equipment',
+                               foreign_keys=[off_hand_id],
+                               back_populates='equipment_set_off_hand',
+                               lazy='joined')
+    main_hand = db.relationship('Equipment',
+                                foreign_keys=[main_hand_id],
+                                back_populates='equipment_set_main_hand',
+                                lazy='joined')
+    two_hand = db.relationship('Equipment',
+                               foreign_keys=[two_hander_id],
+                               back_populates='equipment_set_two_hand',
+                               lazy='joined')
+    emblem = db.relationship('Equipment',
+                             foreign_keys=[emblem_id],
+                             back_populates='equipment_set_emblem',
+                             lazy='joined')
+    mount = db.relationship('Equipment',
+                            foreign_keys=[mount_id],
+                            back_populates='equipment_set_mount',
+                            lazy='joined')
 
 
     def show(self):
@@ -592,10 +641,13 @@ class Selected_element(db.Model):
                           db.ForeignKey('builds.id'))
     element_id = db.Column(db.Integer,
                            db.ForeignKey('elements.id'))
+    # Positions 0-3 mastery, 4-7 resistance
     position = db.Column(db.Integer)
 
     build = db.relationship('Build', back_populates='selected_elements')
-    element = db.relationship('Element', back_populates='selected_elements')
+    element = db.relationship('Element', 
+                              back_populates='selected_elements',
+                              lazy="joined")
     
     def __repr__(self):
         return f"""

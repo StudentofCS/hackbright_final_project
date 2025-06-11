@@ -78,18 +78,18 @@ BUILD_SEARCH_PARAMS_DICT = {
     'character_class' : None,
     'main_role' : None,
     'content_type' : None,
+    'elemental_mastery' : None,
+    'elemental_res' : None,
     'level' : None,
     'hp' : None,
     'armor' : None,
     'ap' : None,
     'mp' : None,
     'wp' : None,
-    # 'elemental_mastery' : None,
     'water_mastery' : None,
     'air_mastery' : None,
     'earth_mastery' : None,
     'fire_mastery' : None,
-    # 'elemental_res' : None,
     'water_res' : None,
     'air_res' : None,
     'earth_res' : None,
@@ -119,6 +119,39 @@ BUILD_SEARCH_PARAMS_DICT = {
     'indirect_dmg' : None,
     'barrier' : None
     }
+
+CHARACTERISTIC_MULTIPLIERS_DICT = {
+        'hp_percentage'  : 4,
+        'elemental_res'  : 10,
+        'barrier'  : 1,
+        'heals_received'  : 6,
+        'armor'  : 4,
+        'elemental_mastery'  : 5,
+        'melee_mastery'  : 8,
+        'distance_mastery'  : 8,
+        'hp'  : 20,
+        'lock'  : 6,
+        'dodge'  : 6,
+        'initiative'  : 4,
+        'lock_dodge'  : {'lock' : 4, 'dodge' : 4},
+        'force_of_will'  : 1,
+        'crit_hit'  : 1,
+        'block'  : 1,
+        'crit_mastery'  : 4,
+        'rear_mastery'  : 6,
+        'berserk_mastery'  : 8,
+        'healing_mastery'  : 6,
+        'rear_res'  : 4,
+        'crit_res'  : 4,
+        'ap'  : 1,
+        'mp'  : {'mp' : 1, 'elemental_mastery' : 20},
+        'spell_range'  : {'spell_range' : 1, 'elemental_mastery' : 40},
+        'wp'  : 2,
+        'control'  : {'control' : 2, 'elemental_mastery' : 40},
+        'dmg_inflicted'  : 10,
+        'resistance'  : 50,
+    }
+
 
 def create_user(email, password):
     """Create and return a new user"""
@@ -266,7 +299,7 @@ def create_characteristic_cap():
     characterics = {
         'level' : 1,
         'intelligence' : 0, 'hp_percentage' : -1, 'elemental_res' : 10,
-        'barrier' : 10, 'heals_received' : 5, 'armor_hp' : 10,
+        'barrier' : 10, 'heals_received' : 5, 'armor' : 10,
         'strength' : 0, 'elemental_mastery' : -1, 'melee_mastery' : 40,
         'distance_mastery' : 40, 'hp' : -1, 'agility' : 0, 
         'lock' : -1, 'dodge' : -1, 'initiative' : 20,
@@ -897,6 +930,7 @@ def get_characteristic_stat_totals(characteristic):
     stat_multiplier_8 = ['melee_mastery', 'distance_mastery', 'berserk_mastery']
     stat_multiplier_10 = ['elemental_res', 'dmg_inflicted']
 
+
     for key,value in characteristic.show().items():
         # Skip non-stat attributes
         if key not in non_stats:
@@ -1026,19 +1060,12 @@ def get_build_ids_with_search_params(build_stats, search_params_dict):
 #     # Doesn't seem to work unless I store the build_stats into db
 #     #######################
 
-def get_query_case_for_equipment_column_with_neg(param, equipment=None):
+def get_query_case_for_equipment_column_with_neg(param):
     """Return query case for difference of columns with '_neg'
     in the Equipment table"""
 
-    stat = None
-    stat_neg = None
-
-    if equipment:
-        stat = getattr(equipment, param)
-        stat_neg = getattr(equipment, (param + '_neg'))
-    else:
-        stat = getattr(Equipment, param)
-        stat_neg = getattr(Equipment, (param + '_neg'))
+    stat = getattr(Equipment, param)
+    stat_neg = getattr(Equipment, (param + '_neg'))
 
     param_case = case(
         (stat.isnot(None) & stat_neg.isnot(None), stat - stat_neg),
@@ -1102,15 +1129,15 @@ def get_equipments_by_search_params_and_language(search_params_dict, language):
     return search_query.all()           
 
 
-def get_build_with_total_stats_by_build(build):
+def set_build_with_total_stats_by_build_and_base_stats(build_with_base_stats):
     """Return a build with added attributes for the total
     of each stat"""
     
     # Xelor (id=5) gets +6 wp
     # Hupper QB = 50 base + 75/wp. 999 max, 50 min
-    build_params_not_totaled = ['character_class', 'main_role'
-                        'content_type', 'build_name',
-                        'level']
+    build_params_not_totaled = ['character_class', 'main_role',
+                                'content_type', 'build_name',
+                                'level']
     base_stat_list = ['hp', 'ap', 'mp', 'wp']
     characteristic_stat_list = ['barrier', 'heals_received',
                                 'armor', 'melee_mastery',
@@ -1122,8 +1149,18 @@ def get_build_with_total_stats_by_build(build):
                                 'rear_res', 'crit_res', 'ap',
                                 'mp', 'spell_range',
                                 'wp', 'control', 'dmg_inflicted']
+    elemental_res_list = ['fire_res', 'water_res',
+                          'earth_res', 'air_res']
+    elemental_mastery_list = ['fire_mastery', 'water_mastery',
+                              'earth_mastery', 'air_mastery']
 
-    stats_query = db.session.query(Build)
+
+
+    # stat_tables = db.session.query(Build, Base_stat).join(
+    #     Base_stat, Base_stat.level == build.level).join(Equipment_set).join(
+    #         Characteristic).filter(Build.id == build.id).one()
+    build = build_with_base_stats[0]
+    base_stats = build_with_base_stats[1]
 
     for param in BUILD_SEARCH_PARAMS_DICT:
         if param not in build_params_not_totaled:
@@ -1131,19 +1168,134 @@ def get_build_with_total_stats_by_build(build):
             total_value = 0
 
             if param in base_stat_list:
-                total_value += db.session.query(
-                    getattr(Base_stat, param)).filter(
-                        Base_stat.level == build.level).scalar()
-            if param in characteristic_stat_list:
-                total_value += db.session.query(
-                    getattr(build.characteristic, param)).scalar()
-                
-            for equip_slot, equip_id in build.equipment_set.show().items():
-                if equip_slot != 'id':
-                    total_value = db.scalar()
+                total_value += getattr(base_stats, param)
 
+                # total_value += getattr(stat_tables.Base_stat, param)
+
+                # total_value += db.session.query(
+                #     getattr(Base_stat, param)).filter(
+                #         Base_stat.level == build.level).scalar()
+            if param in characteristic_stat_list:
+                multiplier = CHARACTERISTIC_MULTIPLIERS_DICT[param]
+                base_value = getattr(build.characteristic, param)
+                if isinstance(multiplier, dict):
+                    for stat in multiplier:
+                        stat_name = 'total_' + stat
+                        # If it's resistance major point
+                        if stat == 'resistance':
+                            res_name = 'total_elemental_res'
+                            if res_name in build.__dict__:
+                                current_value = getattr(build, res_name)
+                                setattr(build, 
+                                        res_name, 
+                                        (current_value +
+                                            (base_value * 
+                                            multiplier[stat])))
+                            else:
+                                setattr(build, 
+                                        res_name, 
+                                        (base_value *
+                                         multiplier[stat]))
+                        # If the total stat is already an attribute in build
+                        elif stat_name in build.__dict__:
+                            current_value = getattr(build, stat_name)
+                            setattr(build, stat_name, (current_value
+                                                       + (base_value * 
+                                                          multiplier[stat])))
+                        # Else, add the total_stat
+                        else:
+                            setattr(build, stat_name, (base_value * 
+                                                       multiplier[stat]))
+                else:
+                    total_value += base_value * multiplier
+
+                # total_value += ((getattr(stat_tables.characteristic, param)) 
+                #                 * CHARACTERISTIC_MULTIPLIERS_DICT[param])
+                # total_value += db.session.query(
+                #     getattr(build.characteristic, param)).scalar()
+            for equip_slot in build.equipment_set.show():
+            # for equip_slot in stat_tables.equipment_set.show():
+            # for equip_slot, equip_id in build.equipment_set.show().items():
+                if equip_slot.endswith('_id') and param != 'barrier':
+                    equip = getattr(build.equipment_set, equip_slot[:-3])
+                    # equip = getattr(stat_tables.equipment, equip_slot[:-3])
+                    equip_pos = getattr(equip, param)
+                    equip_neg = getattr(equip, param + '_neg')
+                    if equip_pos and equip_neg:
+                        total_value += equip_pos - equip_neg
+                    elif equip_pos and not equip_neg:
+                        total_value += equip_pos
+                    elif not equip_pos and equip_neg:
+                        total_value += -equip_neg
+
+                    # Handle random masteries
+                    if equip.random_masteries:
+                        num_elements = equip.num_random_masteries
+                        # Mastery postions are 0-3
+                        for element in build.selected_elements:
+                            # If the postion is within number of selected elements
+                            if element.position < num_elements:
+                                element_name = element.element.name
+                                if element_name in build.__dict__:
+                                    current_value = getattr(build, 
+                                                            element_name)
+                                    setattr(build, element_name, (
+                                        current_value + 
+                                        equip.random_masteries))
+                                else:
+                                    setattr(build, element_name,
+                                            equip.random_masteries)
+
+                    
+                
+            # for equip_slot, equip_id in build.equipment_set.show().items():
+            #     if equip_slot != 'id':
+            #         equip = db.session.query(Equipment).filter(
+            #             Equipment.id == equip_id).one()
+            #         stat_case = get_query_case_for_equipment_column_with_neg(
+            #             param, equip)
+            #         total_value += db.session.query(stat_case).scalar()
+            # equips = db.session.query(Equipment).filter(Equipment.id.in_(
+            #     build.equipment_set.show().values())).all()
+            # for equip in equips:
+
+            # Add hp multipliers
+            if param == 'hp':
+                total_value += int(total_value * ((CHARACTERISTIC_MULTIPLIERS_DICT['hp_percentage']
+                                              * build.characteristic.hp_percentage) / 100 ))
+            if param == 'wp':
+                # For xelor's 6 extra wp
+                if build_with_base_stats[0].character_class_id == 5:
+                    total_value += 6
+
+            # Handle elemental mastery
+            if param in elemental_mastery_list:
+                if 'total_elemental_mastery' in build.__dict__:
+                    total_value += build.total_elemental_mastery
+
+            # Handle elemental resistance
+            if param in elemental_res_list:
+                if 'total_elemental_res' in build.__dict__:
+                    total_value += build.total_elemental_res
             
-            
+
+            # If the total name is already an attribute in build
+            if total_name in build.__dict__:
+                current_value = getattr(build, total_name)
+                setattr(build, total_name, (current_value
+                                            + total_value))
+            # Else, add the total value
+            else:
+                setattr(build, total_name, total_value)
+
+
+def get_builds_with_base_stats():
+    """Return a list of tuples with build.model and the base stats 
+    for the build's level"""
+
+    return db.session.query(Build, Base_stat).join(
+        Base_stat, Base_stat.level == Build.level).all()
+
 
 
 
