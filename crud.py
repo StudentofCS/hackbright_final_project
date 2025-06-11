@@ -1289,12 +1289,14 @@ def set_build_with_total_stats_by_build_and_base_stats(build_with_base_stats):
                 setattr(build, total_name, total_value)
 
 
-def get_builds_with_base_stats():
+def get_public_builds_with_base_stats():
     """Return a list of tuples with build.model and the base stats 
     for the build's level"""
 
     return db.session.query(Build, Base_stat).join(
-        Base_stat, Base_stat.level == Build.level).all()
+        Base_stat, Base_stat.level == Build.level).filter(
+            Build.public == True).all()
+    
 
 
 

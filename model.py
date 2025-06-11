@@ -238,7 +238,7 @@ class Equipment_set(db.Model):
     pet_id = db.Column(db.Integer, db.ForeignKey('equipments.id'))
     off_hand_id = db.Column(db.Integer, db.ForeignKey('equipments.id'))
     main_hand_id = db.Column(db.Integer, db.ForeignKey('equipments.id'))
-    two_hander_id = db.Column(db.Integer, db.ForeignKey('equipments.id'))
+    two_hand_id = db.Column(db.Integer, db.ForeignKey('equipments.id'))
     emblem_id = db.Column(db.Integer, db.ForeignKey('equipments.id'))
     mount_id = db.Column(db.Integer, db.ForeignKey('equipments.id'))
 
@@ -293,7 +293,7 @@ class Equipment_set(db.Model):
                                 back_populates='equipment_set_main_hand',
                                 lazy='joined')
     two_hand = db.relationship('Equipment',
-                               foreign_keys=[two_hander_id],
+                               foreign_keys=[two_hand_id],
                                back_populates='equipment_set_two_hand',
                                lazy='joined')
     emblem = db.relationship('Equipment',
@@ -333,7 +333,7 @@ class Equipment_set(db.Model):
                 Pet_id = {self.pet_id};
                 Off_hand_id = {self.off_hand_id};
                 Main_hand_id = {self.main_hand_id};
-                Two_hander_id = {self.two_hander_id};
+                Two_hand_id = {self.two_hand_id};
                 Emblem_id = {self.emblem_id};
                 Mount_id = {self.mount_id}>
                 """
@@ -475,7 +475,7 @@ class Equipment(db.Model):
                                               foreign_keys=[Equipment_set.main_hand_id],
                                               back_populates='main_hand')
     equipment_set_two_hand = db.relationship('Equipment_set', 
-                                              foreign_keys=[Equipment_set.two_hander_id],
+                                              foreign_keys=[Equipment_set.two_hand_id],
                                               back_populates='two_hand')
     equipment_set_emblem = db.relationship('Equipment_set', 
                                            foreign_keys=[Equipment_set.emblem_id],

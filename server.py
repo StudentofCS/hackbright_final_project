@@ -56,10 +56,10 @@ def get_build_search_args(form):
 def inject_main_stats_max_level_and_name_translations():
 
     main_stats_order = ['hp', 'ap', 'mp', 'wp', 'armor', 'spell_range']
-    elemental_mastery_order =['water_mastery', 'earth_mastery',
-                              'air_mastery', 'fire_mastery']
-    elemental_res_order = ['water_res', 'earth_res',
-                           'air_res', 'fire_res']
+    elemental_mastery_order =['fire_mastery', 'water_mastery',
+                              'earth_mastery', 'air_mastery']
+    elemental_res_order = ['fire_res', 'water_res',
+                           'earth_res', 'air_res']
     battle_stat_order = ['dmg_inflicted', 'heals_performed',
                          'crit_hit', 'block',
                          'initiative', 'spell_range',
@@ -75,7 +75,11 @@ def inject_main_stats_max_level_and_name_translations():
     max_level = crud.MAX_LEVEL
     # translations = 
 
-    return dict(main_stats=main_stats, 
+    return dict(main_stats_order=main_stats_order,
+                elemental_mastery_order=elemental_mastery_order,
+                elemental_res_order=elemental_res_order,
+                battle_stat_order=battle_stat_order,
+                secondary_stat_order=secondary_stat_order,
                 max_level=max_level)
 
 
@@ -88,17 +92,28 @@ def homepage():
     if 'user_id' in session:
         return redirect(f"/user/{session['user_id']}")
 
-    builds = None
+    # builds = None
+    # if not session.get('build_results'):
+    #     builds = crud.get_public_builds()
+    # else:
+    #     builds = session.get('build_results')
+    
+    # session['build_stats'] = {}
+    # for build in builds:
+    #     stats = crud.get_total_stats_by_build(build)
+    #     session['build_stats'].update({build.id : stats})
+
+    builds = []
     if not session.get('build_results'):
-        builds = crud.get_public_builds()
+        builds_and_base_stats = crud.get_public_builds_with_base_stats()
+        for combo in builds_and_base_stats:
+            # Combo is tuple (build.model, Base_stat.model)
+            crud.set_build_with_total_stats_by_build_and_base_stats(combo)
+            # Add build instance to build list
+            builds.append(combo[0])
     else:
         builds = session.get('build_results')
-    
-    session['build_stats'] = {}
-    for build in builds:
-        stats = crud.get_total_stats_by_build(build)
-        session['build_stats'].update({build.id : stats})
-    
+
     return render_template('homepage.html', builds=builds, 
                            character_classes=character_classes)
 

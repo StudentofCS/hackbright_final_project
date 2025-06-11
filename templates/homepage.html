@@ -216,59 +216,72 @@
         </form>
 
         <div class="col-6 border">
+            <div class="container" id="results-section">
 
-            <h5>Results: {{ builds | length }}</h5>
-            <p class="d-inline-flex gap-1 justify-content-end">
-                <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#show_stats" aria-expanded="false" aria-controls="show_all_result_stats">
-                    Show all stats
-                </button>
-            </p>
-            <ul class="list-group">
-                {% for build in builds %}
-                    <li class="list-group-item text-bg-dark">
-                        <div class="row mb-3 pt-3">
-                            <div class="col">Level: {{build.level}}</div>
-                            <div class="col">Class: {{build.character_class.name}}</div>
-                            <div class="col">Name: {{build.build_name}}</div>
-                        </div>
-                        <div class="row mb-3 pt-3">
-                            {% for equip, id in build.equipment_set.show().items() %}
-                                {% if equip != "id" and equip != "build" %}
-                                    <div class="col">{{ ((equip | replace("_id","")) | replace("_"," ")) | title}}: {{id}}</div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                        <div class="row mb-3 pt-3">
-                            {% for stat in main_stats %}
-                                {% if "_" in stat %}
-                                    <div class="col">{{ (stat | replace("_"," ")) | title}}: {{session["build_stats"][build.id][stat]}}</div>
-                                {% else %}
-                                    <div class="col">{{ stat | upper }}: {{session["build_stats"][build.id][stat]}}</div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
+                <div class="row mb-3 pt-3">
+                    <div class="col">
+                        <h5>Results: {{ builds | length }}</h5>
+                    </div>
+                    <div class="col d-inline-flex gap-1 justify-content-end">
+                        <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#show_stats" aria-expanded="false" aria-controls="show_all_result_stats">
+                            Show all stats
+                        </button>
+                    </div>
+                </div>
+                <div class="row mb-3 pt-3  justify-content-center">
+                    {% for build in builds %}
+                        <div class="col-12 text-bg-dark border border-secondary rounded-4 mb-3 mx-1">
                         
-                        <div class="row mb-3 pt-3 collapse" id="show_stats">
-                            {% for stat in session["build_stats"][build.id] %}
-                                {% if stat not in main_stats + ['id', 'build'] and session["build_stats"][build.id][stat] != 0 and "elemental_" not in stat %}
-                                    {% if stat in ['fire_mastery', 'air_mastery', 'earth_mastery', 'water_mastery'] and "elemental_mastery" in session["build_stats"][build.id] %}
-                                        <div class="col">{{ (stat | replace("_"," ")) | title}}: {{session["build_stats"][build.id][stat] + session["build_stats"][build.id]["elemental_mastery"]}}</div>
-                                    {% elif stat in ['fire_res', 'air_res', 'earth_res', 'water_res'] and "elemental_res" in session["build_stats"][build.id] %}
-                                        <div class="col">{{ (stat | replace("_"," ")) | title}}: {{session["build_stats"][build.id][stat] + session["build_stats"][build.id]["elemental_mastery"]}}</div>
-                                    {% elif "_" in stat %}
-                                        <div class="col">{{ (stat | replace("_"," ")) | title}}: {{session["build_stats"][build.id][stat]}}</div>
-                                    {% elif stat | length == 2 %}
-                                        <div class="col">{{ stat | upper }}: {{session["build_stats"][build.id][stat]}}</div>
-                                    {% else %}
-                                        <div class="col">{{ stat | capitalize }}: {{session["build_stats"][build.id][stat]}}</div>
-                                    {% endif %}
-                                {% endif %}
-                            {% endfor %}
+                            <div class="mb-3 mx-1">
+                                <div class="row mb-3 pt-3 border-bottom border-warning-subtle">
+                                    <div class="col">Level: {{build.level}}</div>
+                                    <div class="col">Class: {{build.character_class.name}}</div>
+                                    <div class="col">Name: {{build.build_name}}</div>
+                                </div>
+                                <div class="row mb-3 pt-3 border-bottom">
+                                    {% for equip, id in build.equipment_set.show().items() %}
+                                        {% if equip.endswith("_id") %}
+                                            <div class="col">
+                                                {{ ((equip | replace("_id","")) | replace("_"," ")) | title}}: {{ id }}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <div class="row mb-3 pt-3">
+                                    {% for stat in main_stats_order %}
+                                        {% set stat_name = 'total_' + stat %}
+                                        {% if "_" in stat %}
+                                            <div class="col">{{ (stat | replace("_"," ")) | title}}: {{ build[stat_name] }}</div>
+                                        {% else %}
+                                            <div class="col">{{ stat | upper }}: {{ build[stat_name] }}</div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                
+                                <div class="row mb-3 pt-3 border-top collapse" id="show_stats">
+                                    {% for stat in (elemental_mastery_order + elemental_res_order + battle_stat_order + secondary_stat_order) %}
+                                        {% set stat_name = 'total_' + stat %}
+                                        
+                                        <!-- {#{% if stat in ['fire_mastery', 'air_mastery', 'earth_mastery', 'water_mastery'] and "elemental_mastery" in session["build_stats"][build.id] %}
+                                            <div class="col">{{ (stat | replace("_"," ")) | title}}: {{session["build_stats"][build.id][stat] + session["build_stats"][build.id]["elemental_mastery"]}}</div>
+                                        {% elif stat in ['fire_res', 'air_res', 'earth_res', 'water_res'] and "elemental_res" in session["build_stats"][build.id] %}
+                                            <div class="col">{{ (stat | replace("_"," ")) | title}}: {{session["build_stats"][build.id][stat] + session["build_stats"][build.id]["elemental_mastery"]}}</div>#} -->
+                                        {% if "_" in stat %}
+                                            <div class="col">{{ (stat | replace("_"," ")) | title}}: {{ build[stat_name] }}</div>
+                                        {% elif stat | length == 2 %}
+                                            <div class="col">{{ stat | upper }}: {{ build[stat_name] }}</div>
+                                        <!-- {#{% else %}
+                                            <div class="col">{{ stat | capitalize }}: {{session["build_stats"][build.id][stat]}}</div>#} -->
+                                        {% endif %}
+                                        
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        
                         </div>
-                    </li>
-                {% endfor %}
-            </ul>
-
+                    {% endfor %}
+                </div>
+            </div>
         </div>
 
     </div>
