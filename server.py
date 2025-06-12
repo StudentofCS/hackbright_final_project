@@ -29,16 +29,24 @@ def get_build_search_args(form):
     build_search_args = {}
     non_min_max_params = ['build_name', 'character_class_id',
                           'main_role', 'content_type']
+    param_lists = ['mastery_element', 'mastery_type',
+                   'main_role', 'content_type']
 
     for key in crud.BUILD_SEARCH_PARAMS_DICT:
         min_key = 'min_' + key
         max_key = 'max_' + key
+        
         if form.get(key):
-            if key in non_min_max_params and key != 'build_name':
-                form_stat = int(form.get(key))
-                build_search_args.update({key : form_stat})
-            elif key == 'build_name':
+            if key == 'build_name':
                 form_stat = form.get(key)
+                build_search_args.update({key : form_stat})
+            elif key in param_lists:
+                form_stat_list = form.getlist(key)
+                # First time trying list comprehension
+                form_stat_list_ints = [int(i) for i in form_stat_list]
+                build_search_args.update({key : form_stat_list_ints})
+            else:
+                form_stat = int(form.get(key))
                 build_search_args.update({key : form_stat})
         if form.get(min_key):
             min_stat = int(form.get(min_key))
@@ -72,6 +80,10 @@ def inject_main_stats_max_level_and_name_translations():
                             'distance_mastery', 'armor_received',
                             'healing_mastery', 'indirect_dmg',
                             'berserk_mastery', 'barrier']
+    equip_order = ['helmet', 'cape', 'amulet', 'epaulettes',
+                   'breastplate', 'belt', 'ring1', 'ring2',
+                   'boots', 'off_hand', 'main_hand', 'two_hand',
+                   'emblem', 'pet', 'mount']
     max_level = crud.MAX_LEVEL
 
     get_browser_lang()
@@ -83,6 +95,7 @@ def inject_main_stats_max_level_and_name_translations():
                 elemental_res_order=elemental_res_order,
                 battle_stat_order=battle_stat_order,
                 secondary_stat_order=secondary_stat_order,
+                equip_order=equip_order,
                 max_level=max_level,
                 character_classes=character_classes)
 

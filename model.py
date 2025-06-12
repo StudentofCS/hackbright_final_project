@@ -769,6 +769,8 @@ class Base_stat(db.Model):
     ap = db.Column(db.Integer, default=6)
     mp = db.Column(db.Integer, default=3)
     wp = db.Column(db.Integer, default=6)
+    control = db.Column(db.Integer, default=1)
+    crit_hit = db.Column(db.Integer, default=3)
 
     
     def show(self):

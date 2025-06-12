@@ -243,10 +243,15 @@
                                     <div class="col text-truncate">Name: {{ build.build_name }}</div>
                                 </div>
                                 <div class="row mb-3 pt-3">
-                                    {% for equip, id in build.equipment_set.show().items() %}
-                                        {% if equip.endswith("_id") %}
-                                            <div class="col border">
-                                                {{ ((equip | replace("_id","")) | replace("_"," ")) | title }}: {{ id }}
+                                    {% for equip in equip_order %}
+                                        {% set equipment = build.equipment_set[equip] %}
+                                        {% if equipment == None %}
+                                            <div class="col-auto border">
+                                                {{ (equip | replace("_"," ")) | title }}: Empty
+                                            </div>
+                                        {% else %}
+                                            <div class="col-auto border">
+                                                {{ (equip | replace("_"," ")) | title }}: {{ equipment.id }}
                                             </div>
                                         {% endif %}
                                     {% endfor %}
@@ -256,14 +261,17 @@
                                         {% set stat_name = 'total_' + stat %}
                                         {% if "_" in stat %}
                                             <div class="col text-nowrap">{{ (stat | replace("_"," ")) | title}}: {{ build[stat_name] }}</div>
-                                        {% else %}
+                                        {% elif stat | length == 2 %}
                                             <div class="col text-nowrap">{{ stat | upper }}: {{ build[stat_name] }}</div>
+                                        {% else %}
+                                            <div class="col text-nowrap">{{ stat | title }}: {{ build[stat_name] }}</div>
                                         {% endif %}
                                     {% endfor %}
                                 </div>
                                 
                                 <div class="row mb-3 pt-3 border-top collapse" id="show_stats">
                                     {% for stat in (elemental_mastery_order + elemental_res_order + battle_stat_order + secondary_stat_order) %}
+
                                         {% set stat_name = 'total_' + stat %}
                                         
                                         <!-- {#{% if stat in ['fire_mastery', 'air_mastery', 'earth_mastery', 'water_mastery'] and "elemental_mastery" in session["build_stats"][build.id] %}
@@ -274,6 +282,8 @@
                                             <div class="col text-nowrap">{{ (stat | replace("_"," ")) | title}}: {{ build[stat_name] }}</div>
                                         {% elif stat | length == 2 %}
                                             <div class="col text-nowrap">{{ stat | upper }}: {{ build[stat_name] }}</div>
+                                        {% else %}
+                                            <div class="col text-nowrap">{{ stat | title }}: {{ build[stat_name] }}</div>
                                         <!-- {#{% else %}
                                             <div class="col">{{ stat | capitalize }}: {{session["build_stats"][build.id][stat]}}</div>#} -->
                                         {% endif %}

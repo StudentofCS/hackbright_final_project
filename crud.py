@@ -456,6 +456,7 @@ def create_element():
     # order: fire > water > earth > air
 
     element_dicts = [
+
                     # { 'id' : 1, 'name' : 'fire',
                     #   'resistance_id' : 82, 'mastery_id' : 122},
                     #  { 'id' : 2, 'name' : 'water',
@@ -464,14 +465,15 @@ def create_element():
                     #   'resistance_id' : 84, 'mastery_id' : 123}, 
                     #  { 'id' : 4, 'name' : 'air',
                     #   'resistance_id' : 85, 'mastery_id' : 125},
-                      {'id' : 82, 'name' : 'fire_res'},
-                      {'id' : 83, 'name' : 'water_res'},
-                      {'id' : 84, 'name' : 'earth_res'},
-                      {'id' : 85, 'name' : 'air_res'},
+                      
                       {'id' : 122, 'name' : 'fire_mastery'},
                       {'id' : 124, 'name' : 'water_mastery'},
                       {'id' : 123, 'name' : 'earth_mastery'},
-                      {'id' : 125, 'name' : 'air_mastery'}]
+                      {'id' : 125, 'name' : 'air_mastery'},
+                      {'id' : 82, 'name' : 'fire_res'},
+                      {'id' : 83, 'name' : 'water_res'},
+                      {'id' : 84, 'name' : 'earth_res'},
+                      {'id' : 85, 'name' : 'air_res'}]
                     
     elements = []
 
@@ -1129,7 +1131,7 @@ def get_equipments_by_search_params_and_language(search_params_dict, language):
     return search_query.all()           
 
 
-def set_build_with_total_stats_by_build_and_base_stats(build_with_base_stats):
+def set_build_with_total_stats_by_build_and_base_stats(build_and_base_stats):
     """Sets a build with added attributes for the total
     of each stat"""
     
@@ -1138,7 +1140,7 @@ def set_build_with_total_stats_by_build_and_base_stats(build_with_base_stats):
     build_params_not_totaled = ['character_class_id', 'main_role',
                                 'content_type', 'build_name',
                                 'level']
-    base_stat_list = ['hp', 'ap', 'mp', 'wp']
+    base_stat_list = ['hp', 'ap', 'mp', 'wp', 'control', 'crit_hit']
     characteristic_stat_list = ['barrier', 'heals_received',
                                 'armor', 'melee_mastery',
                                 'distance_mastery', 'hp',
@@ -1159,8 +1161,8 @@ def set_build_with_total_stats_by_build_and_base_stats(build_with_base_stats):
     # stat_tables = db.session.query(Build, Base_stat).join(
     #     Base_stat, Base_stat.level == build.level).join(Equipment_set).join(
     #         Characteristic).filter(Build.id == build.id).one()
-    build = build_with_base_stats[0]
-    base_stats = build_with_base_stats[1]
+    build = build_and_base_stats[0]
+    base_stats = build_and_base_stats[1]
 
     for param in BUILD_SEARCH_PARAMS_DICT:
         if param not in build_params_not_totaled:
@@ -1246,7 +1248,21 @@ def set_build_with_total_stats_by_build_and_base_stats(build_with_base_stats):
                                     setattr(build, element_name,
                                             equip.random_masteries)
 
-                    
+                    if equip.random_resistances:
+                        num_elements = equip.num_random_resistances
+                        for element in build.selected_elements:
+                            position = element.position
+                            if position < (num_elements + 4) and position > 3:
+                                element_name = element.element.name
+                                if element_name in build.__dict__:
+                                    current_value = getattr(build, 
+                                                            element_name)
+                                    setattr(build, element_name, (
+                                        current_value + 
+                                        equip.random_resistances))
+                                else:
+                                    setattr(build, element_name,
+                                            equip.random_resistances)
                 
             # for equip_slot, equip_id in build.equipment_set.show().items():
             #     if equip_slot != 'id':
@@ -1265,7 +1281,7 @@ def set_build_with_total_stats_by_build_and_base_stats(build_with_base_stats):
                                               * build.characteristic.hp_percentage) / 100 ))
             if param == 'wp':
                 # For xelor's 6 extra wp
-                if build_with_base_stats[0].character_class_id == 5:
+                if build.character_class_id == 5:
                     total_value += 6
 
             # Handle elemental mastery
