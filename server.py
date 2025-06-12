@@ -27,7 +27,7 @@ def get_build_search_args(form):
     """ex2. {'build_name' : 'eca build'}"""
 
     build_search_args = {}
-    non_min_max_params = ['build_name', 'character_class',
+    non_min_max_params = ['build_name', 'character_class_id',
                           'main_role', 'content_type']
 
     for key in crud.BUILD_SEARCH_PARAMS_DICT:
@@ -37,7 +37,7 @@ def get_build_search_args(form):
             if key in non_min_max_params and key != 'build_name':
                 form_stat = int(form.get(key))
                 build_search_args.update({key : form_stat})
-            elif key in non_min_max_params:
+            elif key == 'build_name':
                 form_stat = form.get(key)
                 build_search_args.update({key : form_stat})
         if form.get(min_key):
@@ -73,6 +73,9 @@ def inject_main_stats_max_level_and_name_translations():
                             'healing_mastery', 'indirect_dmg',
                             'berserk_mastery', 'barrier']
     max_level = crud.MAX_LEVEL
+
+    get_browser_lang()
+    character_classes = crud.get_character_classes()
     # translations = 
 
     return dict(main_stats_order=main_stats_order,
@@ -80,17 +83,19 @@ def inject_main_stats_max_level_and_name_translations():
                 elemental_res_order=elemental_res_order,
                 battle_stat_order=battle_stat_order,
                 secondary_stat_order=secondary_stat_order,
-                max_level=max_level)
+                max_level=max_level,
+                character_classes=character_classes)
 
 
 
 @app.route('/')
 def homepage():
-    get_browser_lang()
-    character_classes = crud.get_character_classes()
 
     if 'user_id' in session:
         return redirect(f"/user/{session['user_id']}")
+    
+    if session.get('build_search_params'):
+        session['build_search_params'] = None
 
     # builds = None
     # if not session.get('build_results'):
@@ -103,39 +108,67 @@ def homepage():
     #     stats = crud.get_total_stats_by_build(build)
     #     session['build_stats'].update({build.id : stats})
 
+    # builds = None
+    # if not session.get('build_results'):
+    #     builds_and_base_stats = crud.get_public_builds_with_base_stats()
+    #     builds = []
+    #     for combo in builds_and_base_stats:
+    #         # Combo is tuple (build.model, Base_stat.model)
+    #         crud.set_build_with_total_stats_by_build_and_base_stats(combo)
+    #         # Add build instance to build list
+    #         builds.append(combo[0])
+    # else:
+    #     builds = session.get('build_results')
+    
+    builds_and_base_stats = crud.get_public_builds_with_base_stats()
     builds = []
-    if not session.get('build_results'):
-        builds_and_base_stats = crud.get_public_builds_with_base_stats()
-        for combo in builds_and_base_stats:
-            # Combo is tuple (build.model, Base_stat.model)
-            crud.set_build_with_total_stats_by_build_and_base_stats(combo)
-            # Add build instance to build list
-            builds.append(combo[0])
-    else:
-        builds = session.get('build_results')
+    for combo in builds_and_base_stats:
+        # Combo is tuple (build.model, Base_stat.model)
+        crud.set_build_with_total_stats_by_build_and_base_stats(combo)
+        # Add build instance to build list
+        builds.append(combo[0])
 
-    return render_template('homepage.html', builds=builds, 
-                           character_classes=character_classes)
+    return render_template('homepage.html', builds=builds)
 
 
 @app.route('/search')
 def search_results():
-    session['request_args'] = request.args
+    # session['request_args'] = request.args
     
-    session['build_params'] = get_build_search_args(request.args)
+    # session['build_params'] = get_build_search_args(request.args)
 
-    result_ids = crud.get_build_ids_with_search_params(
-        session['build_stats'], session['build_params'])
-    ###
-    session['result_ids'] = result_ids
-    ###
-    session['build_results'] = []
+    # result_ids = crud.get_build_ids_with_search_params(
+    #     session['build_stats'], session['build_params'])
+    # ###
+    # session['result_ids'] = result_ids
+    # ###
+    # session['build_results'] = []
 
-    for result_id in result_ids:
-        session['build_results'].append(crud.get_build_by_id(result_id))
+    # for result_id in result_ids:
+    #     session['build_results'].append(crud.get_build_by_id(result_id))
 
     
-    return redirect('/')
+    session['build_search_params'] = get_build_search_args(request.args)
+
+    # session['build_results'] = []
+
+    # if session.get('public_builds'):
+    #     for build in session['public_builds']:
+    #         if crud.is_build_result(build, session['build_search_params']):
+    #             session['build_results'].append(build)
+
+    builds_and_base_stats = crud.get_public_builds_with_base_stats()
+    builds = []
+    for combo in builds_and_base_stats:
+        # Combo is tuple (build.model, Base_stat.model)
+        crud.set_build_with_total_stats_by_build_and_base_stats(combo)
+        build = combo[0]
+        if crud.is_build_result(build, session['build_search_params']):
+            # Add build instance to build list
+            builds.append(build)
+
+    
+    return render_template('homepage.html', builds=builds)
     
 
 
@@ -150,13 +183,37 @@ def get_user(user_id):
 
 @app.route('/new_build')
 def create_new_build():
+
+    build = None
     if 'user_id' in session:
         build = crud.create_build(user=session['user'])
-    
     else:
         build = crud.create_build()
 
+    db.session.add(build)
+    db.session.commit()
+    crud.set_build_stats_by_build(build)
+
+
+    return redirect(f'/build/{build.id}')
+
+
+@app.route('/update_build')
+def update_build():
+
+    build = build
+
+    return redirect(url_for('/build', build_id=build.id))
+
+
+@app.route('/build/<build_id>')
+def get_build(build_id):
+
+    build = crud.get_build_by_id(build_id)
+    crud.set_build_stats_by_build(build)
+
     return render_template('build.html', build=build)
+
 
 
 

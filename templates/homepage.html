@@ -24,7 +24,7 @@
                 <h5>Class:</h5>
                 <div class="btn-toolbar mb-3" role="group" aria-label="Radio toggle buttons for character class">                
                     {% for char_class in character_classes %}
-                        <input type="radio" class="btn-check" name="character_class" id="char_class{{ char_class.id }}" value="{{ char_class.id }}" autocomplete="off">
+                        <input type="radio" class="btn-check" name="character_class_id" id="char_class{{ char_class.id }}" value="{{ char_class.id }}" autocomplete="off">
                         <label class="btn btn-outline-primary" for="char_class{{ char_class.id }}">{{ char_class.name }}</label>
                     {% endfor %}
                 </div>
@@ -230,19 +230,23 @@
                 </div>
                 <div class="row mb-3 pt-3  justify-content-center">
                     {% for build in builds %}
-                        <div class="col-12 text-bg-dark border border-secondary rounded-4 mb-3 mx-1">
+                        <div class="col-12 text-bg-dark border border-secondary rounded-4 mb-3 mx-1" id="individual_result">
                         
                             <div class="mb-3 mx-1">
-                                <div class="row mb-3 pt-3 border-bottom border-warning-subtle">
-                                    <div class="col">Level: {{build.level}}</div>
-                                    <div class="col">Class: {{build.character_class.name}}</div>
-                                    <div class="col">Name: {{build.build_name}}</div>
+                                <div class="row pb-3 mb-3 pt-3 border-bottom border-warning-subtle">
+                                    <div class="col">Level: {{ build.level }}</div>
+                                    {% if build.character_class %}
+                                        <div class="col">Class: {{ build.character_class.name }}</div>
+                                    {% else %}
+                                        <div class="col">Class: </div>
+                                    {% endif %}
+                                    <div class="col text-truncate">Name: {{ build.build_name }}</div>
                                 </div>
-                                <div class="row mb-3 pt-3 border-bottom">
+                                <div class="row mb-3 pt-3">
                                     {% for equip, id in build.equipment_set.show().items() %}
                                         {% if equip.endswith("_id") %}
-                                            <div class="col">
-                                                {{ ((equip | replace("_id","")) | replace("_"," ")) | title}}: {{ id }}
+                                            <div class="col border">
+                                                {{ ((equip | replace("_id","")) | replace("_"," ")) | title }}: {{ id }}
                                             </div>
                                         {% endif %}
                                     {% endfor %}
@@ -251,9 +255,9 @@
                                     {% for stat in main_stats_order %}
                                         {% set stat_name = 'total_' + stat %}
                                         {% if "_" in stat %}
-                                            <div class="col">{{ (stat | replace("_"," ")) | title}}: {{ build[stat_name] }}</div>
+                                            <div class="col text-nowrap">{{ (stat | replace("_"," ")) | title}}: {{ build[stat_name] }}</div>
                                         {% else %}
-                                            <div class="col">{{ stat | upper }}: {{ build[stat_name] }}</div>
+                                            <div class="col text-nowrap">{{ stat | upper }}: {{ build[stat_name] }}</div>
                                         {% endif %}
                                     {% endfor %}
                                 </div>
@@ -267,9 +271,9 @@
                                         {% elif stat in ['fire_res', 'air_res', 'earth_res', 'water_res'] and "elemental_res" in session["build_stats"][build.id] %}
                                             <div class="col">{{ (stat | replace("_"," ")) | title}}: {{session["build_stats"][build.id][stat] + session["build_stats"][build.id]["elemental_mastery"]}}</div>#} -->
                                         {% if "_" in stat %}
-                                            <div class="col">{{ (stat | replace("_"," ")) | title}}: {{ build[stat_name] }}</div>
+                                            <div class="col text-nowrap">{{ (stat | replace("_"," ")) | title}}: {{ build[stat_name] }}</div>
                                         {% elif stat | length == 2 %}
-                                            <div class="col">{{ stat | upper }}: {{ build[stat_name] }}</div>
+                                            <div class="col text-nowrap">{{ stat | upper }}: {{ build[stat_name] }}</div>
                                         <!-- {#{% else %}
                                             <div class="col">{{ stat | capitalize }}: {{session["build_stats"][build.id][stat]}}</div>#} -->
                                         {% endif %}

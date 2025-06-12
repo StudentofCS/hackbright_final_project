@@ -75,7 +75,7 @@ EQUIPMENT_SEARCH_PARAMS_DICT = {
 
 BUILD_SEARCH_PARAMS_DICT = {
     'build_name' : None,
-    'character_class' : None,
+    'character_class_id' : None,
     'main_role' : None,
     'content_type' : None,
     'elemental_mastery' : None,
@@ -1130,12 +1130,12 @@ def get_equipments_by_search_params_and_language(search_params_dict, language):
 
 
 def set_build_with_total_stats_by_build_and_base_stats(build_with_base_stats):
-    """Return a build with added attributes for the total
+    """Sets a build with added attributes for the total
     of each stat"""
     
     # Xelor (id=5) gets +6 wp
     # Hupper QB = 50 base + 75/wp. 999 max, 50 min
-    build_params_not_totaled = ['character_class', 'main_role',
+    build_params_not_totaled = ['character_class_id', 'main_role',
                                 'content_type', 'build_name',
                                 'level']
     base_stat_list = ['hp', 'ap', 'mp', 'wp']
@@ -1298,8 +1298,55 @@ def get_public_builds_with_base_stats():
             Build.public == True).all()
     
 
+def is_build_result(build_with_stats, search_params_dict):
+    """Return True if build meets search parameters"""
+
+    non_min_max_params = ['build_name', 'character_class_id',
+                          'main_role', 'content_type']
+    
+    for param_name, param_value in search_params_dict.items():
+
+        total_stat_name = 'total_' + param_name
+
+        if param_name in non_min_max_params:
+            build_stat = getattr(build_with_stats, param_name)
+            if param_name == 'build_name':
+                if param_value.lower() not in build_stat.lower():
+                    return False
+            elif isinstance(param_value, list):
+
+                if build_stat not in param_value:
+                    return False
+            else:
+                if param_value != build_stat:
+                    return False
+        elif isinstance(param_value, dict):
+            # Level is only min/max param without a total
+            if param_name == 'level':
+                total_stat_name = 'level'
+            build_stat_total = getattr(build_with_stats, total_stat_name)
+            min_param = param_value.get('min')
+            max_param = param_value.get('max')
+
+            if  min_param and max_param:
+                if not (build_stat_total >= min_param and
+                        build_stat_total <= max_param):
+                    return False
+            if min_param and not max_param:
+                if not (build_stat_total >= min_param):
+                    return False
+            if not min_param and max_param:
+                if not (build_stat_total <= max_param):
+                    return False
+    return True
 
 
+def set_build_stats_by_build(build):
+    """Set total stat attributes by build"""
+
+    base_stats = get_base_stat_by_level(build.level)
+    combo = (build, base_stats)
+    set_build_with_total_stats_by_build_and_base_stats(combo)
 
 if __name__ == '__main__':
     from server import app
