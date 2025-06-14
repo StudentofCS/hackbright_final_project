@@ -84,6 +84,9 @@ def inject_main_stats_max_level_and_name_translations():
                    'breastplate', 'belt', 'ring1', 'ring2',
                    'boots', 'off_hand', 'main_hand', 'two_hand',
                    'emblem', 'pet', 'mount']
+    characteristic_titles = ['intelligence', 'strength',
+                             'agility', 'fortune',
+                             'major']
     max_level = crud.MAX_LEVEL
 
     get_browser_lang()
@@ -97,7 +100,8 @@ def inject_main_stats_max_level_and_name_translations():
                 secondary_stat_order=secondary_stat_order,
                 equip_order=equip_order,
                 max_level=max_level,
-                character_classes=character_classes)
+                character_classes=character_classes,
+                characteristic_titles=characteristic_titles)
 
 
 
@@ -205,8 +209,6 @@ def create_new_build():
 
     db.session.add(build)
     db.session.commit()
-    crud.set_build_stats_by_build(build)
-
 
     return redirect(f'/build/{build.id}')
 
@@ -222,10 +224,17 @@ def update_build():
 @app.route('/build/<build_id>')
 def get_build(build_id):
 
-    build = crud.get_build_by_id(build_id)
-    crud.set_build_stats_by_build(build)
+    combo = crud.get_build_characteristic_cap_base_stat_by_build_id(build_id)
+    build = combo[0]
+    base_stats = combo[2]
+    characteristic_caps = combo[1]
+    
+    crud.set_build_with_total_stats_by_build_and_base_stats(
+        tuple([build, base_stats]))
 
-    return render_template('build.html', build=build)
+    return render_template('build.html', build=build,
+                           base_stats=base_stats,
+                           characteristic_caps=characteristic_caps)
 
 
 

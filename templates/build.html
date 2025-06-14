@@ -103,9 +103,104 @@
     </div>
 
 
-    <div class="container mb-3 pt-3 justify-content-around" id="body_of_builds">
+    <!-- <div class="container mb-3 pt-3" id="body_of_builds"> -->
         <div class="row" id="main_build_area_row">
-            <div class="col-md-4 border rounded-4" id="build_stats_col">
+            
+
+            <div class="col-7" id="tabs-area-col">
+                <div class="row" id="tabs-row">
+                    <ul class="nav nav-pills justify-content-center">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#" aria-label="Characteristics tab">Characteristics</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" aria-label="Equipment tab">Equipment</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" aria-label="Spells tab">Spells</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" aria-label="Runes and sublimations tab">Runes and Sublimations</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="#" aria-label="Auto-equipment tab">Auto-Equipment</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="row mx-3 mb-3 pt-3" id="tabs_content_row">
+
+                    <div class="col-12 mx-3 mb-3 pt-3" id="characteristics_tab_col">
+                        <div class="row" id="characteristic_row">
+                            {% for key in build.characteristic.__dict__ %}
+                                {% if key != 'level' %}
+                                    {% if key in characteristic_titles and loop.first %}
+                                        <div class="col" id="{{key}}_col">
+                                            {% if "_" in key %}
+                                                <span>{{ (key | replace("_", " ")) | title }}</span>
+                                            {% elif key | length == 2 %}
+                                                <span>{{ key | upper }}</span>
+                                            {% else %}
+                                                <span>{{ key | title }}</span>
+                                            {% endif %}
+                                    {% elif key in characteristic_titles %}
+                                        </div>
+                                        <div class="col" id="{{key}}_col">
+                                            {% if "_" in key %}
+                                                <span>{{ (key | replace("_", " ")) | title }}</span>
+                                            {% elif key | length == 2 %}
+                                                <span>{{ key | upper }}</span>
+                                            {% else %}
+                                                <span>{{ key | title }}</span>
+                                            {% endif %}
+                                    {% else %}
+                                            {% if "_" in key %}
+                                                <span>{{ (key | replace("_", " ")) | title }}</span>
+                                            {% elif key | length == 2 %}
+                                                <span>{{ key | upper }}</span>
+                                            {% else %}
+                                                <span>{{ key | title }}</span>
+                                            {% endif %}
+                                    {% endif %}
+                                    {% if loop.last %}
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="col-12 mx-3 mb-3 pt-3" id="equipment_tab_col">
+
+                        <div class="row" id="equipment_row">
+                            <div class="col" id="equipment_search_col">
+
+                            </div>
+                            <div class="col" id="equipment_results_col">
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-12 mx-3 mb-3 pt-3" id="spells_tab_col">
+                        
+                    </div>
+
+                    <div class="col-12 mx-3 mb-3 pt-3" id="runes_and_sublimations_tab_col">
+                        
+                    </div>
+
+                    <div class="col-12 mx-3 mb-3 pt-3" id="auto_equipment_tab_col">
+                        
+                    </div>
+
+
+                </div>
+            </div>
+
+
+            <div class="col-md-4 border rounded-4 mx-3" id="build_stats_col">
                 <div class="row mb-3 pt-3" id="main_stats_row">
                     {% for stat in main_stats_order %}
                         {% set stat_name = 'total_' + stat %}
@@ -158,11 +253,11 @@
                         {% set stat_name1 = 'total_' + stat2%}
                         
                         {% if "_" in stat2%}
-                            <div class="col text-nowrap border-end">{{ (stat2| replace("_"," ")) | title}}: {{ build[stat_name1] }}</div>
+                            <div class="col text-nowrap">{{ (stat2| replace("_"," ")) | title}}: {{ build[stat_name1] }}</div>
                         {% elif stat2| length == 2 %}
-                            <div class="col text-nowrap border-end">{{ stat2| upper }}: {{ build[stat_name1] }}</div>
+                            <div class="col text-nowrap">{{ stat2| upper }}: {{ build[stat_name1] }}</div>
                         {% elif stat2 %}
-                            <div class="col text-nowrap border-end">{{ stat2| title }}: {{ build[stat_name1] }}</div>
+                            <div class="col text-nowrap">{{ stat2| title }}: {{ build[stat_name1] }}</div>
                         {% endif %}
                     </div>
                 {% endfor %}
@@ -199,33 +294,16 @@
                 {% endfor %}
  
             </div>
+
+
+
         </div>
-    </div>
+    <!-- </div> -->
 
 
 
     <div class="container">
-        <div class="col-6" id="tabs-area-col">
-            <div class="row">
-                <ul class="nav nav-pills">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Characteristics</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Equipment</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Spells</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Runes and Sublimations</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="#">Auto-Equipment</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+        
     </div>  
 
 

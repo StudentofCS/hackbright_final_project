@@ -1357,12 +1357,22 @@ def is_build_result(build_with_stats, search_params_dict):
     return True
 
 
-def set_build_stats_by_build(build):
-    """Set total stat attributes by build"""
+# def set_build_stats_by_build(build):
+#     """Set total stat attributes by build"""
 
-    base_stats = get_base_stat_by_level(build.level)
-    combo = (build, base_stats)
-    set_build_with_total_stats_by_build_and_base_stats(combo)
+#     base_stats = get_base_stat_by_level(build.level)
+#     combo = (build, base_stats)
+#     set_build_with_total_stats_by_build_and_base_stats(combo)
+
+
+def get_build_characteristic_cap_base_stat_by_build_id(build_id):
+    """Return a tuple of a build and it's characteristic caps and base stats."""
+
+    return db.session.query(Build, Characteristic_cap, Base_stat).join(
+        Characteristic_cap, Characteristic_cap.level == Build.level).join(
+            Base_stat, Base_stat.level == Build.level).filter(
+                Build.id == build_id).one()
+
 
 if __name__ == '__main__':
     from server import app
