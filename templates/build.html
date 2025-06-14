@@ -3,11 +3,11 @@
 {% block title %}WakfuBuilds: Build{% endblock %}
 
 {% block content %}
-    <div class="container-fluid mb-3 pt-3" id="top_of_builds">
+    <!-- <div class="container-fluid mb-3 pt-3" id="top_of_builds"> -->
         <form action="/update_build" method="post"></form>    
-            <div class="row " id="build_info">
-                <div class="row">
-                    <div class="col-3">
+            <div class="row mb-3 pt-3 " id="top_of_builds">
+                <div class="row" id="build_info_row">
+                    <div class="col-3" id="build_info_col">
                         <div class="input-group input-group-sm mb-2">
                             <span class="input-group-text" id="build_name">Name</span>
                             <input type="text" class="form-control" placeholder="{{ build.build_name }}" aria-label="Build name" aria-describedby="build_name">
@@ -100,14 +100,14 @@
             <!-- </div> -->
         </div>
 
-    </div>
+    <!-- </div> -->
 
 
     <!-- <div class="container mb-3 pt-3" id="body_of_builds"> -->
         <div class="row" id="main_build_area_row">
             
 
-            <div class="col-7" id="tabs-area-col">
+            <div class="col-8" id="tabs-area-col">
                 <div class="row" id="tabs-row">
                     <ul class="nav nav-pills justify-content-center">
                         <li class="nav-item">
@@ -128,14 +128,14 @@
                     </ul>
                 </div>
 
-                <div class="row mx-3 mb-3 pt-3" id="tabs_content_row">
+                <div class="row mb-3 pt-3" id="tabs_content_row">
 
-                    <div class="col-12 mx-3 mb-3 pt-3" id="characteristics_tab_col">
+                    <div class="col-12  mb-3 pt-3" id="characteristics_tab_col">
                         <div class="row" id="characteristic_row">
                             {% for key in build.characteristic.__dict__ %}
                                 {% if key != 'level' %}
                                     {% if key in characteristic_titles and loop.first %}
-                                        <div class="col" id="{{key}}_col">
+                                        <div class="card" id="{{key}}_col">
                                             {% if "_" in key %}
                                                 <span>{{ (key | replace("_", " ")) | title }}</span>
                                             {% elif key | length == 2 %}
@@ -145,7 +145,7 @@
                                             {% endif %}
                                     {% elif key in characteristic_titles %}
                                         </div>
-                                        <div class="col" id="{{key}}_col">
+                                        <div class="card" id="{{key}}_col">
                                             {% if "_" in key %}
                                                 <span>{{ (key | replace("_", " ")) | title }}</span>
                                             {% elif key | length == 2 %}
@@ -170,7 +170,7 @@
                         </div>
                     </div>
 
-                    <div class="col-12 mx-3 mb-3 pt-3" id="equipment_tab_col">
+                    <div class="col-12  mb-3 pt-3" id="equipment_tab_col">
 
                         <div class="row" id="equipment_row">
                             <div class="col" id="equipment_search_col">
@@ -183,15 +183,15 @@
 
                     </div>
 
-                    <div class="col-12 mx-3 mb-3 pt-3" id="spells_tab_col">
+                    <div class="col-12  mb-3 pt-3" id="spells_tab_col">
                         
                     </div>
 
-                    <div class="col-12 mx-3 mb-3 pt-3" id="runes_and_sublimations_tab_col">
+                    <div class="col-12  mb-3 pt-3" id="runes_and_sublimations_tab_col">
                         
                     </div>
 
-                    <div class="col-12 mx-3 mb-3 pt-3" id="auto_equipment_tab_col">
+                    <div class="col-12  mb-3 pt-3" id="auto_equipment_tab_col">
                         
                     </div>
 
@@ -200,7 +200,8 @@
             </div>
 
 
-            <div class="col-md-4 border rounded-4 mx-3" id="build_stats_col">
+            <div class="col-4 border rounded-4 " id="build_stats_col">
+                <div class="card">
                 <div class="row mb-3 pt-3" id="main_stats_row">
                     {% for stat in main_stats_order %}
                         {% set stat_name = 'total_' + stat %}
@@ -236,28 +237,28 @@
                 </div>
                 
                 {% for i in range(0, (battle_stat_order | length) - 1, 2) %}
-                    <div class="row border-top justify-content-center" id="battle_stats_row">
+                    <div class="border-top justify-content-center" id="battle_stats_row">
                             
                         {% set stat1= battle_stat_order[i] %}
                         {% set stat_name1 = 'total_' + stat1%}
 
                         {% if "_" in stat1%}
-                            <div class="col text-nowrap border-end">{{ (stat1| replace("_"," ")) | title}}: {{ build[stat_name1] }}</div>
+                            <div class="col-6 text-nowrap border-end">{{ (stat1| replace("_"," ")) | title}}: {{ build[stat_name1] }}</div>
                         {% elif stat1| length == 2 %}
-                            <div class="col text-nowrap border-end">{{ stat1| upper }}: {{ build[stat_name1] }}</div>
+                            <div class="col-6 text-nowrap border-end">{{ stat1| upper }}: {{ build[stat_name1] }}</div>
                         {% elif stat1 %}
-                            <div class="col text-nowrap border-end">{{ stat1| title }}: {{ build[stat_name1] }}</div>
+                            <div class="col-6 text-nowrap border-end">{{ stat1| title }}: {{ build[stat_name1] }}</div>
                         {% endif %}
 
                         {% set stat2= battle_stat_order[i + 1] %}
                         {% set stat_name1 = 'total_' + stat2%}
                         
                         {% if "_" in stat2%}
-                            <div class="col text-nowrap">{{ (stat2| replace("_"," ")) | title}}: {{ build[stat_name1] }}</div>
+                            <div class="col-6 text-nowrap">{{ (stat2| replace("_"," ")) | title}}: {{ build[stat_name1] }}</div>
                         {% elif stat2| length == 2 %}
-                            <div class="col text-nowrap">{{ stat2| upper }}: {{ build[stat_name1] }}</div>
+                            <div class="col-6 text-nowrap">{{ stat2| upper }}: {{ build[stat_name1] }}</div>
                         {% elif stat2 %}
-                            <div class="col text-nowrap">{{ stat2| title }}: {{ build[stat_name1] }}</div>
+                            <div class="col-6 text-nowrap">{{ stat2| title }}: {{ build[stat_name1] }}</div>
                         {% endif %}
                     </div>
                 {% endfor %}
@@ -292,7 +293,7 @@
                         {% endif %}
                     </div>
                 {% endfor %}
- 
+                </div>
             </div>
 
 

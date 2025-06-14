@@ -84,9 +84,25 @@ def inject_main_stats_max_level_and_name_translations():
                    'breastplate', 'belt', 'ring1', 'ring2',
                    'boots', 'off_hand', 'main_hand', 'two_hand',
                    'emblem', 'pet', 'mount']
-    characteristic_titles = ['intelligence', 'strength',
-                             'agility', 'fortune',
-                             'major']
+    intelligence_order = ['intelligence', 'hp_percentage',
+                          'elemental_res', 'barrier',
+                          'heals_received', 'armor']
+    strength_order = ['strength', 'elemental_mastery',
+                      'melee_mastery', 'distance_mastery',
+                      'hp']
+    agility_order = ['agility', 'lock',
+                     'dodge', 'initiative',
+                     'lock_dodge', 'force_of_will']
+    fortune_order = ['fortune', 'crit_hit',
+                     'block', 'crit_mastery',
+                     'rear_mastery', 'berserk_mastery',
+                     'healing_mastery', 'rear_res',
+                     'crit_res']
+    major_order = ['major', 'ap',
+                   'mp', 'spell_range',
+                   'wp', 'control',
+                   'dmg_inflicted', 'resistance']
+    
     max_level = crud.MAX_LEVEL
 
     get_browser_lang()
@@ -101,7 +117,11 @@ def inject_main_stats_max_level_and_name_translations():
                 equip_order=equip_order,
                 max_level=max_level,
                 character_classes=character_classes,
-                characteristic_titles=characteristic_titles)
+                intelligence_order=intelligence_order,
+                strength_order=strength_order,
+                agility_order=agility_order,
+                fortune_order=fortune_order,
+                major_order=major_order)
 
 
 
