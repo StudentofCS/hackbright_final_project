@@ -138,28 +138,28 @@
 
             <div class="row mb-3 pt-3" id="tabs_content_row">
 
-                <div class="col-12  mb-3 pt-3" id="characteristics_tab_col">
+                <div class="col-12  mb-3 pt-3" id="characteristics_tab_col" style="display:none;">
                     <div class="row" id="characteristic_row">
                         {% for section in [intelligence_order, strength_order, agility_order, fortune_order, major_order] | batch(3) %}
                             <div class="col-6 mb-3 pt-3 characteristic_cards">
                                 {% for stat_category in section %}
                                     <div class="card mb-3" id="{{ stat_category[0]}}_card">
-                                        <div class="card-header">
+                                        <div class="card-header text-bg-secondary">
                                             {{ stat_category[0] | title }}
                                         </div>
                                         <ul class="list-group list-group-flush">
                                             {% for stat in stat_category[1:] %}
                                                 {% if "_" in stat %}
-                                                    <li class="list-group-item border-bottom">
+                                                    <li class="list-group-item border-bottom text-bg-dark">
                                                         {{ (stat | replace("_"," ")) | title}}
                                     
                                                     </li>
                                                 {% elif stat | length == 2 %}
-                                                    <li class="list-group-item border-bottom">
+                                                    <li class="list-group-item border-bottom text-bg-dark">
                                                         {{ stat | upper }}
                                                     </li>
                                                 {% else %}
-                                                    <li class="list-group-item border-bottom">
+                                                    <li class="list-group-item border-bottom text-bg-dark">
                                                         {{ stat | title }}
                                                     </li>
                                                 {% endif %}
@@ -173,75 +173,52 @@
                     </div>
                 </div>
                 
-                <div class="card-group">
-                    <div class="card" style="width: 18rem;" id="characterstic_intelligence_card">
-                    
-                        <div class="card-header bg-warning">
-                            <h5 class="card-title">{{ intelligence_order[0] | title }}</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="list-group list-group-flush"> 
-                                {% for stat in intelligence_order[1:] %}
-                                    {% if "_" in stat %}
-                                        <li class="list-group-item">
-                                            {{ (stat | replace("_"," ")) | title}}
-                        
-                                        </li>
-                                    {% elif stat | length == 2 %}
-                                        <li class="list-group-item">
-                                            {{ stat | upper }}
-                                        </li>
-                                    {% else %}
-                                        <li class="list-group-item">
-                                            {{ stat | title }}
-                                        </li>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        
-                        </div>
-                    </div>
-
-                    <div class="card" style="width: 18rem;" id="characterstic_strength_card">
-                    
-                        <div class="card-header bg-warning">
-                            <h5 class="card-title">{{ strength_order[0] | title }}</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="list-group list-group-flush"> 
-                                {% for stat in strength_order[1:] %}
-                                    {% if "_" in stat %}
-                                        <li class="list-group-item border-bottom">
-                                            {{ (stat | replace("_"," ")) | title}}
-                        
-                                        </li>
-                                    {% elif stat | length == 2 %}
-                                        <li class="list-group-item border-bottom">
-                                            {{ stat | upper }}
-                                        </li>
-                                    {% else %}
-                                        <li class="list-group-item border-bottom">
-                                            {{ stat | title }}
-                                        </li>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                    
-                </div>
-
-
-
-
                 
                 
 
                 <div class="col-12  mb-3 pt-3" id="equipment_tab_col">
 
-                    <div class="row" id="equipment_row">
-                        <div class="col" id="equipment_search_col">
 
+                    <div class="row" id="equipment_row">
+                        <div class="col-12" id="equipment_search_col">
+                            <form action="/search_equipment" method="post">
+                                <div class="row" id="main_stats_search">
+                                    <div class="col-4">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <span class="input-group-text bg-secondary border-secondary">
+                                                Level:
+                                                
+                                            </span>
+                                            <input type="number" class="form-control form-control-sm" name="min_level" aria-label="Minimum level">
+                                            <span class="input-group-text bg-secondary border-secondary"> - </span>
+                                            <input type="number" class="form-control form-control-sm" name="max_level" aria-label="Maximum level">
+                                        </div>
+                                    </div>      
+                                    {% for stat in main_stats_order %}
+                                        <div class="col-4">
+                                            <div class="input-group input-group-sm mb-3">
+                                                <span class="input-group-text bg-secondary border-secondary">
+                                                    {% if "_" in stat %}                         
+                                                            {{ (stat | replace("_"," ")) | title}}:
+                                                    {% elif stat | length == 2 %}
+                                                            {{ stat | upper }}:
+                                                    {% else %}
+                                                            {{ stat | title }}
+                                                    {% endif %}
+                                                    
+                                                </span>
+                                                <input type="number" class="form-control form-control-sm" name="min_{{ stat }}" aria-label="Minimum {{ stat | replace('_','' '') }}">
+                                                <span class="input-group-text bg-secondary border-secondary"> - </span>
+                                                <input type="number" class="form-control form-control-sm" name="max_{{ stat }}" aria-label="Maximum {{ stat | replace('_','' '') }}">
+                                            </div>
+                                        </div>
+
+                                    {% endfor %}
+
+
+                                </div>
+                                
+                            </form>
                         </div>
                         <div class="col" id="equipment_results_col">
 
