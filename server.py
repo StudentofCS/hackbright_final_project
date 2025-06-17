@@ -256,6 +256,11 @@ def get_build(build_id):
                            base_stats=base_stats,
                            characteristic_caps=characteristic_caps)
 
+@app.route('/equipment_search')
+def get_equipment_search_results():
+    
+    pass
+
 
 
 

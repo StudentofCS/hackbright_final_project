@@ -179,7 +179,7 @@
                 <div class="col-12  mb-3 pt-3" id="equipment_tab_col">
 
 
-                    <div class="row" id="equipment_row">
+                    <div class="row" id="equipment__search_row">
                         <div class="col-12" id="equipment_search_col">
                             <form action="/search_equipment" method="post">
                                 <div class="row" id="main_stats_search">
@@ -217,7 +217,7 @@
                                         {% endif %}
                                     {% endfor %}
                                     
-                                    <div class="col-4" id="elemental_mastery_range">
+                                    <div class="col-6" id="elemental_mastery_range">
                                         <div class="input-group input-group-sm">
                                             <span class="input-group-text bg-secondary border-secondary">
                                                 Elemental Mastery:      
@@ -237,7 +237,7 @@
                                         
                                     </div>
 
-                                    <div class="col-4" id="elemental_res_range">
+                                    <div class="col-6" id="elemental_res_range">
                                         <div class="input-group input-group-sm">
                                             <span class="input-group-text bg-secondary border-secondary">
                                                 Elemental Resistance:      
@@ -291,6 +291,10 @@
 
 
                                 </div>
+
+                                <div class="col-1 offset-11">
+                                    <button class="btn btn-sm btn-primary" type="submit">Search</button>
+                                </div>
                                 
                             </form>
                         </div>
@@ -298,6 +302,15 @@
 
                         </div>
                     </div>
+
+                    <!-- <div class="row row-col-4 border" id="equipment_results_row">
+                        {#{$ for equip in equipments $}
+                            <div class="card" id="{equip.id}">
+                                <div class="card card-body">
+                                    {{ equip.show() }}#}
+                                </div>
+                            </div>
+                    </div> -->
 
                 </div>
 
