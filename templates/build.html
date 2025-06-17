@@ -183,7 +183,7 @@
                         <div class="col-12" id="equipment_search_col">
                             <form action="/search_equipment" method="post">
                                 <div class="row" id="main_stats_search">
-                                    <div class="col-4">
+                                    <div class="col-4" id="level_range">
                                         <div class="input-group input-group-sm mb-3">
                                             <span class="input-group-text bg-secondary border-secondary">
                                                 Level:
@@ -194,8 +194,62 @@
                                             <input type="number" class="form-control form-control-sm" name="max_level" aria-label="Maximum level">
                                         </div>
                                     </div>      
+
                                     {% for stat in main_stats_order %}
-                                        <div class="col-4">
+                                        {% if stat != 'spell_range' %}
+                                            <div class="col-4" id="{{ stat }}_range">
+                                                <div class="input-group input-group-sm mb-3">
+                                                    <span class="input-group-text bg-secondary border-secondary">
+                                                        {% if "_" in stat %}                         
+                                                                {{ (stat | replace("_"," ")) | title}}:
+                                                        {% elif stat | length == 2 %}
+                                                                {{ stat | upper }}:
+                                                        {% else %}
+                                                                {{ stat | title }}
+                                                        {% endif %}
+                                                        
+                                                    </span>
+                                                    <input type="number" class="form-control form-control-sm" name="min_{{ stat }}" aria-label="Minimum {{ stat | replace('_','' '') }}">
+                                                    <span class="input-group-text bg-secondary border-secondary"> - </span>
+                                                    <input type="number" class="form-control form-control-sm" name="max_{{ stat }}" aria-label="Maximum {{ stat | replace('_','' '') }}">
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                    <div class="col-4" id="elemental_mastery_range">
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text bg-secondary border-secondary">
+                                                Elemental Mastery:      
+                                            </span>
+                                            <input type="number" class="form-control form-control-sm" name="min_elemental_mastery" aria-label="Minimum elemental mastery">
+                                            <span class="input-group-text bg-secondary border-secondary"> - </span>
+                                            <input type="number" class="form-control form-control-sm" name="max_elemental_mastery" aria-label="Maximum elemental mastery">
+                                        </div>
+                                        <div class="btn-toolbar mb-3" role="group" aria-label="Checkbox buttons for elemental masteries to focus on for total mastery">
+                                            {% for stat in elemental_mastery_order %}
+                                                <input type="checkbox" class="btn-check" name="mastery_element" id="equip_{{ stat }}" autocomplete="off">
+                                                <label class="btn btn-sm btn-outline-primary" for="{{ stat }}">
+                                                    {{ (stat | replace("_mastery","")) | title}}:
+                                                </label>
+                                            {% endfor %}
+                                        </div>
+                                        
+                                    </div>
+
+                                    <div class="col-4" id="elemental_res_range">
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text bg-secondary border-secondary">
+                                                Elemental Resistance:      
+                                            </span>
+                                            <input type="number" class="form-control form-control-sm" name="min_elemental_res" aria-label="Minimum elemental resistance">
+                                            <span class="input-group-text bg-secondary border-secondary"> - </span>
+                                            <input type="number" class="form-control form-control-sm" name="max_elemental_res" aria-label="Maximum elemental resistance">
+                                        </div>
+                                    </div>
+
+                                    {% for stat in battle_stat_order %}                    
+                                        <div class="col-4" id="{{ stat }}_range">
                                             <div class="input-group input-group-sm mb-3">
                                                 <span class="input-group-text bg-secondary border-secondary">
                                                     {% if "_" in stat %}                         
@@ -211,8 +265,28 @@
                                                 <span class="input-group-text bg-secondary border-secondary"> - </span>
                                                 <input type="number" class="form-control form-control-sm" name="max_{{ stat }}" aria-label="Maximum {{ stat | replace('_','' '') }}">
                                             </div>
-                                        </div>
+                                        </div>     
+                                    {% endfor %}
 
+
+                                    {% for stat in secondary_stat_order %}                    
+                                        <div class="col-4" id="{{ stat }}_range">
+                                            <div class="input-group input-group-sm mb-3">
+                                                <span class="input-group-text bg-secondary border-secondary">
+                                                    {% if "_" in stat %}                         
+                                                            {{ (stat | replace("_"," ")) | title}}:
+                                                    {% elif stat | length == 2 %}
+                                                            {{ stat | upper }}:
+                                                    {% else %}
+                                                            {{ stat | title }}
+                                                    {% endif %}
+                                                    
+                                                </span>
+                                                <input type="number" class="form-control form-control-sm" name="min_{{ stat }}" aria-label="Minimum {{ stat | replace('_','' '') }}">
+                                                <span class="input-group-text bg-secondary border-secondary"> - </span>
+                                                <input type="number" class="form-control form-control-sm" name="max_{{ stat }}" aria-label="Maximum {{ stat | replace('_','' '') }}">
+                                            </div>
+                                        </div>     
                                     {% endfor %}
 
 
