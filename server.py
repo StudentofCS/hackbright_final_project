@@ -21,7 +21,7 @@ def get_browser_lang():
         session['lang'] = 'en'
 
 
-def get_build_search_args(form):
+def get_search_args(form):
     """Return a dict of the non-null form values for build search"""
     """ex1. {'level' : {'min' : 5, 'max' : 50}}"""
     """ex2. {'build_name' : 'eca build'}"""
@@ -168,11 +168,11 @@ def homepage():
     return render_template('homepage.html', builds=builds)
 
 
-@app.route('/search')
+@app.route('/search_builds')
 def search_results():
     # session['request_args'] = request.args
     
-    # session['build_params'] = get_build_search_args(request.args)
+    # session['build_params'] = get_search_args(request.args)
 
     # result_ids = crud.get_build_ids_with_search_params(
     #     session['build_stats'], session['build_params'])
@@ -185,7 +185,7 @@ def search_results():
     #     session['build_results'].append(crud.get_build_by_id(result_id))
 
     
-    session['build_search_params'] = get_build_search_args(request.args)
+    session['build_search_params'] = get_search_args(request.args)
 
     # session['build_results'] = []
 
@@ -248,6 +248,7 @@ def get_build(build_id):
     build = combo[0]
     base_stats = combo[2]
     characteristic_caps = combo[1]
+    session['equipment_search_params'] = None
     
     crud.set_build_with_total_stats_by_build_and_base_stats(
         tuple([build, base_stats]))
@@ -256,10 +257,28 @@ def get_build(build_id):
                            base_stats=base_stats,
                            characteristic_caps=characteristic_caps)
 
-@app.route('/equipment_search')
-def get_equipment_search_results():
+@app.route('/search_equipments', methods=['POST'])
+def get_equipment_results():
+
+    session['equipment_search_params'] = get_search_args(request.form)
+    build_id = request.form.get('build_id')
+
+    equips = crud.get_equipments_by_search_params_and_language(
+        session['equipment_search_params'], session['lang'])
     
-    pass
+    combo = crud.get_build_characteristic_cap_base_stat_by_build_id(build_id)
+    build = combo[0]
+    base_stats = combo[2]
+    characteristic_caps = combo[1]
+    
+    crud.set_build_with_total_stats_by_build_and_base_stats(
+        tuple([build, base_stats]))
+
+    
+    return render_template('build.html', build=build,
+                           base_stats=base_stats,
+                           characteristic_caps=characteristic_caps,
+                           equipments=equips)
 
 
 

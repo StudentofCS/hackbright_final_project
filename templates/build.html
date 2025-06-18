@@ -107,6 +107,7 @@
                 </div>  
         </div>
     </div>
+
         
     
 
@@ -179,9 +180,10 @@
                 <div class="col-12  mb-3 pt-3" id="equipment_tab_col">
 
 
-                    <div class="row" id="equipment__search_row">
+                    <div class="row mb-3" id="equipment_search_row">
                         <div class="col-12" id="equipment_search_col">
-                            <form action="/search_equipment" method="post">
+                            <form action="/search_equipments" method="post">
+                                <input type="hidden" name="build_id" value="{{ build.id }}">
                                 <div class="row" id="main_stats_search">
                                     <div class="col-4" id="level_range">
                                         <div class="input-group input-group-sm mb-3">
@@ -295,22 +297,30 @@
                                 <div class="col-1 offset-11">
                                     <button class="btn btn-sm btn-primary" type="submit">Search</button>
                                 </div>
-                                
+                                <div class="col-2 mb-3 mx-auto" id="homepage_reset_row">
+                                    <button class="btn text-decoration-underline text-primary" type="reset" id="equipment_reset_button">Reset</button>
+                                </div>
                             </form>
                         </div>
-                        <div class="col" id="equipment_results_col">
-
-                        </div>
+                        
                     </div>
 
-                    <!-- <div class="row row-col-4 border" id="equipment_results_row">
-                        {#{$ for equip in equipments $}
-                            <div class="card" id="{equip.id}">
-                                <div class="card card-body">
-                                    {{ equip.show() }}#}
-                                </div>
+                    {% if session.get("equipment_search_params") != None %}
+                        <div class="row row-col-4 border g-4 mb-3 pt-3" id="equipment_results_row">
+                            <div class="col-12">
+                                <h5 class="text-end">Results: {{ equipments | length }}</h5>
                             </div>
-                    </div> -->
+                            {% for equip in equipments %}
+                                <div class="col-3">
+                                    <div class="card h-100" id="{equip.id}">
+                                        <div class="card card-body">
+                                            {{ equip.Equipment.show() }}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
 
                 </div>
 
