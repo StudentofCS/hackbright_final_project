@@ -1065,9 +1065,86 @@ def get_build_ids_with_search_params(build_stats, search_params_dict):
 def get_query_case_for_equipment_column_with_neg(param):
     """Return query case for difference of columns with '_neg'
     in the Equipment table"""
-
+    
     stat = getattr(Equipment, param)
     stat_neg = getattr(Equipment, (param + '_neg'))
+
+    param_case = case(
+        (stat.isnot(None) & stat_neg.isnot(None), stat - stat_neg),
+        (stat.isnot(None) & stat_neg.is_(None), stat),
+        (stat.is_(None) & stat_neg.isnot(None), -stat_neg),
+        else_=0)
+    return param_case
+
+def get_query_case_for_equipment_mastery_or_res(param, elemental_list):
+    """Return query case for total equipment res or mastery"""
+
+    elemental_masteries = ['fire_mastery', 'fire_mastery_neg',
+                           'water_mastery', 'water_mastery_neg',
+                           'earth_mastery', 'earth_mastery_neg',
+                           'air_mastery', 'air_mastery_neg']
+    
+    elemental_resistances = ['fire_res', 'fire_res_neg',
+                             'water_res', 'water_res_neg',
+                             'earth_res', 'earth_res_neg',
+                             'air_res', 'air_res_neg']
+    
+
+    num_of_elementals = len(elemental_list)
+    if num_of_elementals < 4 and num_of_elementals > 0:
+
+        stat = get_query_case_for_equipment_column_with_neg(param)
+        fire_mastery_dict = {'fire_mastery' : 
+                            get_query_case_for_equipment_column_with_neg(
+                                'fire_mastery')}
+        water_mastery_dict = {'water_mastery' : 
+                            get_query_case_for_equipment_column_with_neg(
+                                'water_mastery')}
+        earth_mastery_dict = {'earth_mastery' : 
+                            get_query_case_for_equipment_column_with_neg(
+                                'earth_mastery')}
+        air_mastery_dict = {'air_mastery' : 
+                            get_query_case_for_equipment_column_with_neg(
+                                'air_mastery')}
+        
+
+    """
+    Return a flask sqlalchemy query case
+
+    if '_mastery' in param
+        single_ele_mastery_list
+        num_of_ele = len(single_ele_mastery_list)  
+        mastery1 = get_case(fire)
+        mastery2 = get_case(water)
+        mastery3 = get_case(earth)
+        mastery4 = get_case(earth) 
+        
+        param_case = case(if num_of_ele == 0, 
+                        max(mastery1-4) + get_case(ele_mastery) + item.random_mastery),
+                    (if num_of_ele == 1 and num_mastery >= 1,
+                        get_case(single_ele_mastery_list[0]) + get_case(param) + item.random_mastery)
+                    (if num_of_ele == 2 and get_case(single_ele_mastery_list[0]) == get_case(single_ele_mastery_list[1]) and num_mastery >= num_of_ele,
+                        get_case(single_ele_mastery_list[0]) + get_case(param) + item.random_mastery),
+                    (if num_of_ele == 3 and get_case(single_ele_mastery_list[0]) == get_case(single_ele_mastery_list[1]) and get_case(single_ele_mastery_list[0]) == get_case(single_ele_mastery_list[2]) and num_mastery >= num_of_ele,
+                        get_case(single_ele_mastery_list[0]) + get_case(param) + item.random_mastery)
+                    (if num_of_ele == 4,
+                        get_case(param))
+        return param_case
+
+
+
+    if '_res' in param
+        res1 = get_case(fire)
+        res2 = get_case(water)
+        res3 = get_case(earth)
+        res4 = get_case(earth)
+        param_case = (sum(res1-4) + get_case(param) + (item.random_res * item.num_res))
+
+        return param_case
+
+    """
+    
+
 
     param_case = case(
         (stat.isnot(None) & stat_neg.isnot(None), stat - stat_neg),
