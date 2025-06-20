@@ -230,9 +230,9 @@
                                         </div>
                                         <div class="btn-toolbar mb-3" role="group" aria-label="Checkbox buttons for elemental masteries to focus on for total mastery">
                                             {% for stat in elemental_mastery_order %}
-                                                <input type="checkbox" class="btn-check" name="mastery_element" id="equip_{{ stat }}" autocomplete="off">
-                                                <label class="btn btn-sm btn-outline-primary" for="{{ stat }}">
-                                                    {{ (stat | replace("_mastery","")) | title}}:
+                                                <input type="checkbox" class="btn-check" name="mastery_element" id="equip_{{ stat }}" value="{{ stat }}" autocomplete="off">
+                                                <label class="btn btn-sm btn-outline-primary" for="equip_{{ stat }}">
+                                                    {{ (stat | replace("_mastery","")) | title}}
                                                 </label>
                                             {% endfor %}
                                         </div>

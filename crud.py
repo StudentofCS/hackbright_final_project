@@ -13,7 +13,7 @@ from model import (db, connect_to_db, User, Build,
                    Selected_passive, Passive_slot_cap,
                    Name_translation
                    )
-from sqlalchemy import func, case
+from sqlalchemy import func, case, and_, or_
 
 MAX_LEVEL = 245
 
@@ -1076,37 +1076,125 @@ def get_query_case_for_equipment_column_with_neg(param):
         else_=0)
     return param_case
 
-def get_query_case_for_equipment_mastery_or_res(param, elemental_list):
-    """Return query case for total equipment res or mastery"""
-
-    elemental_masteries = ['fire_mastery', 'fire_mastery_neg',
-                           'water_mastery', 'water_mastery_neg',
-                           'earth_mastery', 'earth_mastery_neg',
-                           'air_mastery', 'air_mastery_neg']
+def get_query_case_for_equipment_mastery(param, elemental_list=[]):
+    """Return query case for total equipment mastery"""
     
-    elemental_resistances = ['fire_res', 'fire_res_neg',
-                             'water_res', 'water_res_neg',
-                             'earth_res', 'earth_res_neg',
-                             'air_res', 'air_res_neg']
-    
-
-    num_of_elementals = len(elemental_list)
-    if num_of_elementals < 4 and num_of_elementals > 0:
-
-        stat = get_query_case_for_equipment_column_with_neg(param)
-        fire_mastery_dict = {'fire_mastery' : 
+    num_of_elements = len(elemental_list)
+    stat = get_query_case_for_equipment_column_with_neg(param)
+    random_mastery = func.coalesce(Equipment.random_masteries, 0)
+    num_random = func.coalesce(Equipment.num_random_masteries, 0)
+    mastery_dict = {'fire_mastery' : 
                             get_query_case_for_equipment_column_with_neg(
-                                'fire_mastery')}
-        water_mastery_dict = {'water_mastery' : 
+                                'fire_mastery'),
+                        'water_mastery' : 
                             get_query_case_for_equipment_column_with_neg(
-                                'water_mastery')}
-        earth_mastery_dict = {'earth_mastery' : 
+                                'water_mastery'),
+                        'earth_mastery' : 
                             get_query_case_for_equipment_column_with_neg(
-                                'earth_mastery')}
-        air_mastery_dict = {'air_mastery' : 
+                                'earth_mastery'),
+                        'air_mastery' : 
                             get_query_case_for_equipment_column_with_neg(
                                 'air_mastery')}
+    mastery1 = mastery_dict['fire_mastery']
+    mastery2 = mastery_dict['water_mastery']
+    mastery3 = mastery_dict['earth_mastery']
+    mastery4 = mastery_dict['air_mastery']
+
+    cases = []
+
+    if num_of_elements == 0:
+        cases.append((num_of_elements == 0, func.greatest(mastery1, 
+                        mastery2, mastery3, mastery4) + stat + 
+                        random_mastery))
         
+    if num_of_elements == 1:
+        cases.append((and_((num_of_elements == 1), (num_random >= num_of_elements)),
+                         mastery_dict[elemental_list[0]] + stat + 
+                         random_mastery))
+        
+    if num_of_elements == 2:
+        cases.extend([(num_of_elements == 2 & num_random >= num_of_elements
+                          & mastery_dict[elemental_list[0]] == 
+                          mastery_dict[elemental_list[1]],
+                          mastery_dict[elemental_list[0]] + stat +
+                          random_mastery),
+
+                        (num_of_elements == 2 & num_random < num_of_elements
+                          & mastery_dict[elemental_list[0]] == 
+                          mastery_dict[elemental_list[1]],
+                          mastery_dict[elemental_list[0]] + stat)])
+        
+    if num_of_elements == 3:
+        cases.extend([(num_of_elements == 3 & num_random >= num_of_elements
+                          & mastery_dict[elemental_list[0]] == 
+                          mastery_dict[elemental_list[1]] & 
+                          mastery_dict[elemental_list[0]] == 
+                          mastery_dict[elemental_list[2]],
+                          mastery_dict[elemental_list[0]] + stat +
+                          random_mastery),
+
+                        (num_of_elements == 3 & num_random < num_of_elements
+                          & mastery_dict[elemental_list[0]] == 
+                          mastery_dict[elemental_list[1]] & 
+                          mastery_dict[elemental_list[0]] == 
+                          mastery_dict[elemental_list[2]],
+                          mastery_dict[elemental_list[0]] + stat)])
+        
+    if num_of_elements == 4:
+        cases.append((and_(num_of_elements == 4, num_random == 0), 
+                                                  stat))
+
+    
+    # param_case = case((num_of_elements == 0, func.greatest(mastery1, 
+    #                     mastery2, mastery3, mastery4) + stat + 
+    #                     random_mastery),
+
+    #                     (and_((num_of_elements == 1), (num_random >= num_of_elements)),
+    #                      mastery_dict[elemental_list[0]] + stat + 
+    #                      random_mastery),
+
+    #                     (num_of_elements == 2 & num_random >= num_of_elements
+    #                       & mastery_dict[elemental_list[0]] == 
+    #                       mastery_dict[elemental_list[1]],
+    #                       mastery_dict[elemental_list[0]] + stat +
+    #                       random_mastery),
+
+    #                     (num_of_elements == 2 & num_random < num_of_elements
+    #                       & mastery_dict[elemental_list[0]] == 
+    #                       mastery_dict[elemental_list[1]],
+    #                       mastery_dict[elemental_list[0]] + stat),
+
+    #                     (num_of_elements == 3 & num_random >= num_of_elements
+    #                       & mastery_dict[elemental_list[0]] == 
+    #                       mastery_dict[elemental_list[1]] & 
+    #                       mastery_dict[elemental_list[0]] == 
+    #                       mastery_dict[elemental_list[2]],
+    #                       mastery_dict[elemental_list[0]] + stat +
+    #                       random_mastery),
+
+    #                     (num_of_elements == 3 & num_random < num_of_elements
+    #                       & mastery_dict[elemental_list[0]] == 
+    #                       mastery_dict[elemental_list[1]] & 
+    #                       mastery_dict[elemental_list[0]] == 
+    #                       mastery_dict[elemental_list[2]],
+    #                       mastery_dict[elemental_list[0]] + stat),
+
+    #                     (num_of_elements == 4, stat))
+    return case(*cases)
+
+
+def get_query_case_for_equipment_res(param):
+    """Return query case for total res"""
+
+    stat = get_query_case_for_equipment_column_with_neg(param)
+    random_res = func.coalesce(Equipment.random_resistances, 0)
+    num_random = func.coalesce(Equipment.num_random_resistances, 0)
+    res1 = get_query_case_for_equipment_column_with_neg('fire_res')
+    res2 = get_query_case_for_equipment_column_with_neg('water_res')
+    res3 = get_query_case_for_equipment_column_with_neg('earth_res')
+    res4 = get_query_case_for_equipment_column_with_neg('air_res')
+
+    return (res1 + res2 + res3 + res4 + stat + (random_res * num_random))
 
     """
     Return a flask sqlalchemy query case
@@ -1143,15 +1231,6 @@ def get_query_case_for_equipment_mastery_or_res(param, elemental_list):
         return param_case
 
     """
-    
-
-
-    param_case = case(
-        (stat.isnot(None) & stat_neg.isnot(None), stat - stat_neg),
-        (stat.isnot(None) & stat_neg.is_(None), stat),
-        (stat.is_(None) & stat_neg.isnot(None), -stat_neg),
-        else_=0)
-    return param_case
 
 
 def get_equipments_by_search_params_and_language(search_params_dict, language):
@@ -1159,7 +1238,8 @@ def get_equipments_by_search_params_and_language(search_params_dict, language):
     
     search_query = db.session.query(Equipment, Name_translation).join(
         Name_translation, Name_translation.name_id == Equipment.id)
-    list_type_params = ['equip_type_id', 'rarity']
+    list_type_params = ['equip_type_id', 'rarity',
+                        'mastery_element']
     boolean_params = ['state', 'farmer','lumberjack',
                       'herbalist', 'miner', 'trapper',
                       'fisherman']
@@ -1171,7 +1251,25 @@ def get_equipments_by_search_params_and_language(search_params_dict, language):
 
         if '_mastery' in param:
             # Handle mastery searches
-            continue
+            if 'mastery_element' in search_params_dict['elemental_mastery']:
+                element_list = search_params_dict['elemental_mastery']['mastery_element']
+                column_cases = get_query_case_for_equipment_mastery(
+                    param, element_list)
+                if 'min' in searched_values:
+                    search_query = search_query.filter(
+                        column_cases >= searched_values['min'])
+                if 'max' in searched_values:
+                    search_query = search_query.filter(
+                        column_cases <= searched_values['max'])
+            else:
+                column_cases = get_query_case_for_equipment_mastery(
+                    param)
+                if 'min' in searched_values:
+                    search_query = search_query.filter(
+                    column_cases >= searched_values['min'])
+                if 'max' in searched_values:
+                    search_query = search_query.filter(
+                        column_cases <= searched_values['max'])
         elif "_res" in  param:
             # Handle resistance searches
             continue
@@ -1182,8 +1280,9 @@ def get_equipments_by_search_params_and_language(search_params_dict, language):
                 name_column.ilike(f'%{searched_values}%'))
         elif param in list_type_params:
             # Search params that have a list of types
-            for value in searched_values:     
-                search_query = search_query.filter(column == value)
+            if param != 'mastery_element':
+                for value in searched_values:     
+                    search_query = search_query.filter(column == value)
         elif param in boolean_params:
             # User wants to search for equipment where param exists
             search_query = search_query.filter(column != None)
