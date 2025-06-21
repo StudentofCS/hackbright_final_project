@@ -54,6 +54,12 @@ def get_search_args(form):
             build_search_args[key]['mastery_element'] = build_search_args[key].get(
                 'mastery_element', [])
             build_search_args[key]['mastery_element'].extend(element_list)
+        if key == 'elemental_res':
+            element_list = form.getlist('res_element')
+            build_search_args[key] = build_search_args.get(key, {})
+            build_search_args[key]['res_element'] = build_search_args[key].get(
+                'res_element', [])
+            build_search_args[key]['res_element'].extend(element_list)
         if form.get(min_key):
             min_stat = int(form.get(min_key))
             build_search_args[key] = build_search_args.get(key, {})

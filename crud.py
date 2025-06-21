@@ -1183,18 +1183,89 @@ def get_query_case_for_equipment_mastery(param, elemental_list=[]):
     return case(*cases)
 
 
-def get_query_case_for_equipment_res(param):
-    """Return query case for total res"""
-
+def get_query_case_for_equipment_res(param, elemental_list=[]):
+    """Return query case for total equipment res"""
+    
+    num_of_elements = len(elemental_list)
     stat = get_query_case_for_equipment_column_with_neg(param)
     random_res = func.coalesce(Equipment.random_resistances, 0)
     num_random = func.coalesce(Equipment.num_random_resistances, 0)
-    res1 = get_query_case_for_equipment_column_with_neg('fire_res')
-    res2 = get_query_case_for_equipment_column_with_neg('water_res')
-    res3 = get_query_case_for_equipment_column_with_neg('earth_res')
-    res4 = get_query_case_for_equipment_column_with_neg('air_res')
+    res_dict = {'fire_res' : 
+                            get_query_case_for_equipment_column_with_neg(
+                                'fire_res'),
+                        'water_res' : 
+                            get_query_case_for_equipment_column_with_neg(
+                                'water_res'),
+                        'earth_res' : 
+                            get_query_case_for_equipment_column_with_neg(
+                                'earth_res'),
+                        'air_res' : 
+                            get_query_case_for_equipment_column_with_neg(
+                                'air_res')}
+    res1 = res_dict['fire_res']
+    res2 = res_dict['water_res']
+    res3 = res_dict['earth_res']
+    res4 = res_dict['air_res']
 
-    return (res1 + res2 + res3 + res4 + stat + (random_res * num_random))
+    cases = []
+
+    if num_of_elements == 0:
+        cases.append((num_of_elements == 0, res1 + 
+                        res2 + res3 + res4 + (stat * 4) + 
+                        (random_res * num_random)))
+        
+    if num_of_elements == 1:
+        cases.append((and_((num_of_elements == 1), (num_random >= num_of_elements)),
+                         res_dict[elemental_list[0]] + stat + 
+                         random_res))
+        
+    if num_of_elements == 2:
+        cases.extend([(num_of_elements == 2 & num_random >= num_of_elements
+                          & res_dict[elemental_list[0]] == 
+                          res_dict[elemental_list[1]],
+                          res_dict[elemental_list[0]] + (stat * 2) +
+                          random_res),
+
+                        (num_of_elements == 2 & num_random < num_of_elements
+                          & res_dict[elemental_list[0]] == 
+                          res_dict[elemental_list[1]],
+                          res_dict[elemental_list[0]] + (stat * 2))])
+        
+    if num_of_elements == 3:
+        cases.extend([(num_of_elements == 3 & num_random >= num_of_elements
+                          & res_dict[elemental_list[0]] == 
+                          res_dict[elemental_list[1]] & 
+                          res_dict[elemental_list[0]] == 
+                          res_dict[elemental_list[2]],
+                          res_dict[elemental_list[0]] + (stat * 3) +
+                          random_res),
+
+                        (num_of_elements == 3 & num_random < num_of_elements
+                          & res_dict[elemental_list[0]] == 
+                          res_dict[elemental_list[1]] & 
+                          res_dict[elemental_list[0]] == 
+                          res_dict[elemental_list[2]],
+                          res_dict[elemental_list[0]] + (stat * 3))])
+        
+    if num_of_elements == 4:
+        cases.append((and_(num_of_elements == 4, num_random == 0), 
+                                                  stat * 4))
+
+    return case(*cases)
+
+
+# def get_query_case_for_equipment_res(param):
+#     """Return query case for total res"""
+
+#     stat = get_query_case_for_equipment_column_with_neg(param)
+#     random_res = func.coalesce(Equipment.random_resistances, 0)
+#     num_random = func.coalesce(Equipment.num_random_resistances, 0)
+#     res1 = get_query_case_for_equipment_column_with_neg('fire_res')
+#     res2 = get_query_case_for_equipment_column_with_neg('water_res')
+#     res3 = get_query_case_for_equipment_column_with_neg('earth_res')
+#     res4 = get_query_case_for_equipment_column_with_neg('air_res')
+
+#     return (res1 + res2 + res3 + res4 + stat + (random_res * num_random))
 
     """
     Return a flask sqlalchemy query case
@@ -1272,7 +1343,25 @@ def get_equipments_by_search_params_and_language(search_params_dict, language):
                         column_cases <= searched_values['max'])
         elif "_res" in  param:
             # Handle resistance searches
-            continue
+            if 'res_element' in search_params_dict['elemental_res']:
+                element_list = search_params_dict['elemental_res']['res_element']
+                column_cases = get_query_case_for_equipment_res(
+                    param, element_list)
+                if 'min' in searched_values:
+                    search_query = search_query.filter(
+                        column_cases >= searched_values['min'])
+                if 'max' in searched_values:
+                    search_query = search_query.filter(
+                        column_cases <= searched_values['max'])
+            else:
+                column_cases = get_query_case_for_equipment_res(
+                    param)
+                if 'min' in searched_values:
+                    search_query = search_query.filter(
+                    column_cases >= searched_values['min'])
+                if 'max' in searched_values:
+                    search_query = search_query.filter(
+                        column_cases <= searched_values['max'])
         elif param == 'equipment_name':
             # Search for name of equip by user language
             name_column = getattr(Name_translation, language)

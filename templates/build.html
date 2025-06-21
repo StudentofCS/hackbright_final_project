@@ -248,6 +248,14 @@
                                             <span class="input-group-text bg-secondary border-secondary"> - </span>
                                             <input type="number" class="form-control form-control-sm" name="max_elemental_res" aria-label="Maximum elemental resistance">
                                         </div>
+                                        <div class="btn-toolbar mb-3" role="group" aria-label="Checkbox buttons for elemental resistances to focus on for total resistance">
+                                            {% for stat in elemental_res_order %}
+                                                <input type="checkbox" class="btn-check" name="res_element" id="equip_{{ stat }}" value="{{ stat }}" autocomplete="off">
+                                                <label class="btn btn-sm btn-outline-primary" for="equip_{{ stat }}">
+                                                    {{ (stat | replace("_res","")) | title}}
+                                                </label>
+                                            {% endfor %}
+                                        </div>
                                     </div>
 
                                     {% for stat in battle_stat_order %}                    
