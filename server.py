@@ -272,7 +272,7 @@ def get_build(build_id):
 @app.route('/search_equipments', methods=['POST'])
 def get_equipment_results():
 
-    session['equipment_search_params'] = get_search_args(request.form)
+    session['equipment_search_params'] = get_search_args(request.json)
     build_id = request.form.get('build_id')
 
     equips = crud.get_equipments_by_search_params_and_language(

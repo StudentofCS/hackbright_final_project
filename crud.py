@@ -1310,7 +1310,7 @@ def get_equipments_by_search_params_and_language(search_params_dict, language):
     search_query = db.session.query(Equipment, Name_translation).join(
         Name_translation, Name_translation.name_id == Equipment.id)
     list_type_params = ['equip_type_id', 'rarity',
-                        'mastery_element']
+                        'mastery_element', 'res_element']
     boolean_params = ['state', 'farmer','lumberjack',
                       'herbalist', 'miner', 'trapper',
                       'fisherman']
@@ -1320,7 +1320,7 @@ def get_equipments_by_search_params_and_language(search_params_dict, language):
         searched_values = search_params_dict[param]
         column = getattr(Equipment, param)
 
-        if '_mastery' in param:
+        if 'elemental_mastery' == param:
             # Handle mastery searches
             if 'mastery_element' in search_params_dict['elemental_mastery']:
                 element_list = search_params_dict['elemental_mastery']['mastery_element']
@@ -1341,7 +1341,7 @@ def get_equipments_by_search_params_and_language(search_params_dict, language):
                 if 'max' in searched_values:
                     search_query = search_query.filter(
                         column_cases <= searched_values['max'])
-        elif "_res" in  param:
+        elif "elemental_res" ==  param:
             # Handle resistance searches
             if 'res_element' in search_params_dict['elemental_res']:
                 element_list = search_params_dict['elemental_res']['res_element']
@@ -1369,7 +1369,7 @@ def get_equipments_by_search_params_and_language(search_params_dict, language):
                 name_column.ilike(f'%{searched_values}%'))
         elif param in list_type_params:
             # Search params that have a list of types
-            if param != 'mastery_element':
+            if param not in ['mastery_element', 'res_element']:
                 for value in searched_values:     
                     search_query = search_query.filter(column == value)
         elif param in boolean_params:
