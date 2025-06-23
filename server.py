@@ -272,7 +272,7 @@ def get_build(build_id):
 @app.route('/search_equipments', methods=['POST'])
 def get_equipment_results():
 
-    session['equipment_search_params'] = get_search_args(request.json)
+    session['equipment_search_params'] = get_search_args(request.form)
     build_id = request.form.get('build_id')
 
     equips = crud.get_equipments_by_search_params_and_language(
@@ -292,6 +292,16 @@ def get_equipment_results():
                            characteristic_caps=characteristic_caps,
                            equipments=equips)
 
+
+@app.route('/api/equip_search', methods=['POST'])
+def get_equip_results():
+
+    session['equipment_search_params'] = get_search_args(request.json)
+
+    equips = crud.get_equipments_by_search_params_and_language(
+        session['equipment_search_params'], session['lang'])
+
+    return jsonify(equips)
 
 
 

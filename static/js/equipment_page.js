@@ -67,7 +67,7 @@ document.querySelector('#equipment_search_form').addEventListener('submit', (evt
         max_berserk_mastery: document.querySelector('input[name="max_berserk_mastery"]').value,
     };
 
-    fetch('/search_equipments', {
+    fetch('/api/equip_search', {
         method: 'POST',
         body: JSON.stringify(formInputs),
         headers: {
@@ -76,7 +76,7 @@ document.querySelector('#equipment_search_form').addEventListener('submit', (evt
     })
         .then((response) => response.json())
         .then((responseJson) => {
-            
+            alert('this worked');
         });
 
 });
