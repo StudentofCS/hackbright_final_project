@@ -17,7 +17,8 @@ class User(db.Model):
                       unique = True)
     password = db.Column(db.String)
 
-    build = db.relationship('Build', back_populates='user')
+    build = db.relationship('Build', back_populates='user',
+                            lazy='joined')
 
     def __repr__(self):
         return f'<User id = {self.id}; email = {self.email}>'
