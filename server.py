@@ -5,6 +5,7 @@ from flask import (Flask, render_template, request, flash,
 from jinja2 import StrictUndefined
 from model import connect_to_db, db
 import crud
+import schemas
 
 
 app = Flask(__name__)
@@ -41,7 +42,8 @@ def get_search_args(form):
                 form_stat = form.get(key)
                 build_search_args.update({key : form_stat})
             elif key in param_lists:
-                form_stat_list = form.getlist(key)
+                # form_stat_list = form.getlist(key)
+                form_stat_list = form.get(key)
                 # First time trying list comprehension
                 form_stat_list_ints = [int(i) for i in form_stat_list]
                 build_search_args.update({key : form_stat_list_ints})
@@ -49,17 +51,21 @@ def get_search_args(form):
                 form_stat = int(form.get(key))
                 build_search_args.update({key : form_stat})
         if key == 'elemental_mastery':
-            element_list = form.getlist('mastery_element')
-            build_search_args[key] = build_search_args.get(key, {})
-            build_search_args[key]['mastery_element'] = build_search_args[key].get(
-                'mastery_element', [])
-            build_search_args[key]['mastery_element'].extend(element_list)
+            if form.get(key):
+                # element_list = form.getlist('mastery_element')
+                element_list = form.get('mastery_element')
+                build_search_args[key] = build_search_args.get(key, {})
+                build_search_args[key]['mastery_element'] = build_search_args[key].get(
+                    'mastery_element', [])
+                build_search_args[key]['mastery_element'].extend(element_list)
         if key == 'elemental_res':
-            element_list = form.getlist('res_element')
-            build_search_args[key] = build_search_args.get(key, {})
-            build_search_args[key]['res_element'] = build_search_args[key].get(
-                'res_element', [])
-            build_search_args[key]['res_element'].extend(element_list)
+            if form.get(key):
+                # element_list = form.getlist('res_element')
+                element_list = form.get('res_element')
+                build_search_args[key] = build_search_args.get(key, {})
+                build_search_args[key]['res_element'] = build_search_args[key].get(
+                    'res_element', [])
+                build_search_args[key]['res_element'].extend(element_list)
         if form.get(min_key):
             min_stat = int(form.get(min_key))
             build_search_args[key] = build_search_args.get(key, {})
@@ -300,8 +306,13 @@ def get_equip_results():
 
     equips = crud.get_equipments_by_search_params_and_language(
         session['equipment_search_params'], session['lang'])
+    
+    if equips:
+        equip_dicts = schemas.EquipmentSchema().dump(equips, many=True)
+    else:   
+        return None
 
-    return jsonify(equips)
+    return jsonify(equip_dicts)
 
 
 

@@ -3,6 +3,8 @@
 document.querySelector('#equipment_search_form').addEventListener('submit', (evt) => {
     evt.preventDefault();
 
+    alert('stopped event');
+
     const formInputs = {
 
         equipment_name: document.querySelector(
