@@ -3,8 +3,6 @@
 document.querySelector('#equipment_search_form').addEventListener('submit', (evt) => {
     evt.preventDefault();
 
-    alert('stopped event');
-
     const formInputs = {
 
         equipment_name: document.querySelector(
@@ -78,7 +76,30 @@ document.querySelector('#equipment_search_form').addEventListener('submit', (evt
     })
         .then((response) => response.json())
         .then((responseJson) => {
-            alert('this worked');
+            console.log(responseJson)
+
+            if (responseJson !== null) {
+                const search_tab = document.querySelector(
+                    '#equipment_tab_col');
+                const results_div = 
+                    '<div class="row row-col-4 border g-4 mb-3 pt-3" id="equipment_results_row">';
+                search_tab.insertAdjacentHTML('beforeend', results_div)
+                const results_row = document.querySelector(
+                    '#equipment_results_row')
+                const results_qty = '<div class="col-12">' +
+                                `<h5 class="text-end">Results: ${responseJson.length}</h5>` +
+                                '</div>';
+                results_row.insertAdjacentHTML('afterbegin', results_qty)
+
+                for (equip of equips) {
+                    
+                    const card = 
+
+                    search_tab.insertAdjacentHTML('beforeend', )
+                }
+            }
+            
+
         });
 
 });
