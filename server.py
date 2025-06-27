@@ -120,6 +120,8 @@ def inject_main_stats_max_level_and_name_translations():
                    'mp', 'spell_range',
                    'wp', 'control',
                    'dmg_inflicted', 'resistance']
+    equip_stat_order = ['ap', 'mp', 'wp', 'hp',
+                        ]
     
     max_level = crud.MAX_LEVEL
 

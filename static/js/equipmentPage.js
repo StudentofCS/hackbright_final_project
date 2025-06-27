@@ -76,26 +76,44 @@ document.querySelector('#equipment_search_form').addEventListener('submit', (evt
     })
         .then((response) => response.json())
         .then((responseJson) => {
-            console.log(responseJson)
 
             if (responseJson !== null) {
-                const search_tab = document.querySelector(
-                    '#equipment_tab_col');
-                const results_div = 
-                    '<div class="row row-col-4 border g-4 mb-3 pt-3" id="equipment_results_row">';
-                search_tab.insertAdjacentHTML('beforeend', results_div)
+                alert('got it');
+                // const search_tab = document.querySelector(
+                //     '#equipment_tab_col');
+                // const results_div = 
+                //     '<div class="row row-col-4 border g-4 mb-3 pt-3" id="equipment_results_row">';
+                // // search_tab.insertAdjacentHTML('beforeend', results_div)
+
                 const results_row = document.querySelector(
-                    '#equipment_results_row')
+                    '#equipment_results_row');
+                results_row.setAttribute('style', 'display:block;')
+                results_row.innerHTML = ''
+
                 const results_qty = '<div class="col-12">' +
                                 `<h5 class="text-end">Results: ${responseJson.length}</h5>` +
                                 '</div>';
                 results_row.insertAdjacentHTML('afterbegin', results_qty)
+                
 
-                for (equip of equips) {
+                for (const equip of responseJson) {
+                    console.log(equip['id'])
                     
                     const card = 
+                        '<div class="col-3">' +
+                            `<div class="card h-100" id="${equip['id']}">` +
+                                '<div class="card card-header">' +
+                                    // <!-- equipment name -->
+                                    `<span style="dispaly:inline-block;text-overflow:ellipsis;">ID: ${equip.id}</span>` +
+                                    `<span style="dispaly:inline-block;text-overflow:ellipsis;">Type: ${equip.equip_type} Level: ${equip.level}</span>` +
+                                '</div>' +
+                                '<div class="card card-body">' +
+                                    // <!-- equipment stats -->
+                                '</div>' +
+                            '</div>' +
+                        '</div>';
 
-                    search_tab.insertAdjacentHTML('beforeend', )
+                    results_row.insertAdjacentHTML('beforeend', card)
                 }
             }
             

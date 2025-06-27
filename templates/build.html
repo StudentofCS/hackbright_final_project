@@ -324,7 +324,7 @@
                     </div>
 
                     {% if session.get("equipment_search_params") != None %}
-                        <div class="row row-col-4 border g-4 mb-3 pt-3" id="equipment_results_row">
+                        <div class="row row-col-4 border g-4 mb-3 pt-3" id="equipment_results_row2">
                             <div class="col-12">
                                 <h5 class="text-end">Results: {{ equipments | length }}</h5>
                             </div>
@@ -339,18 +339,8 @@
                             {% endfor %}
                         </div>
                     {% endif %}
-                    <div class="row row-col-4 border g-4 mb-3 " id="equipment_results_row" style="display:block;">
-                        <div class="col-12">
-                            <h5 class="text-end">Results: </h5>
-                        </div>
-                        
-                        <div class="col-3">
-                            <div class="card h-100" id="{equip.id}">
-                                <div class="card card-body">
-                                    <!-- equipment stats -->
-                                </div>
-                            </div>
-                        </div>
+                    <div class="row row-col-4 border g-4 mb-3 " id="equipment_results_row" style="display:none;">
+            
                         
                     </div>
 
