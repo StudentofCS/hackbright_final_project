@@ -306,15 +306,23 @@ def get_equip_results():
 
     session['equipment_search_params'] = get_search_args(request.json)
 
-    equips = crud.get_equipments_by_search_params_and_language(
+    equips_and_names = crud.get_equipments_by_search_params_and_language(
         session['equipment_search_params'], session['lang'])
     
-    if equips:
-        equip_dicts = schemas.EquipmentSchema().dump(equips, many=True)
+    equip_dict_list = []
+    name_dict = {}
+
+    if equips_and_names:
+        equip_schema = schemas.EquipmentSchema()
+        name_schema = schemas.NameTranslationSchema()
+
+        for equip, name in equips_and_names:
+            equip_dict_list.append(equip_schema.dump(equip))
+            name_dict.update({name.name_id : name_schema.dump(name)})
     else:   
         return None
 
-    return jsonify(equip_dicts)
+    return jsonify(equip_dict_list, name_dict)
 
 
 

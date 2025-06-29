@@ -1639,6 +1639,11 @@ def get_build_characteristic_cap_base_stat_by_build_id(build_id):
                 Build.id == build_id).one()
 
 
+def get_name_translations():
+    return db.session.query(Name_translation).all()
+
+
+
 if __name__ == '__main__':
     from server import app
     connect_to_db(app)

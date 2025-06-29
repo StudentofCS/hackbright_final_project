@@ -1,5 +1,8 @@
 "use strict";
 
+
+
+
 document.querySelector('#equipment_search_form').addEventListener('submit', (evt) => {
     evt.preventDefault();
 
@@ -78,42 +81,107 @@ document.querySelector('#equipment_search_form').addEventListener('submit', (evt
         .then((responseJson) => {
 
             if (responseJson !== null) {
-                alert('got it');
-                // const search_tab = document.querySelector(
-                //     '#equipment_tab_col');
+                const equips = responseJson[0]
+                const names = responseJson[1]
+                // alert('got it');
+
+                const search_tab = document.querySelector(
+                    '#equipment_tab_col');
                 // const results_div = 
                 //     '<div class="row row-col-4 border g-4 mb-3 pt-3" id="equipment_results_row">';
                 // // search_tab.insertAdjacentHTML('beforeend', results_div)
 
-                const results_row = document.querySelector(
-                    '#equipment_results_row');
-                results_row.setAttribute('style', 'display:block;')
-                results_row.innerHTML = ''
+                // const results_row = document.querySelector(
+                //     '#equipment_results_row');
+                // results_row.setAttribute('style', 'display:block;')
+                // results_row.innerHTML = ''
+                const results_row_query = document.querySelector(
+                    '#equipment_results_row'
+                );
 
-                const results_qty = '<div class="col-12">' +
-                                `<h5 class="text-end">Results: ${responseJson.length}</h5>` +
-                                '</div>';
-                results_row.insertAdjacentHTML('afterbegin', results_qty)
+                if (results_row_query) {
+                    search_tab.removeChild('#equipment_results_row')
+                }
+
+                const results_row = document.createElement('div');
+                results_row.classList.add('row', 'row-col-4',
+                    'border', 'g-4', 'mb-3', 'pt-3', 'rounded-4'
+                )
+                results_row.setAttribute('id', 'equipment_results_row')
+
+
+                // const results_qty = '<div class="col-12">' +
+                //                 `<h5 class="text-end">Results: ${equips.length}</h5>` +
+                //                 '</div>';
+
+                const results_qty = document.createElement('div');
+                results_qty.classList.add('col-12')
+                const results_header = document.createElement('h5');
+                results_header.classList.add('text-end')
+                results_header.innerHTML = `Results: ${equips.length}`;
+                results_qty.insertAdjacentElement('beforeend', results_header)
+                results_row.insertAdjacentElement('afterbegin', results_qty)
+                search_tab.insertAdjacentElement('beforeend', results_row)
                 
-
-                for (const equip of responseJson) {
-                    console.log(equip['id'])
+                for (const equip of equips) {
+                    console.log(equip);
                     
-                    const card = 
-                        '<div class="col-3">' +
-                            `<div class="card h-100" id="${equip['id']}">` +
-                                '<div class="card card-header">' +
-                                    // <!-- equipment name -->
-                                    `<span style="dispaly:inline-block;text-overflow:ellipsis;">ID: ${equip.id}</span>` +
-                                    `<span style="dispaly:inline-block;text-overflow:ellipsis;">Type: ${equip.equip_type} Level: ${equip.level}</span>` +
-                                '</div>' +
-                                '<div class="card card-body">' +
-                                    // <!-- equipment stats -->
-                                '</div>' +
-                            '</div>' +
-                        '</div>';
+                    // const card = 
+                    //     '<div class="col-4">' +
+                    //         `<div class="card h-100" id="card${equip.id}">` +
+                    //             '<div class="card card-header">' +
+                    //                 // <!-- equipment name -->
+                    //                 `<span style="dispaly:inline-block;text-overflow:ellipsis;">${names[equip.id].en}</span>` +
+                    //                 `<span style="dispaly:inline-block;text-overflow:ellipsis;">Type: ${equip.equip_type_id} Level: ${equip.level}</span>` +
+                    //             '</div>' +
+                    //             '<div class="card card-body">' +
+                    //                 // <!-- equipment stats -->
+                    //             '</div>' +
+                    //         '</div>' +
+                    //     '</div>';
+                    // results_row.insertAdjacentHTML('beforeend', card)
 
-                    results_row.insertAdjacentHTML('beforeend', card)
+                    const col_div = document.createElement('div');
+                    col_div.classList.add('col-4','test')
+                    results_row.insertAdjacentElement('beforeend', col_div)
+                    const card_div = document.createElement('div');
+                    card_div.classList.add('card', 'h-100', 'equip-card')
+                    card_div.setAttribute('id', `card${equip.id}`)
+                    col_div.insertAdjacentElement('beforeend', card_div)
+                    const card_header = document.createElement('div');
+                    card_header.classList.add('card', 'card-header')
+                    card_header.innerHTML = 
+                    `<span style="dispaly:inline-block;text-overflow:ellipsis;">${names[equip.id].en}</span>` +
+                    `<span style="dispaly:inline-block;text-overflow:ellipsis;">Type: ${equip.equip_type_id} Level: ${equip.level}</span>`;
+                    card_div.insertAdjacentElement('beforeend', card_header)
+                    const card_body = document.createElement('div');
+                    card_body.classList.add('card', 'card-body')
+                    card_div.insertAdjacentElement('beforeend', card_body)
+
+
+
+                    
+
+                    // const card_body = document.querySelector(
+                    //         `#card${equip.id}`
+                    //     ).querySelector('.card-body')
+
+                    for (const stat of Object.keys(equip)) {
+                        
+                        if (equip[stat] !== null && !(stat in ['id', 'equip_type_id', 'level']) ) {
+                            card_body.insertAdjacentHTML('beforeend', `<span style="dispaly:inline-block;text-overflow:ellipsis;">${equip[stat]} ${stat}</span>`)
+                        }
+                    }
+
+                    
+                    const add_equip_button = document.createElement('button');
+                    add_equip_button.classList.add('btn', 'btn-sm', 
+                        'btn-primary', 'ms-auto', 'add_equip')
+                    add_equip_button.setAttribute('style', 
+                        'bottom: 0; right: 0; position:absolute;')
+                    add_equip_button.setAttribute('id', `add_${equip.id}`)
+                    add_equip_button.innerHTML = 'Add';
+                    card_body.insertAdjacentElement('beforeend', add_equip_button)
                 }
             }
             
@@ -121,3 +189,6 @@ document.querySelector('#equipment_search_form').addEventListener('submit', (evt
         });
 
 });
+
+
+
