@@ -100,7 +100,7 @@ document.querySelector('#equipment_search_form').addEventListener('submit', (evt
                 );
 
                 if (results_row_query) {
-                    search_tab.removeChild('#equipment_results_row')
+                    search_tab.removeChild(results_row_query)
                 }
 
                 const results_row = document.createElement('div');
@@ -124,7 +124,7 @@ document.querySelector('#equipment_search_form').addEventListener('submit', (evt
                 search_tab.insertAdjacentElement('beforeend', results_row)
                 
                 for (const equip of equips) {
-                    console.log(equip);
+                    // console.log(equip);
                     
                     // const card = 
                     //     '<div class="col-4">' +
@@ -141,13 +141,18 @@ document.querySelector('#equipment_search_form').addEventListener('submit', (evt
                     //     '</div>';
                     // results_row.insertAdjacentHTML('beforeend', card)
 
+                    const equip_dict = document.createElement('input');
+                    equip_dict.setAttribute('id', `${equip.id}`)
+                    equip_dict.setAttribute('value', equip)
+                    equip_dict.setAttribute('type', 'hidden')
                     const col_div = document.createElement('div');
-                    col_div.classList.add('col-4','test')
+                    col_div.classList.add('col-4','card_col')
                     results_row.insertAdjacentElement('beforeend', col_div)
                     const card_div = document.createElement('div');
                     card_div.classList.add('card', 'h-100', 'equip-card')
                     card_div.setAttribute('id', `card${equip.id}`)
                     col_div.insertAdjacentElement('beforeend', card_div)
+                    card_div.insertAdjacentElement('beforeend', equip_dict)
                     const card_header = document.createElement('div');
                     card_header.classList.add('card', 'card-header')
                     card_header.innerHTML = 
@@ -181,7 +186,9 @@ document.querySelector('#equipment_search_form').addEventListener('submit', (evt
                         'bottom: 0; right: 0; position:absolute;')
                     add_equip_button.setAttribute('id', `add_${equip.id}`)
                     add_equip_button.innerHTML = 'Add';
+                    add_equip_button.setAttribute('type', 'button')
                     card_body.insertAdjacentElement('beforeend', add_equip_button)
+                    add_equip_button.addEventListener('click', add_equip)
                 }
             }
             
@@ -189,6 +196,61 @@ document.querySelector('#equipment_search_form').addEventListener('submit', (evt
         });
 
 });
+
+
+function add_equip(evt) {
+    evt.preventDefault();
+
+    const equip_id = this.id.slice(4);
+    const formInputs = {
+        equip_id: equip_id,
+        // equip: document.getElementById(`${equip_id}`).value,
+        build: document.getElementsByName('build_dict')[0].value,
+
+    };
+    
+    fetch('/api/add_equip', {
+        method: 'POST',
+        body: JSON.stringify(formInputs),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+        .then((response) => response.json())
+        .then((responseJson) => {
+            alert('hello equip')
+            });
+}
+
+// const add_equip_buttons = document.querySelectorAll('.add_equip');
+
+// for (let i = 0; i < add_equip_buttons.length; i++) {
+//     add_equip_buttons[i].addEventListener('click', (evt) => {
+//         evt.preventDefault();
+
+
+//         alert('add pressed')
+//         const equip_id = add_equip_buttons[i].id.slice(4);
+//         const formInputs = {
+//             equip: document.getElementById(`#${equip_id}`).value,
+//             build: document.getElementsByName('build_dict')[0].value,
+
+//         };
+        
+//         fetch('/api/add_equip', {
+//             method: 'POST',
+//             body: JSON.stringify(formInputs),
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//         })
+//             .then((response) => response.json())
+//             .then((responseJson) => {
+//                 alert('hello')
+//                 });
+
+//         });
+// }
 
 
 

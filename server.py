@@ -266,6 +266,7 @@ def get_build(build_id):
 
     combo = crud.get_build_characteristic_cap_base_stat_by_build_id(build_id)
     build = combo[0]
+    build_dict = schemas.BuildSchema().dump(build)
     base_stats = combo[2]
     characteristic_caps = combo[1]
     session['equipment_search_params'] = None
@@ -275,7 +276,9 @@ def get_build(build_id):
 
     return render_template('build.html', build=build,
                            base_stats=base_stats,
-                           characteristic_caps=characteristic_caps)
+                           characteristic_caps=characteristic_caps,
+                           build_dict = build_dict)
+
 
 @app.route('/search_equipments', methods=['POST'])
 def get_equipment_results():
@@ -288,6 +291,7 @@ def get_equipment_results():
     
     combo = crud.get_build_characteristic_cap_base_stat_by_build_id(build_id)
     build = combo[0]
+    build_dict = schemas.BuildSchema().dump(build)
     base_stats = combo[2]
     characteristic_caps = combo[1]
     
@@ -298,7 +302,8 @@ def get_equipment_results():
     return render_template('build.html', build=build,
                            base_stats=base_stats,
                            characteristic_caps=characteristic_caps,
-                           equipments=equips)
+                           equipments=equips,
+                           build_dict=build_dict)
 
 
 @app.route('/api/equip_search', methods=['POST'])
@@ -319,10 +324,29 @@ def get_equip_results():
         for equip, name in equips_and_names:
             equip_dict_list.append(equip_schema.dump(equip))
             name_dict.update({name.name_id : name_schema.dump(name)})
-    else:   
-        return None
 
     return jsonify(equip_dict_list, name_dict)
+
+
+@app.route('/api/add_equip', methods=['POST'])
+def update_equip():
+
+    # equip = request.json.get('equip')
+    build = request.json.get('build')
+
+    # print(f'\n\n{equip}\n\n')
+    print(f'\n\n{build}\n\n')
+
+    e_schema = schemas.EquipmentSchema()
+    b_schema = schemas.BuildSchema(load_instance=False)
+
+    # print(f'\n\n{type(equip)}\n\n')
+    print(f'\n\n{type(build)}\n\n')
+
+    data = request.get_json()
+    print(f'\n\n{data}\n\n')
+    
+    return
 
 
 
