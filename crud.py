@@ -153,6 +153,37 @@ CHARACTERISTIC_MULTIPLIERS_DICT = {
     }
 
 
+EQUIPMENT_SLOTS = {
+    108 : 'main_hand',
+    110 : 'main_hand',
+    113 : 'main_hand',
+    115 : 'main_hand',
+    219 : 'main_hand',
+    254 : 'main_hand',
+    101 : 'two_hand',
+    111 : 'two_hand',
+    114 : 'two_hand',
+    117 : 'two_hand',
+    223 : 'two_hand',
+    253 : 'two_hand',
+    112 : 'off_hand',
+    189 : 'off_hand',
+    103 : 'ring',
+    119 : 'boots',
+    120 : 'amulet',
+    132 : 'cape',
+    133 : 'belt',
+    134 : 'helmet',
+    136 : 'breastplate',
+    138 : 'epaulettes',
+    582 : 'pet',
+    611 : 'mount',
+    480 : 'emblem',
+    537 : 'emblem',
+    646 : 'emblem',
+}
+
+
 def create_user(email, password):
     """Create and return a new user"""
 
@@ -1642,6 +1673,40 @@ def get_build_characteristic_cap_base_stat_by_build_id(build_id):
 def get_name_translations():
     return db.session.query(Name_translation).all()
 
+
+def update_equipment_set_by_build_equipment(build, equipment):
+
+    slot = EQUIPMENT_SLOTS[equipment.equip_type_id]
+    equip_set = build.equipment_set
+
+    if slot == 'ring':
+        # If no ring in ring1 slot, add
+        if not equip_set.ring1:
+            equip_set.ring1 = equipment
+        # If no ring in ring2 slot
+        elif equip_set.ring1 and not equip_set.ring2:
+            # If ring not already equipped, add in slot2
+            if equipment != equip_set.ring1:
+                equip_set.ring2 = equipment
+            # If ring already equipped, move over to slot2
+            else:
+                equip_set.ring2 = equipment
+                equip_set.ring1 = None
+        # If both ring slots full
+        else:
+            # If ring already equipped, swap ring slots
+            if equipment == equip_set.ring1:
+                equip_set.ring1 = equip_set.ring2
+                equip_set.ring2 = equipment
+            elif equipment == equip_set.ring2:
+                equip_set.ring2 = equip_set.ring1
+                equip_set.ring1 = equipment
+            # If ring not equipped, place in ring1 slot
+            else:
+                equip_set.ring1 = equipment
+    else:
+        setattr(equip_set, slot, equipment)
+        
 
 
 if __name__ == '__main__':

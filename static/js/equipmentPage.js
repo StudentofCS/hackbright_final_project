@@ -206,6 +206,7 @@ function add_equip(evt) {
         equip_id: equip_id,
         // equip: document.getElementById(`${equip_id}`).value,
         build: document.getElementsByName('build_dict')[0].value,
+        build_id: document.getElementsByName('build_id')[0].value
 
     };
     
@@ -218,7 +219,25 @@ function add_equip(evt) {
     })
         .then((response) => response.json())
         .then((responseJson) => {
-            alert('hello equip')
+            
+            if (responseJson.equip_set.length !== 0) {
+                // console.log(responseJson.equip_set)
+
+                const set = responseJson.equip_set;
+                const equip_order = JSON.parse(
+                    document.getElementsByName(
+                    'equip_order')[0].value);
+
+                for (let equip of equip_order) {
+                    // console.log(equip)
+                    const slot = document.querySelector(`#${equip}_slot`);
+
+                    if (set[equip] !== null) {
+                        slot.innerHTML = `${equip}: ${set[equip]['id']}`
+                    }
+                }
+            }
+
             });
 }
 
@@ -253,4 +272,10 @@ function add_equip(evt) {
 // }
 
 
+const tabs = document.querySelectorAll('.tab')
+const tab_sections = document.querySelectorAll('.tab_section')
 
+
+for (const tab of tabs) {
+
+}

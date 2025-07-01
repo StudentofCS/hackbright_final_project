@@ -331,22 +331,34 @@ def get_equip_results():
 @app.route('/api/add_equip', methods=['POST'])
 def update_equip():
 
-    # equip = request.json.get('equip')
-    build = request.json.get('build')
+    # # equip = request.json.get('equip')
+    # build = request.json.get('build')
 
-    # print(f'\n\n{equip}\n\n')
-    print(f'\n\n{build}\n\n')
+    # # print(f'\n\n{equip}\n\n')
+    # print(f'\n\n{build}\n\n')
 
-    e_schema = schemas.EquipmentSchema()
-    b_schema = schemas.BuildSchema(load_instance=False)
+    # e_schema = schemas.EquipmentSchema()
+    # b_schema = schemas.BuildSchema(load_instance=False)
 
-    # print(f'\n\n{type(equip)}\n\n')
-    print(f'\n\n{type(build)}\n\n')
+    # # print(f'\n\n{type(equip)}\n\n')
+    # print(f'\n\n{type(build)}\n\n')
 
-    data = request.get_json()
-    print(f'\n\n{data}\n\n')
+    # data = request.get_json()
+    # print(f'\n\n{data}\n\n')
+
+    build_id = request.json.get('build_id')
+    equip_id = request.json.get('equip_id')
+
+    build = crud.get_build_by_id(int(build_id))
+    equip = crud.get_equipment_by_id(int(equip_id))
+
+    crud.update_equipment_set_by_build_equipment(build, equip)
+    db.session.commit()
+
+    set_schema = schemas.EquipmentSetSchema()
+    equip_set = set_schema.dump(build.equipment_set)
     
-    return
+    return jsonify(equip_set=equip_set)
 
 
 

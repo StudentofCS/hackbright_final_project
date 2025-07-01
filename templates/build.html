@@ -4,7 +4,8 @@
 
 {% block content %}
     
-    <input type="hidden" name="build_dict" value="{{ build_dict }}">
+    <input type="hidden" name="build_dict" value='{{ build_dict }}'>
+    <input type="hidden" name="equip_order" value='{{ equip_order | tojson }}''>
     <div class="row mb-3 pt-3 " id="top_of_builds">
         <div class="col-12">
                 <form action="/update_build" method="post"></form>    
@@ -95,11 +96,11 @@
                         {% for equip in equip_order %}
                             {% set equipment = build.equipment_set[equip] %}
                             {% if equipment == None %}
-                                <div class="col-auto border">
+                                <div class="col-auto border" id="{{ equip }}_slot">
                                     {{ (equip | replace("_"," ")) | title }}: Empty
                                 </div>
                             {% else %}
-                                <div class="col-auto border">
+                                <div class="col-auto border" id="{{ equip }}_slot">
                                     {{ (equip | replace("_"," ")) | title }}: {{ equipment.id }}
                                 </div>
                             {% endif %}
@@ -121,26 +122,26 @@
             <div class="row" id="tabs-row">
                 <ul class="nav nav-pills justify-content-center">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#" aria-label="Characteristics tab">Characteristics</a>
+                        <a class="nav-link tab active" aria-current="page" href="#" aria-label="Characteristics tab">Characteristics</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" aria-label="Equipment tab">Equipment</a>
+                        <a class="nav-link tab" href="#" aria-label="Equipment tab">Equipment</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" aria-label="Spells tab">Spells</a>
+                        <a class="nav-link tab disabled text-secondary" aria-disabled="true" href="#" aria-label="Spells tab">Spells</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" aria-label="Runes and sublimations tab">Runes and Sublimations</a>
+                        <a class="nav-link tab disabled text-secondary" aria-disabled="true" href="#" aria-label="Runes and sublimations tab">Runes and Sublimations</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="#" aria-label="Auto-equipment tab">Auto-Equipment</a>
+                        <a class="nav-link tab disabled text-secondary" aria-disabled="true" aria-current="page" href="#" aria-label="Auto-equipment tab">Auto-Equipment</a>
                     </li>
                 </ul>
             </div>
 
             <div class="row mb-3 pt-3" id="tabs_content_row">
 
-                <div class="col-12  mb-3 pt-3" id="characteristics_tab_col" style="display:none;">
+                <div class="col-12  mb-3 pt-3 tab_section" id="characteristics_tab_col" style="display:none;">
                     <div class="row" id="characteristic_row">
                         {% for section in [intelligence_order, strength_order, agility_order, fortune_order, major_order] | batch(3) %}
                             <div class="col-6 mb-3 pt-3 characteristic_cards">
@@ -178,7 +179,7 @@
                 
                 
 
-                <div class="col-12  mb-3 pt-3" id="equipment_tab_col">
+                <div class="col-12  mb-3 pt-3 tab_section" id="equipment_tab_col">
 
 
                     <div class="row mb-3" id="equipment_search_row">
@@ -347,15 +348,15 @@
 
                 </div>
 
-                <div class="col-12  mb-3 pt-3" id="spells_tab_col">
+                <div class="col-12  mb-3 pt-3 tab_section" id="spells_tab_col">
                     
                 </div>
 
-                <div class="col-12  mb-3 pt-3" id="runes_and_sublimations_tab_col">
+                <div class="col-12  mb-3 pt-3 tab_section" id="runes_and_sublimations_tab_col">
                     
                 </div>
 
-                <div class="col-12  mb-3 pt-3" id="auto_equipment_tab_col">
+                <div class="col-12  mb-3 pt-3 tab_section" id="auto_equipment_tab_col">
                     
                 </div>
 
