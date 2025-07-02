@@ -272,10 +272,42 @@ function add_equip(evt) {
 // }
 
 
-const tabs = document.querySelectorAll('.tab')
-const tab_sections = document.querySelectorAll('.tab_section')
+function activate_tab(evt) {
+    evt.preventDefault();
 
+    const tab_classes = ['characteristics_tab', 'equipment_tab',
+        'spells_tab', 'runes_tab', 'auto_tab'
+    ];
+    
+    for (const tab of tabs) {
+        tab.classList.remove('active')
+        tab.removeAttribute('aria-current')   
+    }
+
+    for (const tab_class of tab_classes) {
+            if (this.classList.contains(tab_class)) {
+                document.querySelector(
+                    `.tab_section.${tab_class}`).setAttribute(
+                        'style', 'display:block;')
+            } 
+            else {
+                document.querySelector(
+                    `.tab_section.${tab_class}`).setAttribute(
+                        'style', 'display:none;')
+            }
+        }
+
+    this.classList.add('active')
+    this.setAttribute('aria-current', 'page')
+
+    
+
+}
+
+
+const tabs = document.querySelectorAll('.tab');
+const tab_sections = document.querySelectorAll('.tab_section');
 
 for (const tab of tabs) {
-
+    tab.addEventListener('click', activate_tab)
 }

@@ -1704,6 +1704,13 @@ def update_equipment_set_by_build_equipment(build, equipment):
             # If ring not equipped, place in ring1 slot
             else:
                 equip_set.ring1 = equipment
+    elif slot == 'two_hand':
+        equip_set.main_hand = None
+        equip_set.off_hand = None
+        setattr(equip_set, slot, equipment)
+    elif slot in ['main_hand', 'off_hand']:
+        equip_set.two_hand = None
+        setattr(equip_set, slot, equipment)
     else:
         setattr(equip_set, slot, equipment)
         

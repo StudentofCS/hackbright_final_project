@@ -4,8 +4,7 @@
 
 {% block content %}
     
-    <input type="hidden" name="build_dict" value='{{ build_dict }}'>
-    <input type="hidden" name="equip_order" value='{{ equip_order | tojson }}''>
+    <input type="hidden" name="equip_order" value='{{ equip_order | tojson }}'>
     <div class="row mb-3 pt-3 " id="top_of_builds">
         <div class="col-12">
                 <form action="/update_build" method="post"></form>    
@@ -122,26 +121,26 @@
             <div class="row" id="tabs-row">
                 <ul class="nav nav-pills justify-content-center">
                     <li class="nav-item">
-                        <a class="nav-link tab active" aria-current="page" href="#" aria-label="Characteristics tab">Characteristics</a>
+                        <a class="nav-link tab active characteristics_tab" aria-current="page" href="#" aria-label="Characteristics tab">Characteristics</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link tab" href="#" aria-label="Equipment tab">Equipment</a>
+                        <a class="nav-link tab equipment_tab" href="#" aria-label="Equipment tab">Equipment</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link tab disabled text-secondary" aria-disabled="true" href="#" aria-label="Spells tab">Spells</a>
+                        <a class="nav-link tab disabled text-secondary spells_tab" aria-disabled="true" href="#" aria-label="Spells tab">Spells</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link tab disabled text-secondary" aria-disabled="true" href="#" aria-label="Runes and sublimations tab">Runes and Sublimations</a>
+                        <a class="nav-link tab disabled text-secondary runes_tab" aria-disabled="true" href="#" aria-label="Runes and sublimations tab">Runes and Sublimations</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link tab disabled text-secondary" aria-disabled="true" aria-current="page" href="#" aria-label="Auto-equipment tab">Auto-Equipment</a>
+                        <a class="nav-link tab disabled text-secondary auto_tab" aria-disabled="true" href="#" aria-label="Auto-equipment tab">Auto-Equipment</a>
                     </li>
                 </ul>
             </div>
 
             <div class="row mb-3 pt-3" id="tabs_content_row">
 
-                <div class="col-12  mb-3 pt-3 tab_section" id="characteristics_tab_col" style="display:none;">
+                <div class="col-12  mb-3 pt-3 tab_section characteristics_tab" id="characteristics_tab_col" style="display:block;">
                     <div class="row" id="characteristic_row">
                         {% for section in [intelligence_order, strength_order, agility_order, fortune_order, major_order] | batch(3) %}
                             <div class="col-6 mb-3 pt-3 characteristic_cards">
@@ -177,9 +176,9 @@
                 </div>
                 
                 
-                
 
-                <div class="col-12  mb-3 pt-3 tab_section" id="equipment_tab_col">
+
+                <div class="col-12  mb-3 pt-3 tab_section equipment_tab" id="equipment_tab_col" style="display:none;">
 
 
                     <div class="row mb-3" id="equipment_search_row">
@@ -348,15 +347,15 @@
 
                 </div>
 
-                <div class="col-12  mb-3 pt-3 tab_section" id="spells_tab_col">
+                <div class="col-12  mb-3 pt-3 tab_section spells_tab" id="spells_tab_col">
                     
                 </div>
 
-                <div class="col-12  mb-3 pt-3 tab_section" id="runes_and_sublimations_tab_col">
+                <div class="col-12  mb-3 pt-3 tab_section runes_tab" id="runes_and_sublimations_tab_col">
                     
                 </div>
 
-                <div class="col-12  mb-3 pt-3 tab_section" id="auto_equipment_tab_col">
+                <div class="col-12  mb-3 pt-3 tab_section auto_tab" id="auto_equipment_tab_col">
                     
                 </div>
 
@@ -367,6 +366,7 @@
 
         <div class="col-4 border rounded-4" id="build_stats_col">
             <div class="card text-bg-dark border-dark">
+                <input name="main_stats_order" value='{{ main_stats_order | tojson }}' type="hidden">
                 <div class="row mb-1 pt-3" id="main_stats_row">
                     {% for stat in main_stats_order %}
                         {% set stat_name = 'total_' + stat %}
@@ -389,6 +389,7 @@
                     </div>
                 </div>
 
+                <input name="elemental_stats_order" value='{{ (elemental_mastery_order + elemental_res_order) | tojson }}' type="hidden">
                 <div class="row mb-3 pt-3 border-top" id="elemental_stats_row">
                     {% for stat in elemental_mastery_order + elemental_res_order %}
                         {% set stat_name = 'total_' + stat %}
