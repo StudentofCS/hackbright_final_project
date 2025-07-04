@@ -1,8 +1,6 @@
 "use strict";
 
 
-
-
 document.querySelector('#equipment_search_form').addEventListener('submit', (evt) => {
     evt.preventDefault();
 
@@ -198,6 +196,18 @@ document.querySelector('#equipment_search_form').addEventListener('submit', (evt
 });
 
 
+function update_build_totals(build_totals) {
+    
+    const main_stats = document.getElementsByName(
+        'main_stats_order')[0].value;
+    for (const stat of main_stats) {
+        const stat_name = 'total_' + stat;
+        const element = document.querySelector(`#${stat_name}`);
+        element.innerHTML = 
+    }
+}
+
+
 function add_equip(evt) {
     evt.preventDefault();
 
@@ -228,7 +238,7 @@ function add_equip(evt) {
                     document.getElementsByName(
                     'equip_order')[0].value);
 
-                for (let equip of equip_order) {
+                for (const equip of equip_order) {
                     // console.log(equip)
                     const slot = document.querySelector(`#${equip}_slot`);
 
@@ -236,6 +246,10 @@ function add_equip(evt) {
                         slot.innerHTML = `${equip}: ${set[equip]['id']}`
                     }
                 }
+            }
+            if (responseJson.stat_totals.length != 0) {
+                build_totals = responseJson.stat_totals
+                update_build_totals(build_totals);
             }
 
             });
@@ -299,9 +313,6 @@ function activate_tab(evt) {
 
     this.classList.add('active')
     this.setAttribute('aria-current', 'page')
-
-    
-
 }
 
 

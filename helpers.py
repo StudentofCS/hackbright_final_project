@@ -5,6 +5,7 @@ import crud
 
 
 def get_build_base_stats_char_caps_by_build_id(build_id):
+    """Return build, base_stats, and characteristic stats by a build's id"""
     combo = crud.get_build_characteristic_cap_base_stat_by_build_id(build_id)
     build = combo[0]
     base_stats = combo[2]
@@ -17,6 +18,7 @@ def get_build_base_stats_char_caps_by_build_id(build_id):
 
 
 def get_total_build_stats_by_build_id(build_id):
+    """Return a build with total stat attributes by the build id"""
     combo = crud.get_build_characteristic_cap_base_stat_by_build_id(build_id)
     build = combo[0]
     base_stats = combo[2]
@@ -26,6 +28,19 @@ def get_total_build_stats_by_build_id(build_id):
     
     return build
 
+
+def get_total_stats_dict_by_build(build):
+    """Return a dict of a build's total stats by the build 
+    with total stat attributes"""
+
+    total_stats_dict = {}
+
+    for attr, value in build.__dict__.items():
+        if 'total_' in attr:
+            # Remove 'total_'
+            stat = attr[:6]
+            total_stats_dict.update({stat : value })
+    return total_stats_dict
 
 
 if __name__ == '__main__':

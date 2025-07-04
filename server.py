@@ -269,11 +269,11 @@ def get_build(build_id):
     # build = combo[0]
     # base_stats = combo[2]
     # characteristic_caps = combo[1]
-    # session['equipment_search_params'] = None
     
     # crud.set_build_with_total_stats_by_build_and_base_stats(
     #     tuple([build, base_stats]))
 
+    session['equipment_search_params'] = None
     b, bs, cc = helpers.get_build_base_stats_char_caps_by_build_id(build_id)
 
     return render_template('build.html', build=b,
@@ -360,9 +360,10 @@ def update_equip():
     equip_set = set_schema.dump(build.equipment_set)
 
     build_totals = helpers.get_total_build_stats_by_build_id(build_id)
+    total_stats_dict = helpers.get_total_stats_dict_by_build(build_totals)
     
     return jsonify(equip_set=equip_set,
-                   build_totals = build_totals)
+                   stat_totals=total_stats_dict)
 
 
 
