@@ -38,7 +38,7 @@ def get_total_stats_dict_by_build(build):
     for attr, value in build.__dict__.items():
         if 'total_' in attr:
             # Remove 'total_'
-            stat = attr[:6]
+            stat = attr[6:]
             total_stats_dict.update({stat : value })
     return total_stats_dict
 

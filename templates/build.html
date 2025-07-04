@@ -411,8 +411,8 @@
                 {% for i in range(0, (battle_stat_order | length) - 1, 2) %}
                     <div class="row border-top justify-content-center" id="battle_stats_row">
                             
-                        {% set stat1= battle_stat_order[i] %}
-                        {% set stat_name1 = 'total_' + stat1%}
+                        {% set stat1 = battle_stat_order[i] %}
+                        {% set stat_name1 = 'total_' + stat1 %}
 
                         {% if "_" in stat1%}
                             <div class="col-6 text-nowrap border-end" id="{{ stat_name1 }}">{{ (stat1| replace("_"," ")) | title}}: {{ build[stat_name1] }}</div>
@@ -423,7 +423,7 @@
                         {% endif %}
 
                         {% set stat2= battle_stat_order[i + 1] %}
-                        {% set stat_name2 = 'total_' + stat2%}
+                        {% set stat_name2 = 'total_' + stat2 %}
                         
                         {% if "_" in stat2%}
                             <div class="col-6 text-nowrap" id="{{ stat_name2 }}">{{ (stat2| replace("_"," ")) | title}}: {{ build[stat_name2] }}</div>
@@ -443,26 +443,26 @@
                 {% for i in range(0, (secondary_stat_order | length) - 1, 2) %}
                     <div class="row justify-content-center" id="secondary_stats_row">
                             
-                        {% set stat1= secondary_stat_order[i] %}
-                        {% set stat_name1 = 'total_' + stat1%}
+                        {% set stat1 = secondary_stat_order[i] %}
+                        {% set stat_name1 = 'total_' + stat1 %}
 
                         {% if "_" in stat1%}
                             <div class="col text-nowrap border-end border-top" id="{{ stat_name1 }}">{{ (stat1| replace("_"," ")) | title}}: {{ build[stat_name1] }}</div>
                         {% elif stat1| length == 2 %}
-                            <div class="col text-nowrap border-end border-top" id="{{ stat_name2 }}">{{ stat1| upper }}: {{ build[stat_name1] }}</div>
+                            <div class="col text-nowrap border-end border-top" id="{{ stat_name1 }}">{{ stat1| upper }}: {{ build[stat_name1] }}</div>
                         {% elif stat1 %}
-                            <div class="col text-nowrap border-end border-top" id="{{ stat_name2 }}">{{ stat1| title }}: {{ build[stat_name1] }}</div>
+                            <div class="col text-nowrap border-end border-top" id="{{ stat_name1 }}">{{ stat1| title }}: {{ build[stat_name1] }}</div>
                         {% endif %}
 
-                        {% set stat2= secondary_stat_order[i + 1] %}
-                        {% set stat_name2 = 'total_' + stat2%}
+                        {% set stat2 = secondary_stat_order[i + 1] %}
+                        {% set stat_name2 = 'total_' + stat2 %}
                         
                         {% if "_" in stat2%}
-                            <div class="col text-nowrap border-top" id="{{ stat_name1 }}">{{ (stat2| replace("_"," ")) | title}}: {{ build[stat_name2] }}</div>
+                            <div class="col text-nowrap border-top" id="{{ stat_name2 }}">{{ (stat2| replace("_"," ")) | title}}: {{ build[stat_name2] }}</div>
                         {% elif stat2| length == 2 %}
-                            <div class="col text-nowrap border-top" id="{{ stat_name1 }}">{{ stat2| upper }}: {{ build[stat_name2] }}</div>
+                            <div class="col text-nowrap border-top" id="{{ stat_name2 }}">{{ stat2| upper }}: {{ build[stat_name2] }}</div>
                         {% elif stat2 %}1
-                            <div class="col text-nowrap border-top" id="{{ stat_name1 }}">{{ stat2| title }}: {{ build[stat_name2] }}</div>
+                            <div class="col text-nowrap border-top" id="{{ stat_name2 }}">{{ stat2| title }}: {{ build[stat_name2] }}</div>
                         {% endif %}
                     </div>
                 {% endfor %}

@@ -198,12 +198,44 @@ document.querySelector('#equipment_search_form').addEventListener('submit', (evt
 
 function update_build_totals(build_totals) {
     
-    const main_stats = document.getElementsByName(
-        'main_stats_order')[0].value;
+    const main_stats = JSON.parse(document.getElementsByName(
+        'main_stats_order')[0].value);
     for (const stat of main_stats) {
         const stat_name = 'total_' + stat;
         const element = document.querySelector(`#${stat_name}`);
-        element.innerHTML = 
+        const updated_value = element.innerHTML.replace(
+            /\d+/, `${build_totals[stat]}`);
+        element.innerHTML = updated_value;
+    }
+
+    const elemental_stats = JSON.parse(document.getElementsByName(
+        'elemental_stats_order')[0].value);
+    for (const stat of elemental_stats) {
+        const stat_name = 'total_' + stat;
+        const element = document.querySelector(`#${stat_name}`);
+        const updated_value = element.innerHTML.replace(
+            /\d+/, `${build_totals[stat]}`);
+        element.innerHTML = updated_value;
+    }
+
+    const battle_stats = JSON.parse(document.getElementsByName(
+        'battle_stat_order')[0].value);
+    for (const stat of battle_stats) {
+        const stat_name = 'total_' + stat;
+        const element = document.querySelector(`#${stat_name}`);
+        const updated_value = element.innerHTML.replace(
+            /\d+/, `${build_totals[stat]}`);
+        element.innerHTML = updated_value;
+    }
+
+    const secondary_stats = JSON.parse(document.getElementsByName(
+        'secondary_stat_order')[0].value);
+    for (const stat of secondary_stats) {
+        const stat_name = 'total_' + stat;
+        const element = document.querySelector(`#${stat_name}`);
+        const updated_value = element.innerHTML.replace(
+            /\d+/, `${build_totals[stat]}`);
+        element.innerHTML = updated_value;
     }
 }
 
@@ -215,7 +247,7 @@ function add_equip(evt) {
     const formInputs = {
         equip_id: equip_id,
         // equip: document.getElementById(`${equip_id}`).value,
-        build: document.getElementsByName('build_dict')[0].value,
+        // build: document.getElementsByName('build_dict')[0].value,
         build_id: document.getElementsByName('build_id')[0].value
 
     };
@@ -248,7 +280,7 @@ function add_equip(evt) {
                 }
             }
             if (responseJson.stat_totals.length != 0) {
-                build_totals = responseJson.stat_totals
+                const build_totals = responseJson.stat_totals
                 update_build_totals(build_totals);
             }
 
