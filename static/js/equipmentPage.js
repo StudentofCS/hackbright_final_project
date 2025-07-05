@@ -1,5 +1,7 @@
 "use strict";
 
+import { debounce} from 'lodash';
+
 
 document.querySelector('#equipment_search_form').addEventListener('submit', (evt) => {
     evt.preventDefault();
@@ -353,4 +355,43 @@ const tab_sections = document.querySelectorAll('.tab_section');
 
 for (const tab of tabs) {
     tab.addEventListener('click', activate_tab)
+}
+
+
+
+const intelligence_order = JSON.parse(
+    document.getElementsByName('intelligence_order')[0].value);
+const strength_order = JSON.parse(
+    document.getElementsByName('strength_order')[0].value);
+const agility_order = JSON.parse(
+    document.getElementsByName('agility_order')[0].value);
+const fortune_order = JSON.parse(
+    document.getElementsByName('fortune_order')[0].value);
+const major_order = JSON.parse(
+    document.getElementsByName('major_order')[0].value);
+const characteristic_sections = [intelligence_order[0],
+strength_order[0], agility_order[0], fortune_order[0],
+major_order[0]];
+const all_characteristics = intelligence_order.concat(
+    strength_order, agility_order, fortune_order,
+    major_order);
+let characteristic_caps = JSON.parse(
+    document.getElementsByName('characteristic_caps')[0].value);
+const char_multipliers = JSON.parse(
+    document.getElementsByName('char_multipliers')[0].value);
+
+function set_characteristics_max_and_totals() {
+
+    const formInputs = {};
+    for (const stat of all_characteristics) {
+        if (stat in characteristic_sections) {
+            const section_element = document.querySelector(
+                `#${stat + '_points'}`);
+
+            section_element.innerHTML = ``
+        }
+        formInputs[stat] = document.querySelector(
+            `#${}`
+        )
+    }
 }

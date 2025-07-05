@@ -5,6 +5,8 @@
 {% block content %}
     
     <input type="hidden" name="equip_order" value='{{ equip_order | tojson }}'>
+    <input type="hidden" name="characteristic_caps" value='{{ characteristic_caps | tojson }}'>
+    <input type="hidden" name="char_multipliers" value='{{ char_multipliers | tojson }}'>
     <div class="row mb-3 pt-3 " id="top_of_builds">
         <div class="col-12">
                 <form action="/update_build" method="post"></form>    
@@ -36,7 +38,7 @@
                                 <div class="col-auto" id="level_col">
                                     <div class="input-group mb-3 input-group-sm">
                                         <span class="input-group-text bg-secondary border-secondary">Level:</span>
-                                        <input type="number" class="form-control w-50" name="level" aria-label="Level" value="{{ build.level }}" step="15" min="5" max="{{ max_level }}">
+                                        <input type="number" class="form-control" name="level" aria-label="Level" value="{{ build.level }}" step="15" min="5" max="{{ max_level }}" style="width: 4rem;">
                                     </div>
                                 </div>
                                 <div class="col-auto" id="selected_elements_col">
@@ -142,27 +144,55 @@
 
                 <div class="col-12  mb-3 pt-3 tab_section characteristics_tab" id="characteristics_tab_col" style="display:block;">
                     <div class="row" id="characteristic_row">
+                        <input type="hidden" name="intelligence_order" value='{{ intelligence_order | tojson }}'>
+                        <input type="hidden" name="strength_order" value='{{ strength_order | tojson }}'>
+                        <input type="hidden" name="agility_order" value='{{ agility_order | tojson }}'>
+                        <input type="hidden" name="fortune_order" value='{{ fortune_order | tojson }}'>
+                        <input type="hidden" name="major_order" value='{{ major_order | tojson }}'>
                         {% for section in [intelligence_order, strength_order, agility_order, fortune_order, major_order] | batch(3) %}
                             <div class="col-6 mb-3 pt-3 characteristic_cards">
                                 {% for stat_category in section %}
                                     <div class="card mb-3" id="{{ stat_category[0]}}_card">
                                         <div class="card-header text-bg-secondary">
-                                            {{ stat_category[0] | title }}
+                                            <span>{{ stat_category[0] | title }}</span>
+                                            <span style="float: right;" id="{{ stat_category[0] }}_points">
+                                                {{ build.characteristic[stat_category[0]] }}/{{ characteristic_caps[stat_category[0]] }}
+                                            </span>
                                         </div>
                                         <ul class="list-group list-group-flush">
                                             {% for stat in stat_category[1:] %}
                                                 {% if "_" in stat %}
                                                     <li class="list-group-item border-bottom text-bg-dark">
-                                                        {{ (stat | replace("_"," ")) | title}}
+                                                        
+                                                        <span style="float: left;">{{ (stat | replace("_"," ")) | title}}</span>
+                                                        <span style="float: left;" id="{{ stat }}_point_stats">&nbsp;(total)</span>
+                                                        <span style="float: right;">
+
+                                                            <input type="number" style="width: 3rem;" min="0" value="{{ build.characteristic[stat_category[0]] }}" id="{{ stat }}_points_input">
+                                                        </span>
                                     
                                                     </li>
                                                 {% elif stat | length == 2 %}
                                                     <li class="list-group-item border-bottom text-bg-dark">
-                                                        {{ stat | upper }}
+                                                        
+                                                        <span style="float: left;">{{ stat | upper }}</span>
+                                                        <span style="float: left;" id="{{ stat }}_point_stats">&nbsp;(total)</span>
+                                                        <span style="float: right;">
+
+                                                            <input type="number" style="width: 3rem;" min="0" value="{{ build.characteristic[stat_category[0]] }}" id="{{ stat }}_points_input">
+                                                        </span>
+
                                                     </li>
                                                 {% else %}
                                                     <li class="list-group-item border-bottom text-bg-dark">
-                                                        {{ stat | title }}
+                                                        
+                                                        <span style="float: left;">{{ stat | title }}</span>
+                                                        <span style="float: left;" id="{{ stat }}_point_stats">&nbsp;(total)</span>
+                                                        <span style="float: right;">
+
+                                                            <input type="number" style="width: 3rem;" min="0" value="{{ build.characteristic[stat_category[0]] }}" id="{{ stat }}_points_input">
+                                                        </span>
+
                                                     </li>
                                                 {% endif %}
                                             {% endfor %}
@@ -317,7 +347,7 @@
                                     <button class="btn btn-sm btn-primary" type="submit" id="equipment_search_btn">Search</button>
                                 </div>
                                 <div class="col-2 mb-3 mx-auto" id="homepage_reset_row">
-                                    <button class="btn text-decoration-underline text-primary" type="reset" id="equipment_reset_button">Reset</button>
+                                    <button class="btn text-decoration-underline primary" type="reset" id="equipment_reset_button">Reset</button>
                                 </div>
                             </form>
                         </div>

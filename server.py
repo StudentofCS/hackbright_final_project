@@ -276,9 +276,15 @@ def get_build(build_id):
     session['equipment_search_params'] = None
     b, bs, cc = helpers.get_build_base_stats_char_caps_by_build_id(build_id)
 
+    cc = schemas.CharacteristicCapSchema().dump(cc)
+    char_multipliers = crud.CHARACTERISTIC_MULTIPLIERS_DICT
+
     return render_template('build.html', build=b,
                            base_stats=bs,
-                           characteristic_caps=cc)
+                           characteristic_caps=cc,
+                           char_multipliers=char_multipliers)
+
+    
 
 
 @app.route('/search_equipments', methods=['POST'])
