@@ -155,8 +155,14 @@
                                     <div class="card mb-3" id="{{ stat_category[0]}}_card">
                                         <div class="card-header text-bg-secondary">
                                             <span>{{ stat_category[0] | title }}</span>
-                                            <span style="float: right;" id="{{ stat_category[0] }}_points">
-                                                {{ build.characteristic[stat_category[0]] }}/{{ characteristic_caps[stat_category[0]] }}
+                                            <span style="float: right;">
+                                                <span id="{{ stat_category[0] }}_points">
+                                                    {{ build.characteristic[stat_category[0]] }}
+                                                </span>
+                                                <span>/</span>
+                                                <span id="{{ stat_category[0] }}_max_points">
+                                                    {{ characteristic_caps[stat_category[0]] }}
+                                                </span>
                                             </span>
                                         </div>
                                         <ul class="list-group list-group-flush">
@@ -164,33 +170,39 @@
                                                 {% if "_" in stat %}
                                                     <li class="list-group-item border-bottom text-bg-dark">
                                                         
+                                                        {% set points = build.characteristic[stat_category[0]] | int %}
+                                                        {% set multiplier = char_multipliers[stat] | int %}
                                                         <span style="float: left;">{{ (stat | replace("_"," ")) | title}}</span>
-                                                        <span style="float: left;" id="{{ stat }}_point_stats">&nbsp;(total)</span>
+                                                        <span style="float: left;" id="{{ stat }}_point_stats">&nbsp;({{ multiplier * points }})</span>
                                                         <span style="float: right;">
-
-                                                            <input type="number" style="width: 3rem;" min="0" value="{{ build.characteristic[stat_category[0]] }}" id="{{ stat }}_points_input">
+                                                            
+                                                            <input class="points_input" type="number" style="width: 3rem;" min="0" value="{{ build.characteristic[stat_category[0]] }}" id="{{ stat }}_points_input">
                                                         </span>
                                     
                                                     </li>
                                                 {% elif stat | length == 2 %}
                                                     <li class="list-group-item border-bottom text-bg-dark">
                                                         
+                                                        {% set points = build.characteristic[stat_category[0]] | int %}
+                                                        {% set multiplier = char_multipliers[stat] | int %}
                                                         <span style="float: left;">{{ stat | upper }}</span>
-                                                        <span style="float: left;" id="{{ stat }}_point_stats">&nbsp;(total)</span>
+                                                        <span style="float: left;" id="{{ stat }}_point_stats">&nbsp;({{ multiplier * points }})</span>
                                                         <span style="float: right;">
 
-                                                            <input type="number" style="width: 3rem;" min="0" value="{{ build.characteristic[stat_category[0]] }}" id="{{ stat }}_points_input">
+                                                            <input class="points_input" type="number" style="width: 3rem;" min="0" value="{{ build.characteristic[stat_category[0]] }}" id="{{ stat }}_points_input">
                                                         </span>
 
                                                     </li>
                                                 {% else %}
                                                     <li class="list-group-item border-bottom text-bg-dark">
                                                         
+                                                        {% set points = build.characteristic[stat_category[0]] | int %}
+                                                        {% set multiplier = char_multipliers[stat] | int %}
                                                         <span style="float: left;">{{ stat | title }}</span>
-                                                        <span style="float: left;" id="{{ stat }}_point_stats">&nbsp;(total)</span>
+                                                        <span style="float: left;" id="{{ stat }}_point_stats">&nbsp;({{ multiplier * points }})</span>
                                                         <span style="float: right;">
 
-                                                            <input type="number" style="width: 3rem;" min="0" value="{{ build.characteristic[stat_category[0]] }}" id="{{ stat }}_points_input">
+                                                            <input class="points_input" type="number" style="width: 3rem;" min="0" value="{{ build.characteristic[stat_category[0]] }}" id="{{ stat }}_points_input">
                                                         </span>
 
                                                     </li>

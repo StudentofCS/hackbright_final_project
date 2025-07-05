@@ -391,7 +391,55 @@ function set_characteristics_max_and_totals() {
             section_element.innerHTML = ``
         }
         formInputs[stat] = document.querySelector(
-            `#${}`
+            `#${stat}`
         )
     }
+}
+
+const characteristic_inputs = document.querySelectorAll
+for (const element of characteristic_inputs) {
+    element.addEventListener('input', update_characteristic)
+}
+
+function update_characteristic(evt) {
+    
+    const char_name = this.id.slice(0,-13)
+    formInputs = {
+        characteristic : char_name,
+        points : this.value
+    };
+
+    fetch('/api/update_characteristic', {
+        method: 'POST',
+        body: JSON.stringify(formInputs),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+        .then((response) => response.json())
+        .then((responseJson) => {
+            
+            if (responseJson.equip_set.length !== 0) {
+                // console.log(responseJson.equip_set)
+
+                const set = responseJson.equip_set;
+                const equip_order = JSON.parse(
+                    document.getElementsByName(
+                    'equip_order')[0].value);
+
+                for (const equip of equip_order) {
+                    // console.log(equip)
+                    const slot = document.querySelector(`#${equip}_slot`);
+
+                    if (set[equip] !== null) {
+                        slot.innerHTML = `${equip}: ${set[equip]['id']}`
+                    }
+                }
+            }
+            if (responseJson.stat_totals.length != 0) {
+                const build_totals = responseJson.stat_totals
+                update_build_totals(build_totals);
+            }
+
+            });
 }
