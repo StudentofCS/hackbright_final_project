@@ -101,26 +101,13 @@ def inject_main_stats_max_level_and_name_translations():
                             'berserk_mastery', 'barrier']
     equip_order = ['helmet', 'cape', 'amulet', 'epaulettes',
                    'breastplate', 'belt', 'ring1', 'ring2',
-                   'boots', 'off_hand', 'main_hand', 'two_hand',
+                   'boots', 'main_hand', 'off_hand', 'two_hand',
                    'emblem', 'pet', 'mount']
-    intelligence_order = ['intelligence', 'hp_percentage',
-                          'elemental_res', 'barrier',
-                          'heals_received', 'armor']
-    strength_order = ['strength', 'elemental_mastery',
-                      'melee_mastery', 'distance_mastery',
-                      'hp']
-    agility_order = ['agility', 'lock',
-                     'dodge', 'initiative',
-                     'lock_dodge', 'force_of_will']
-    fortune_order = ['fortune', 'crit_hit',
-                     'block', 'crit_mastery',
-                     'rear_mastery', 'berserk_mastery',
-                     'healing_mastery', 'rear_res',
-                     'crit_res']
-    major_order = ['major', 'ap',
-                   'mp', 'spell_range',
-                   'wp', 'control',
-                   'dmg_inflicted', 'resistance']
+    intelligence_order = crud.INTELLIGENCE_ORDER
+    strength_order = crud.STRENGTH_ORDER
+    agility_order = crud.AGILITY_ORDER
+    fortune_order = crud.FORTUNE_ORDER
+    major_order = crud.MAJOR_ORDER
     equip_stat_order = ['ap', 'mp', 'wp', 'hp',
                         ]
     
@@ -365,10 +352,61 @@ def update_equip():
     set_schema = schemas.EquipmentSetSchema()
     equip_set = set_schema.dump(build.equipment_set)
 
-    build_totals = helpers.get_total_build_stats_by_build_id(build_id)
-    total_stats_dict = helpers.get_total_stats_dict_by_build(build_totals)
+    totals_build = helpers.get_total_build_stats_by_build_id(build_id)
+    total_stats_dict = helpers.get_total_stats_dict_by_build(totals_build)
     
     return jsonify(equip_set=equip_set,
+                   stat_totals=total_stats_dict)
+
+
+@app.route('/api/update_characteristic', methods=['POST'])
+def update_characteristics():
+
+    char_name = request.json.get('characteristic')
+    points = int(request.json.get('points'))
+    build_id = request.json.get('build_id')
+    section = request.json.get('section')
+
+    # Get needed query results and update the characteristics
+    characteristic, char_cap = crud.get_characteristic_and_characteristic_cap_by_build_id(build_id)
+    crud.update_characteristics_by_characteristic_and_points(
+        characteristic, section, char_name, points, char_cap)
+    db.session.commit()
+    
+    # Serialize the data models
+    characteristic = schemas.CharacteristicSchema().dump(characteristic)
+    char_cap = schemas.CharacteristicCapSchema().dump(char_cap)
+    
+    # Get the updated stat totals after the characteristic change
+    totals_build = helpers.get_total_build_stats_by_build_id(build_id)
+    total_stats_dict = helpers.get_total_stats_dict_by_build(totals_build)
+
+    return jsonify(char_cap=char_cap,
+                   characteristic=characteristic,
+                   stat_totals=total_stats_dict)
+
+
+@app.route('/api/update_level', methods=['POST'])
+def update_level():
+    
+    build_id = request.json.get('build_id')
+    level = request.json.get('level')
+
+    crud.update_level_by_build_id(build_id, level)
+    db.session.commit()
+
+    characteristic, char_cap = crud.get_characteristic_and_characteristic_cap_by_build_id(build_id)
+    
+    # Serialize the data models
+    characteristic = schemas.CharacteristicSchema().dump(characteristic)
+    char_cap = schemas.CharacteristicCapSchema().dump(char_cap)
+    
+    # Get the updated stat totals after the characteristic change
+    totals_build = helpers.get_total_build_stats_by_build_id(build_id)
+    total_stats_dict = helpers.get_total_stats_dict_by_build(totals_build)
+
+    return jsonify(char_cap=char_cap,
+                   characteristic=characteristic,
                    stat_totals=total_stats_dict)
 
 

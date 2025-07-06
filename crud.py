@@ -17,6 +17,44 @@ from sqlalchemy import func, case, and_, or_
 
 MAX_LEVEL = 245
 
+INTELLIGENCE_ORDER = ['intelligence', 'hp_percentage',
+                          'elemental_res', 'barrier',
+                          'heals_received', 'armor']
+STRENGTH_ORDER = ['strength', 'elemental_mastery',
+                    'melee_mastery', 'distance_mastery',
+                    'hp']
+AGILITY_ORDER = ['agility', 'lock',
+                    'dodge', 'initiative',
+                    'lock_dodge', 'force_of_will']
+FORTUNE_ORDER = ['fortune', 'crit_hit',
+                    'block', 'crit_mastery',
+                    'rear_mastery', 'berserk_mastery',
+                    'healing_mastery', 'rear_res',
+                    'crit_res']
+MAJOR_ORDER = ['major', 'ap',
+                'mp', 'spell_range',
+                'wp', 'control',
+                'dmg_inflicted', 'resistance']
+
+MAIN_ROLE_DICT = {
+    1 : 'damage',
+    2 : 'melee',
+    3 : 'distance',
+    4 : 'tank',
+    5 : 'healer',
+    6 : 'shielder',
+    7 : 'positioner',
+    8 : 'buff / debuff'
+}
+
+CONTENT_TYPE_DICT = {
+    1 : 'solo',
+    2 : 'group',
+    3 : 'pvp',
+    4 : 'rift',
+    5 : 'ultimate boss'
+}
+
 EQUIPMENT_SEARCH_PARAMS_DICT = {
     'id' : None,
     'equip_type_id' : None,
@@ -1675,6 +1713,7 @@ def get_name_translations():
 
 
 def update_equipment_set_by_build_equipment(build, equipment):
+    """Update equipment set of build to include equipment input"""
 
     slot = EQUIPMENT_SLOTS[equipment.equip_type_id]
     equip_set = build.equipment_set
@@ -1714,6 +1753,139 @@ def update_equipment_set_by_build_equipment(build, equipment):
     else:
         setattr(equip_set, slot, equipment)
         
+
+def update_characteristics_by_characteristic_and_points(
+        characteristic, section, char_name, points, char_cap):
+    """Update build characteristics with input points"""
+
+    verify_and_update_characteristic_section(characteristic, char_cap)
+    
+    current_points = getattr(characteristic, char_name)
+    section_points = getattr(characteristic, section)
+    points_cap = getattr(char_cap, char_name)
+    section_cap = getattr(char_cap, section)
+    available_points = points_cap - current_points
+    available_section_points = section_cap - section_points
+    point_difference = points - current_points
+    
+    # When there is no point cap, set available points as section points
+    if points_cap == -1:
+        points_cap = None
+        available_points = available_section_points
+    # If current points is less than 0, make it zero
+    if current_points < 0:
+        current_points = 0
+    if section_points < 0:
+        section_points = 0
+
+    # No negative characteristic points allowed
+    if points < 0:
+        setattr(characteristic, char_name, 0)
+        setattr(characteristic, section, section_points - current_points)
+    # If trying to use more points than available in the section
+    elif points > available_section_points:
+        points = available_section_points
+        if points < current_points and section_points + point_difference >= 0:
+            setattr(characteristic, char_name,
+                    points)
+            setattr(characteristic, section,
+                    section_points + point_difference)
+        else:
+            if points > available_points:
+                setattr(characteristic, char_name,
+                        available_points + current_points)
+                setattr(characteristic, section,
+                        section_points + available_points)
+            else:
+                setattr(characteristic, char_name,
+                        points + current_points)
+                setattr(characteristic, section,
+                    section_cap)
+    else:
+        # If reducing the number of characteristic points
+        if points < current_points and section_points + point_difference >= 0:
+            setattr(characteristic, char_name,
+                    points)
+            setattr(characteristic, section,
+                    section_points + point_difference)
+        # If trying to use more points than available in characteristic
+        elif points > available_points:
+            setattr(characteristic, char_name,
+                    available_points + current_points)
+            setattr(characteristic, section,
+                    section_points + available_points)
+        else:
+            setattr(characteristic, char_name,
+                    points)
+            setattr(characteristic, section,
+                    section_points + point_difference)
+
+def verify_and_update_characteristic_section(characteristic, char_cap):
+    """Verify characteristic section totals and update"""
+
+    all_characteristic_sections = [INTELLIGENCE_ORDER,
+                                   STRENGTH_ORDER,
+                                   AGILITY_ORDER,
+                                   FORTUNE_ORDER,
+                                   MAJOR_ORDER]
+    for section_list in all_characteristic_sections:
+        section = ""
+        count = 0
+        section_cap = 0
+        for i in range(len(section_list)):
+            if i == 0:
+                section = section_list[i]
+                count = 0
+                section_cap = getattr(char_cap, section)
+            else:
+                stat_name = section_list[i]
+                stat_value = getattr(characteristic, stat_name)
+                section_count = getattr(characteristic, section)
+                section_available = section_cap - section_count
+                cap = getattr(char_cap, stat_name)
+                if cap == -1:
+                    cap = section_available
+                available = cap - count
+                
+                
+                if stat_value > available:
+                    stat_value = available
+                    setattr(characteristic, stat_name, available)
+                elif stat_value > section_available:
+                    stat_value = section_available
+                    setattr(characteristic, stat_name, section_available)
+                    
+                if stat_value > cap:
+                    count += cap
+                    setattr(characteristic, stat_name, cap)
+                elif stat_value >= 0:
+                    count += stat_value
+                else:
+                    setattr(characteristic, stat_name, 0)
+        if count < 0 :
+            setattr(characteristic, section, 0)
+        elif count > section_cap:
+            setattr(characteristic, section, section_cap)
+        else:
+            setattr(characteristic, section, count)
+        
+
+
+def get_characteristic_and_characteristic_cap_by_build_id(build_id):
+    """Return characteristic and characteric cap by the build id"""
+
+    build, char_cap = db.session.query(Build, Characteristic_cap).filter(
+        Build.id == build_id, Characteristic_cap.level == Build.level).one()
+
+    return build.characteristic, char_cap
+
+
+def update_level_by_build_id(build_id, level):
+    """Update the level of a build by the build id"""
+
+    build = get_build_by_id(build_id)
+    build.level = level
+
 
 
 if __name__ == '__main__':

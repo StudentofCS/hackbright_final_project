@@ -4,6 +4,26 @@ from model import connect_to_db, db
 import crud
 
 
+INTELLIGENCE_ORDER = ['intelligence', 'hp_percentage',
+                          'elemental_res', 'barrier',
+                          'heals_received', 'armor']
+STRENGTH_ORDER = ['strength', 'elemental_mastery',
+                    'melee_mastery', 'distance_mastery',
+                    'hp']
+AGILITY_ORDER = ['agility', 'lock',
+                    'dodge', 'initiative',
+                    'lock_dodge', 'force_of_will']
+FORTUNE_ORDER = ['fortune', 'crit_hit',
+                    'block', 'crit_mastery',
+                    'rear_mastery', 'berserk_mastery',
+                    'healing_mastery', 'rear_res',
+                    'crit_res']
+MAJOR_ORDER = ['major', 'ap',
+                'mp', 'spell_range',
+                'wp', 'control',
+                'dmg_inflicted', 'resistance']
+
+
 def get_build_base_stats_char_caps_by_build_id(build_id):
     """Return build, base_stats, and characteristic stats by a build's id"""
     combo = crud.get_build_characteristic_cap_base_stat_by_build_id(build_id)

@@ -54,36 +54,36 @@
                         <div class="col-12">
                             <div class="row border-top border-bottom mb-3 pt-3 justify-content-between" id="role_and_content_row">
                                 <div class="col-auto" id="main_role_col">
-                                    <div class="btn-toolbar mb-3" role="group" aria-label="Radio toggle buttons for main role">
-                                        <input type="radio" class="btn-check" name="main_role" id="damage" autocomplete="off">
+                                    <div class="btn-toolbar mb-3" role="group" aria-label="Radio style checkbox toggle buttons for main role">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="damage" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="damage">Damage</label>
-                                        <input type="radio" class="btn-check" name="main_role" id="melee" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="melee" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="melee">Melee Dmg</label>
-                                        <input type="radio" class="btn-check" name="main_role" id="distance" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="distance" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="distance">Distance Dmg</label>
-                                        <input type="radio" class="btn-check" name="main_role" id="tank" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="tank" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="tank">Tank</label>
-                                        <input type="radio" class="btn-check" name="main_role" id="healer" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="healer" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="healer">Healer</label>
-                                        <input type="radio" class="btn-check" name="main_role" id="shielder" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="shielder" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="shielder">Shielder</label>
-                                        <input type="radio" class="btn-check" name="main_role" id="positioner" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="positioner" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="positioner">Positioner</label>
-                                        <input type="radio" class="btn-check" name="main_role" id="buffer" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="buffer" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="buffer">Buffer / Debuffer</label>
                                     </div>
                                 </div>
                                 <div class="col-auto" id="content_type_col">
-                                    <div class="btn-toolbar mb-3" role="group" aria-label="Radio toggle buttons for content type">
-                                        <input type="radio" class="btn-check" name="content_type" id="solo" autocomplete="off">
+                                    <div class="btn-toolbar mb-3" role="group" aria-label="Radio style checkbox toggle buttons for content type">
+                                        <input type="checkbox" class="btn-check" name="content_type" id="solo" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="solo">Solo PvM</label>
-                                        <input type="radio" class="btn-check" name="content_type" id="group" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="content_type" id="group" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="group">Group PvM</label>
-                                        <input type="radio" class="btn-check" name="content_type" id="pvp" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="content_type" id="pvp" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="pvp">PvP</label>
-                                        <input type="radio" class="btn-check" name="content_type" id="rift" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="content_type" id="rift" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="rift">Rift</label>
-                                        <input type="radio" class="btn-check" name="content_type" id="ub" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="content_type" id="ub" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="ub">Ultimate Boss</label>
                                     </div>
                                 </div>
@@ -170,39 +170,39 @@
                                                 {% if "_" in stat %}
                                                     <li class="list-group-item border-bottom text-bg-dark">
                                                         
-                                                        {% set points = build.characteristic[stat_category[0]] | int %}
+                                                        {% set points = build.characteristic[stat] | int %}
                                                         {% set multiplier = char_multipliers[stat] | int %}
                                                         <span style="float: left;">{{ (stat | replace("_"," ")) | title}}</span>
                                                         <span style="float: left;" id="{{ stat }}_point_stats">&nbsp;({{ multiplier * points }})</span>
                                                         <span style="float: right;">
                                                             
-                                                            <input class="points_input" type="number" style="width: 3rem;" min="0" value="{{ build.characteristic[stat_category[0]] }}" id="{{ stat }}_points_input">
+                                                            <input class="points_input" type="number" style="width: 3rem;" min="0" value="{{ build.characteristic[stat_category[0]] }}" id="{{ stat }}_points_input" data-group="{{ stat_category[0] }}">
                                                         </span>
                                     
                                                     </li>
                                                 {% elif stat | length == 2 %}
                                                     <li class="list-group-item border-bottom text-bg-dark">
                                                         
-                                                        {% set points = build.characteristic[stat_category[0]] | int %}
+                                                        {% set points = build.characteristic[stat] | int %}
                                                         {% set multiplier = char_multipliers[stat] | int %}
                                                         <span style="float: left;">{{ stat | upper }}</span>
                                                         <span style="float: left;" id="{{ stat }}_point_stats">&nbsp;({{ multiplier * points }})</span>
                                                         <span style="float: right;">
 
-                                                            <input class="points_input" type="number" style="width: 3rem;" min="0" value="{{ build.characteristic[stat_category[0]] }}" id="{{ stat }}_points_input">
+                                                            <input class="points_input" type="number" style="width: 3rem;" min="0" value="{{ build.characteristic[stat_category[0]] }}" id="{{ stat }}_points_input" data-group="{{ stat_category[0] }}">
                                                         </span>
 
                                                     </li>
                                                 {% else %}
                                                     <li class="list-group-item border-bottom text-bg-dark">
                                                         
-                                                        {% set points = build.characteristic[stat_category[0]] | int %}
+                                                        {% set points = build.characteristic[stat] | int %}
                                                         {% set multiplier = char_multipliers[stat] | int %}
                                                         <span style="float: left;">{{ stat | title }}</span>
                                                         <span style="float: left;" id="{{ stat }}_point_stats">&nbsp;({{ multiplier * points }})</span>
                                                         <span style="float: right;">
 
-                                                            <input class="points_input" type="number" style="width: 3rem;" min="0" value="{{ build.characteristic[stat_category[0]] }}" id="{{ stat }}_points_input">
+                                                            <input class="points_input" type="number" style="width: 3rem;" min="0" value="{{ build.characteristic[stat_category[0]] }}" id="{{ stat }}_points_input" data-group="{{ stat_category[0] }}">
                                                         </span>
 
                                                     </li>
@@ -445,13 +445,13 @@
                     {% endfor %}
                 </div>
                 
-                <div class="row border-top justify-content-center" id="secondary_stats_row">
+                <div class="row border-top justify-content-center" id="battle_stats_row">
                     <h6 class="col-auto">Battle</h6>
                 </div>
                 
                 <input name="battle_stat_order" value='{{ battle_stat_order | tojson }}' type="hidden">
                 {% for i in range(0, (battle_stat_order | length) - 1, 2) %}
-                    <div class="row border-top justify-content-center" id="battle_stats_row">
+                    <div class="row border-top justify-content-center">
                             
                         {% set stat1 = battle_stat_order[i] %}
                         {% set stat_name1 = 'total_' + stat1 %}
@@ -483,7 +483,7 @@
 
                 <input name="secondary_stat_order" value='{{ secondary_stat_order | tojson }}' type="hidden">
                 {% for i in range(0, (secondary_stat_order | length) - 1, 2) %}
-                    <div class="row justify-content-center" id="secondary_stats_row">
+                    <div class="row justify-content-center">
                             
                         {% set stat1 = secondary_stat_order[i] %}
                         {% set stat_name1 = 'total_' + stat1 %}
@@ -503,7 +503,7 @@
                             <div class="col text-nowrap border-top" id="{{ stat_name2 }}">{{ (stat2| replace("_"," ")) | title}}: {{ build[stat_name2] }}</div>
                         {% elif stat2| length == 2 %}
                             <div class="col text-nowrap border-top" id="{{ stat_name2 }}">{{ stat2| upper }}: {{ build[stat_name2] }}</div>
-                        {% elif stat2 %}1
+                        {% elif stat2 %}
                             <div class="col text-nowrap border-top" id="{{ stat_name2 }}">{{ stat2| title }}: {{ build[stat_name2] }}</div>
                         {% endif %}
                     </div>
