@@ -699,10 +699,13 @@ function update_selected_elements(evt) {
         .then((responseJson) => {
             const build = responseJson.build;
             const char_class = responseJson.char_class
+            const stat_totals = responseJson.stat_totals;
 
             if (build.length !== 0) {
                 update_build_info(build, char_class)
+                update_build_totals(stat_totals)
             }
+
         });
 }
 
@@ -721,22 +724,25 @@ function update_build_info(build, char_class) {
     // Update the selected elements button
     const selected_elements = document.querySelector(
         '#selected_elements_col');
-
+    
     const positions_dict = {};
-    for (const element in build.selected_elements) {
-        positions_dict[element.position] = element.name;
+    for (const element of build.selected_elements) {
+    
+        positions_dict[element.position] = element.element.name;
     }
-
-    for (const i in new Range(0,8)) {
+    
+    for (let i = 0; i < 8; i++) {
         const btn =
         selected_elements.querySelector(
-            'dropdown_position_' + `"${i.toString()}"`);
+            '#dropdown_position_' + `${i.toString()}`);
 
         if (i < 4) {
-            btn.innerHTML = positions_dict.i[0,-8]
+            const position_element = positions_dict[i];
+            btn.innerHTML = position_element.slice(0,-8);
         }
         else {
-            btn.innerHTML = positions_dict.i[0,-4]
+            const position_element = positions_dict[i];
+            btn.innerHTML = position_element.slice(0,-4);
         }
     }
 
@@ -769,4 +775,33 @@ if (window.location.pathname.startsWith('/build/')) {
     for (const element of selected_elements) {
         element.addEventListener('click', update_selected_elements)
     }
+}
+
+
+if (window.location.pathname.startsWith('/build/')) {
+
+    const formInputs = {
+        build_id : document.getElementsByName('build_id')[0].value
+    };
+
+    fetch('/api/initialize_build_info', {
+        method: 'POST',
+        body: JSON.stringify(formInputs),
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+        .then((response) => response.json())
+        .then((responseJson) => {
+            const build = responseJson.build;
+            const char_class = responseJson.char_class;
+            const total_stats = responseJson.total_stats;
+
+            if (build.length !== 0) {
+                update_build_info(build, char_class)
+            }
+            if (total_stats.length !== 0) {
+                update_build_totals(total_stats)
+            }
+        });
 }

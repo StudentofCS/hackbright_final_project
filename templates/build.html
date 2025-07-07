@@ -171,7 +171,7 @@
     <div class="row align-items-start justify-content-evenly" id="main_build_area_row">
         
 
-        <div class="col-7" id="tabs-area-col">
+        <div class="col-md-7" id="tabs-area-col">
             <div class="row" id="tabs-row">
                 <ul class="nav nav-pills justify-content-center">
                     <li class="nav-item">
@@ -202,7 +202,7 @@
                         <input type="hidden" name="fortune_order" value='{{ fortune_order | tojson }}'>
                         <input type="hidden" name="major_order" value='{{ major_order | tojson }}'>
                         {% for section in [intelligence_order, strength_order, agility_order, fortune_order, major_order] | batch(3) %}
-                            <div class="col-6 mb-3 pt-3 characteristic_cards">
+                            <div class="col-sm-6 mb-3 pt-3 characteristic_cards">
                                 {% for stat_category in section %}
                                     <div class="card mb-3" id="{{ stat_category[0]}}_card">
                                         <div class="card-header text-bg-secondary">
@@ -458,7 +458,7 @@
         </div>
 
 
-        <div class="col-4 border rounded-4" id="build_stats_col">
+        <div class="col-md-4 border rounded-4" id="build_stats_col">
             <div class="card text-bg-dark border-dark">
                 <input name="main_stats_order" value='{{ main_stats_order | tojson }}' type="hidden">
                 <div class="row mb-1 pt-3" id="main_stats_row">

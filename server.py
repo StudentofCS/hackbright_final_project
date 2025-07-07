@@ -460,9 +460,32 @@ def update_selected_elements():
     if char_class:
         char_class = schemas.CharacterClassSchema().dump(char_class)
 
-    return jsonify(build=build,
-                   char_class=char_class)
+    # Get the updated stat totals
+    totals_build = helpers.get_total_build_stats_by_build_id(build_id)
+    total_stats_dict = helpers.get_total_stats_dict_by_build(totals_build)
 
+    return jsonify(build=build,
+                   char_class=char_class,
+                   stat_totals=total_stats_dict)
+
+
+@app.route('/api/initialize_build_info', methods=['POST'])
+def initialize_build_info():
+    build_id = request.json.get('build_id')
+
+    build, char_class = crud.get_build_and_char_class_by_build(build_id)
+    build = schemas.BuildSchema().dump(build)
+    if char_class:
+        char_class = schemas.CharacterClassSchema().dump(char_class)
+    
+
+    # Get the updated stat totals
+    totals_build = helpers.get_total_build_stats_by_build_id(build_id)
+    total_stats_dict = helpers.get_total_stats_dict_by_build(totals_build)
+
+    return jsonify(build=build,
+                   char_class=char_class,
+                   stat_totals=total_stats_dict)
 
 
 if __name__ == "__main__":

@@ -89,7 +89,7 @@ class BuildSchema(BaseSchema):
     equipment_set = Nested(EquipmentSetSchema)
     characteristc = Nested(CharacteristicSchema)
     character_class = Nested(CharacterClassSchema)
-    selected_elements = Nested(SelectedElementSchema)
+    selected_elements = Nested(SelectedElementSchema, many=True)
 
 
 class UserSchema(BaseSchema):
