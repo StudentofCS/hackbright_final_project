@@ -410,6 +410,60 @@ def update_level():
                    stat_totals=total_stats_dict)
 
 
+@app.route('/api/update_role_and_content', methods=['POST'])
+def update_role_and_content():
+
+    build_id = request.json.get('build_id')
+    category = request.json.get('type')
+    value = request.json.get('value')
+
+    crud.update_role_or_content_by_build_id(build_id, category, value)
+    db.session.commit()
+    return '', 204
+
+
+@app.route('/api/update_build_name', methods=['POST'])
+def update_build_name():
+
+    build_id = request.json.get('build_id')
+    build_name = request.json.get('build_name')
+
+    crud.update_build_name_by_build_id(build_id, build_name)
+    db.session.commit()
+    return '', 204
+
+
+@app.route('/api/update_class', methods=['POST'])
+def update_class():
+
+    build_id = request.json.get('build_id')
+    class_id = int(request.json.get('class_id'))
+
+    crud.update_build_class_by_build_id(build_id, class_id)
+    db.session.commit()
+    return '', 204
+
+
+@app.route('/api/update_selected_elements', methods=['POST'])
+def update_selected_elements():
+
+    build_id = request.json.get('build_id')
+    position = request.json.get('position')
+    element_id = request.json.get('element_id')
+
+    crud.update_selected_elements_by_build_id(build_id, position, element_id)
+    db.session.commit()
+
+    build, char_class = crud.get_build_and_char_class_by_build(build_id)
+
+    build = schemas.BuildSchema().dump(build)
+    if char_class:
+        char_class = schemas.CharacterClassSchema().dump(char_class)
+
+    return jsonify(build=build,
+                   char_class=char_class)
+
+
 
 if __name__ == "__main__":
     connect_to_db(app)

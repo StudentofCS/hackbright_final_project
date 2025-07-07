@@ -592,7 +592,181 @@ function make_radio_input(element) {
 
 function update_role_and_content(element) {
 
+    let element_value = element.value;
+    // If element was unchecked, send value as null to clear role/content
+    if (!element.checked) {
+        element_value = null;
+    }
+
     const formInputs = {
         build_id : document.getElementsByName('build_id')[0].value,
+        type: element.name,
+        value : element_value
+    };
+
+    fetch('/api/update_role_and_content', {
+        method : 'POST',
+        body: JSON.stringify(formInputs),
+        headers: {
+            'Content-Type' : 'application/json',
+        }
+    })
+        .then((response) => {
+            if (response.status === 204) {
+                console.log('Update successful.')
+            }
+        })
+
+}
+
+
+function update_name(evt) {
+
+    const formInputs = {
+        build_id : document.getElementsByName('build_id')[0].value,
+        build_name : this.value
+    };
+
+    fetch('/api/update_build_name', {
+        method: 'POST',
+        body: JSON.stringify(formInputs),
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+        .then((response) => {
+            if (response.status === 204) {
+                console.log('Update successful.')
+            }
+        })
+}
+
+if (window.location.pathname.startsWith('/build/')) {
+    const build_name_input = document.querySelector('#build_name')
+
+    build_name_input.addEventListener('change', update_name)
+}
+
+
+function update_class(evt) {
+    
+    const formInputs = {
+        build_id : document.getElementsByName('build_id')[0].value,
+        class_id : this.id.slice(16)
+    };
+
+    fetch('/api/update_class', {
+        method: 'POST',
+        body: JSON.stringify(formInputs),
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+        .then((response) => {
+            if (response.status === 204) {
+                console.log('Update successful.')
+            }
+        })
+}
+
+
+if (window.location.pathname.startsWith('/build/')) {
+    const class_dropdown_buttons = document.querySelectorAll(
+        '.class_dropdown')
+    
+    for (const button of class_dropdown_buttons) {
+        button.addEventListener('click', update_class)
+    }
+}
+
+
+function update_selected_elements(evt) {
+
+    const formInputs = {
+        build_id : document.getElementsByName('build_id')[0].value,
+        position : this.dataset.position,
+        element_id : this.dataset.elementId
+    };
+
+    fetch('/api/update_selected_elements', {
+        method: 'POST',
+        body: JSON.stringify(formInputs),
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+        .then((response) => response.json())
+        .then((responseJson) => {
+            const build = responseJson.build;
+            const char_class = responseJson.char_class
+
+            if (build.length !== 0) {
+                update_build_info(build, char_class)
+            }
+        });
+}
+
+
+function update_build_info(build, char_class) {
+
+    // Update the character class element
+    if (build.character_class_id) {
+        const char_class_element = document.querySelector(
+        '#char_class_dropdown');
+
+        char_class_element.innerHTML = char_class.name;
+    }
+    
+
+    // Update the selected elements button
+    const selected_elements = document.querySelector(
+        '#selected_elements_col');
+
+    const positions_dict = {};
+    for (const element in build.selected_elements) {
+        positions_dict[element.position] = element.name;
+    }
+
+    for (const i in new Range(0,8)) {
+        const btn =
+        selected_elements.querySelector(
+            'dropdown_position_' + `"${i.toString()}"`);
+
+        if (i < 4) {
+            btn.innerHTML = positions_dict.i[0,-8]
+        }
+        else {
+            btn.innerHTML = positions_dict.i[0,-4]
+        }
+    }
+
+    // Update role
+    if (build.main_role) {
+
+        const main_role = document.querySelector('#main_role_col');
+        const active_mr = main_role.querySelector(
+            'input[value=' + `"${build.main_role}"` + ']');
+        active_mr.checked = true;
+        
+    }
+
+
+    // Update content type
+    if (build.content_type) {
+
+        const content_type = document.querySelector('#content_type_col');
+        const active_ct = content_type.querySelector(
+            'input[value' + `"${build.content_type}"` + ']');
+        active_ct.checked = true;
+    }
+}
+
+
+if (window.location.pathname.startsWith('/build/')) {
+    const selected_elements = document.querySelector(
+        '#selected_elements_col').querySelectorAll('.dropdown-item')
+
+    for (const element of selected_elements) {
+        element.addEventListener('click', update_selected_elements)
     }
 }

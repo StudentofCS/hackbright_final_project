@@ -1752,6 +1752,7 @@ def update_equipment_set_by_build_equipment(build, equipment):
         setattr(equip_set, slot, equipment)
     else:
         setattr(equip_set, slot, equipment)
+    pass
         
 
 def update_characteristics_by_characteristic_and_points(
@@ -1819,6 +1820,8 @@ def update_characteristics_by_characteristic_and_points(
                     points)
             setattr(characteristic, section,
                     section_points + point_difference)
+    pass
+
 
 def verify_and_update_characteristic_section(characteristic, char_cap):
     """Verify characteristic section totals and update"""
@@ -1840,8 +1843,7 @@ def verify_and_update_characteristic_section(characteristic, char_cap):
             else:
                 stat_name = section_list[i]
                 stat_value = getattr(characteristic, stat_name)
-                section_count = getattr(characteristic, section)
-                section_available = section_cap - section_count
+                section_available = section_cap - count
                 cap = getattr(char_cap, stat_name)
                 if cap == -1:
                     cap = section_available
@@ -1854,7 +1856,7 @@ def verify_and_update_characteristic_section(characteristic, char_cap):
                 elif stat_value > section_available:
                     stat_value = section_available
                     setattr(characteristic, stat_name, section_available)
-                    
+
                 if stat_value > cap:
                     count += cap
                     setattr(characteristic, stat_name, cap)
@@ -1868,6 +1870,7 @@ def verify_and_update_characteristic_section(characteristic, char_cap):
             setattr(characteristic, section, section_cap)
         else:
             setattr(characteristic, section, count)
+    pass
         
 
 
@@ -1885,7 +1888,65 @@ def update_level_by_build_id(build_id, level):
 
     build = get_build_by_id(build_id)
     build.level = level
+    pass
 
+
+def update_role_or_content_by_build_id(build_id, category, value):
+    """Update the role or the content of a build by the build id"""
+
+    build = get_build_by_id(build_id)
+    setattr(build, category, value)
+    pass
+
+
+def update_build_name_by_build_id(build_id, build_name):
+    """Update the name of a build using the build id"""
+
+    build = get_build_by_id(build_id)
+    build.name = build_name
+    pass
+
+
+def update_build_class_by_build_id(build_id, class_id):
+    """Update the character class id of build using the build id"""
+
+    build = get_build_by_id(build_id)
+    build.character_class_id = class_id
+    pass
+
+
+def update_selected_elements_by_build_id(build_id, position, element_id):
+    """Update selected element by swapping positions with element previously there"""
+
+    new_element = db.session.query(Selected_element).filter(
+        Selected_element.build_id == build_id, 
+        Selected_element.element_id == element_id).one()
+    
+    old_element = db.session.query(Selected_element).filter(
+        Selected_element.build_id == build_id,
+        Selected_element.position == position).one()
+    
+    old_element.position = new_element.position
+    new_element.position = position
+    pass
+
+
+def get_character_class_by_id(character_class_id):
+
+    return db.session.query(Character_class).filter(
+        Character_class.id == character_class_id).one()
+
+
+def get_build_and_char_class_by_build(build_id):
+    """Return build and, if not null, class"""
+    
+    build = get_build_by_id(build_id)
+    char_class = {}
+
+    if build.character_class_id:
+        char_class = get_character_class_by_id(build.character_class_id)
+    
+    return build, char_class 
 
 
 if __name__ == '__main__':

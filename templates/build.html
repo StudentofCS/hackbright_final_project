@@ -12,16 +12,16 @@
                 <form action="/update_build" method="post"></form>    
                     <div class="row mb-3 pt-3 " id="top_of_builds">
                         <div class="col-12">
-                            <div class="row" id="build_info_row">
+                            <div class="row justify-content-center" id="build_info_row">
                                 <div class="col-3" id="build_info_col">
                                     <div class="input-group input-group-sm mb-2">
-                                        <span class="input-group-text" id="build_name">Name</span>
-                                        <input type="text" class="form-control" placeholder="{{ build.build_name }}" aria-label="Build name" aria-describedby="build_name">
+                                        <span class="input-group-text">Name</span>
+                                        <input type="text" class="form-control" placeholder="{{ build.build_name }}" aria-label="Build name" aria-describedby="build_name" id="build_name">
                                     </div>
                                 </div>
                                 <div class="col-auto" id="build_name_class_col">
                                     <div class="dropdown">
-                                        <button class="btn btn-outline-primary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-label="Class selection" aria-expanded="false">
+                                        <button class="btn btn-outline-primary dropdown-toggle btn-sm" id="char_class_dropdown" type="button" data-bs-toggle="dropdown" aria-label="Class selection" aria-expanded="false">
                                             {% if build.character_class_id == None %}
                                                 Classes
                                             {% else %}
@@ -30,7 +30,7 @@
                                         </button>
                                         <ul class="dropdown-menu bg-secondary">
                                             {% for char_class in character_classes %}
-                                                <li><button class="dropdown-item btn" id="character_class_{{ char_class.id }}">{{ char_class.name }}</button></li>
+                                                <li><button class="dropdown-item btn class_dropdown" id="character_class_{{ char_class.id }}">{{ char_class.name }}</button></li>
                                             {% endfor %}
                                         </ul>
                                     </div>
@@ -46,44 +46,96 @@
                                     {% for element in build.selected_elements %}
                                         {% set x=position.__setitem__(element.position, element.element.name) %}
                                     {% endfor %}
-                                    <span>Masteries: {{ position[0] }}, {{ position[1] }}, {{ position[2] }}, {{ position[3] }}</span><br>
-                                    <span>Resistances: {{ position[4] }}, {{ position[5] }}, {{ position[6] }}, {{ position[7] }}</span>
+                                    
+                                    
+                                    <div class="btn-group" role="group" style="float:right;" aria-label="Dropdowns for selecting random mastery order">
+                                        <span style="float:left">Masteries:&nbsp</span>
+                                        {% for i in range(0,4) %}
+                                            <button class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="dropdown_position_{{ i }}" aria-expanded="false">
+                                                {{ position[i][:-8] }}
+                                            </button>
+                                            <ul class="dropdown-menu bg-secondary">
+                                                <li><button class="dropdown-item btn btn-sm btn-outline-primary" data-position="{{ i }}" data-element-id="122">
+                                                    Fire
+                                                </button></li>
+                                                <li><button class="dropdown-item btn btn-sm btn-outline-primary" data-position="{{ i }}" data-element-id="124">
+                                                    Water
+                                                </button></li>
+                                                <li><button class="dropdown-item btn btn-sm btn-outline-primary" data-position="{{ i }}" data-element-id="123">
+                                                    Earth
+                                                </button></li>
+                                                <li><button class="dropdown-item btn btn-sm btn-outline-primary" data-position="{{ i }}" data-element-id="125">
+                                                    Air
+                                                </button></li>
+                                            </ul>
+                                        {% endfor %}
+
+                                    </div>
+                                    <br/>
+                                    <div class="btn-group" role="group" style="float:right;" aria-label="Dropdowns for selecting random resistance order">
+                                        <span>Resistances:&nbsp</span>
+                                        {% for i in range(4,8) %}
+                                            <button class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="dropdown_position_{{ i }}" aria-expanded="false">
+                                                {{ position[i][:-4] }}
+                                            </button>
+                                            <ul class="dropdown-menu bg-secondary">
+                                                <li><button class="dropdown-item btn btn-sm btn-outline-primary" data-position="{{ i }}" data-element-id="82">
+                                                    Fire
+                                                </button></li>
+                                                <li><button class="dropdown-item btn btn-sm btn-outline-primary" data-position="{{ i }}" data-element-id="83">
+                                                    Water
+                                                </button></li>
+                                                <li><button class="dropdown-item btn btn-sm btn-outline-primary" data-position="{{ i }}" data-element-id="84">
+                                                    Earth
+                                                </button></li>
+                                                <li><button class="dropdown-item btn btn-sm btn-outline-primary" data-position="{{ i }}" data-element-id="85">
+                                                    Air
+                                                </button></li>
+                                            </ul>
+                                        {% endfor %}
+                                    </div>
+                                    
+
+
+                                
+
+
                                 </div>
                             </div>
                         </div>
                         <div class="col-12">
-                            <div class="row border-top border-bottom mb-3 pt-3 justify-content-between" id="role_and_content_row">
+                            <div class="row border-bottom mb-3 pt-3 justify-content-center" id="role_and_content_row">
                                 <div class="col-auto" id="main_role_col">
                                     <div class="btn-toolbar mb-3" role="group" aria-label="Radio style checkbox toggle buttons for main role">
-                                        <input type="checkbox" class="btn-check" name="main_role" id="damage" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="damage" value="1" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="damage">Damage</label>
-                                        <input type="checkbox" class="btn-check" name="main_role" id="melee" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="melee" value="2" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="melee">Melee Dmg</label>
-                                        <input type="checkbox" class="btn-check" name="main_role" id="distance" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="distance" value="3" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="distance">Distance Dmg</label>
-                                        <input type="checkbox" class="btn-check" name="main_role" id="tank" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="tank" value="4" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="tank">Tank</label>
-                                        <input type="checkbox" class="btn-check" name="main_role" id="healer" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="healer" value="5" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="healer">Healer</label>
-                                        <input type="checkbox" class="btn-check" name="main_role" id="shielder" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="shielder" value="6" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="shielder">Shielder</label>
-                                        <input type="checkbox" class="btn-check" name="main_role" id="positioner" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="positioner" value="7" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="positioner">Positioner</label>
-                                        <input type="checkbox" class="btn-check" name="main_role" id="buffer" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="buffer" value="8" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="buffer">Buffer / Debuffer</label>
                                     </div>
                                 </div>
                                 <div class="col-auto" id="content_type_col">
                                     <div class="btn-toolbar mb-3" role="group" aria-label="Radio style checkbox toggle buttons for content type">
-                                        <input type="checkbox" class="btn-check" name="content_type" id="solo" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="content_type" id="solo" value="1" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="solo">Solo PvM</label>
-                                        <input type="checkbox" class="btn-check" name="content_type" id="group" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="content_type" id="group" value="2" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="group">Group PvM</label>
-                                        <input type="checkbox" class="btn-check" name="content_type" id="pvp" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="content_type" id="pvp" value="3" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="pvp">PvP</label>
-                                        <input type="checkbox" class="btn-check" name="content_type" id="rift" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="content_type" id="rift" value="4" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="rift">Rift</label>
-                                        <input type="checkbox" class="btn-check" name="content_type" id="ub" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="content_type" id="ub" value="5" autocomplete="off">
                                         <label class="btn btn-sm btn-outline-primary" for="ub">Ultimate Boss</label>
                                     </div>
                                 </div>
@@ -450,7 +502,7 @@
                 </div>
                 
                 <input name="battle_stat_order" value='{{ battle_stat_order | tojson }}' type="hidden">
-                {% for i in range(0, (battle_stat_order | length) - 1, 2) %}
+                {% for i in range   (0, (battle_stat_order | length) - 1, 2) %}
                     <div class="row border-top justify-content-center">
                             
                         {% set stat1 = battle_stat_order[i] %}
