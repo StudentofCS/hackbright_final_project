@@ -361,27 +361,26 @@ if (window.location.pathname.startsWith('/build/')) {
 }
 
 
-const intelligence_order = JSON.parse(
-    document.getElementsByName('intelligence_order')[0].value);
-const strength_order = JSON.parse(
-    document.getElementsByName('strength_order')[0].value);
-const agility_order = JSON.parse(
-    document.getElementsByName('agility_order')[0].value);
-const fortune_order = JSON.parse(
-    document.getElementsByName('fortune_order')[0].value);
-const major_order = JSON.parse(
-    document.getElementsByName('major_order')[0].value);
-const characteristic_sections = [intelligence_order[0],
-strength_order[0], agility_order[0], fortune_order[0],
-major_order[0]];
-const all_characteristics = intelligence_order.concat(
-    strength_order, agility_order, fortune_order,
-    major_order);
-const char_multipliers = JSON.parse(
-    document.getElementsByName('char_multipliers')[0].value);
-
-
 function set_characteristics_max_and_totals(char_caps, characteristic) {
+
+    const intelligence_order = JSON.parse(
+        document.getElementsByName('intelligence_order')[0].value);
+    const strength_order = JSON.parse(
+        document.getElementsByName('strength_order')[0].value);
+    const agility_order = JSON.parse(
+        document.getElementsByName('agility_order')[0].value);
+    const fortune_order = JSON.parse(
+        document.getElementsByName('fortune_order')[0].value);
+    const major_order = JSON.parse(
+        document.getElementsByName('major_order')[0].value);
+    const characteristic_sections = [intelligence_order[0],
+        strength_order[0], agility_order[0], fortune_order[0],
+        major_order[0]];
+    const all_characteristics = intelligence_order.concat(
+        strength_order, agility_order, fortune_order,
+        major_order);
+    const char_multipliers = JSON.parse(
+        document.getElementsByName('char_multipliers')[0].value);
 
     for (const stat of all_characteristics) {
 
@@ -398,7 +397,7 @@ function set_characteristics_max_and_totals(char_caps, characteristic) {
         }
         else {
             const point_stats = stat + '_point_stats';
-            const char_point_stats = document.querySelector(
+            const char_total_stats = document.querySelector(
                 `#${point_stats}`);
             const points_input = stat + '_points_input';
             const char_points_input = document.querySelector(
@@ -408,10 +407,14 @@ function set_characteristics_max_and_totals(char_caps, characteristic) {
             
             const current_points = characteristic[stat];
             const section_points = characteristic[section];
-            const points_cap = char_caps[stat];
             const section_cap = char_caps[section];
-            const available_points = points_cap - current_points;
-            const available_section_points = section_cap - section_points;
+            const available_section_points = section_cap - section_points + 
+                                                current_points;
+            let points_cap = char_caps[stat];
+            if (points_cap === -1 || points_cap > available_section_points) {
+                points_cap = available_section_points
+            }
+            
             char_points_input.value = current_points;
             
             const two_multipliers = ['lock_dodge', 'mp',
@@ -423,13 +426,13 @@ function set_characteristics_max_and_totals(char_caps, characteristic) {
             // Get total stats for characteristics with two stats
             if (two_multipliers.includes(stat)) {
                 if (stat === 'lock_dodge') {
-                    char_point_stats.innerHTML = '&nbsp' +
+                    char_total_stats.innerHTML = '&nbsp' +
                         `(${current_points * char_multipliers[stat]['lock']}` +
                         '/' +
                         `${current_points * char_multipliers[stat]['dodge']})`;
                 }
                 else {
-                    char_point_stats.innerHTML = '&nbsp' +
+                    char_total_stats.innerHTML = '&nbsp' +
                         `(${current_points * char_multipliers[stat][stat]}` +
                         '/' +
                         `${current_points * char_multipliers[stat]['elemental_mastery']})`;
@@ -437,43 +440,30 @@ function set_characteristics_max_and_totals(char_caps, characteristic) {
             }
             // Add % for characteristics that are percentages
             else if (percentage_multipliers.includes(stat)) {
-                char_point_stats.innerHTML = '&nbsp' +
+                char_total_stats.innerHTML = '&nbsp' +
                     `(${current_points * char_multipliers[stat]}%)`;    
             }
             // Else calculate total characteristic stats normally
             else {
-                char_point_stats.innerHTML = '&nbsp' +
+                char_total_stats.innerHTML = '&nbsp' +
                     `(${current_points * char_multipliers[stat]})`;
             }
             
-            
-            if (char_caps[stat] === -1 || 
-                available_points > available_section_points) {
-
-                char_points_input.setAttribute('max', 
-                    `${available_section_points + current_points}`)
-            }
-            else if (available_points <= available_section_points) {
-                char_points_input.setAttribute('max', 
-                    `${available_points + current_points}`)
-            }
-
+            char_points_input.setAttribute('max', `${points_cap}`)   
         }
-        
     }
 }
 
 
-const characteristic_inputs = document.querySelectorAll('.points_input')
-
 if (window.location.pathname.startsWith('/build/')) {
+
+    const characteristic_inputs = document.querySelectorAll('.points_input')
+
     for (const element of characteristic_inputs) {
         element.addEventListener('input', update_characteristic)
     }
-
-    const event_trigger = new Event('input', update_characteristic);
-    characteristic_inputs[0].dispatchEvent(event_trigger)
 }
+
 
 function update_characteristic(evt) {
     
@@ -762,7 +752,7 @@ function update_build_info(build, char_class) {
 
         const content_type = document.querySelector('#content_type_col');
         const active_ct = content_type.querySelector(
-            'input[value' + `"${build.content_type}"` + ']');
+            'input[value=' + `"${build.content_type}"` + ']');
         active_ct.checked = true;
     }
 }
@@ -795,13 +785,17 @@ if (window.location.pathname.startsWith('/build/')) {
         .then((responseJson) => {
             const build = responseJson.build;
             const char_class = responseJson.char_class;
-            const total_stats = responseJson.total_stats;
+            const stat_totals = responseJson.stat_totals;
+            const char_cap = responseJson.char_cap;
 
             if (build.length !== 0) {
                 update_build_info(build, char_class)
             }
-            if (total_stats.length !== 0) {
-                update_build_totals(total_stats)
+            if (stat_totals.length !== 0) {
+                update_build_totals(stat_totals)
+            }
+            if (char_cap.length !== 0 && build.characteristic.length !== 0) {
+                set_characteristics_max_and_totals(char_cap, build.characteristic)
             }
         });
 }

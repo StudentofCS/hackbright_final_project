@@ -346,8 +346,10 @@ def update_equip():
     build = crud.get_build_by_id(int(build_id))
     equip = crud.get_equipment_by_id(int(equip_id))
 
-    crud.update_equipment_set_by_build_equipment(build, equip)
-    db.session.commit()
+    # Add the equipment only if it's level appropriate for build
+    if equip.level <= build.level:
+        crud.update_equipment_set_by_build_equipment(build, equip)
+        db.session.commit()
 
     set_schema = schemas.EquipmentSetSchema()
     equip_set = set_schema.dump(build.equipment_set)
@@ -369,8 +371,13 @@ def update_characteristics():
 
     # Get needed query results and update the characteristics
     characteristic, char_cap = crud.get_characteristic_and_characteristic_cap_by_build_id(build_id)
+    # crud.verify_and_update_characteristic_section(characteristic, char_cap)
+    # db.session.commit()
     crud.update_characteristics_by_characteristic_and_points(
         characteristic, section, char_name, points, char_cap)
+    db.session.commit()
+
+    crud.verify_and_update_characteristic_section(characteristic, char_cap)
     db.session.commit()
     
     # Serialize the data models
@@ -473,8 +480,14 @@ def update_selected_elements():
 def initialize_build_info():
     build_id = request.json.get('build_id')
 
-    build, char_class = crud.get_build_and_char_class_by_build(build_id)
+    build, char_class, char_cap = crud.get_build_and_char_class_char_cap_by_build(build_id)
+
+    crud.verify_and_update_characteristic_section(
+        build.characteristic, char_cap)
+    db.session.commit()
+
     build = schemas.BuildSchema().dump(build)
+    char_cap = schemas.CharacteristicCapSchema().dump(char_cap)
     if char_class:
         char_class = schemas.CharacterClassSchema().dump(char_class)
     
@@ -485,7 +498,8 @@ def initialize_build_info():
 
     return jsonify(build=build,
                    char_class=char_class,
-                   stat_totals=total_stats_dict)
+                   stat_totals=total_stats_dict,
+                   char_cap=char_cap)
 
 
 if __name__ == "__main__":
