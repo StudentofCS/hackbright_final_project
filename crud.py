@@ -1556,6 +1556,9 @@ def set_build_with_total_stats_by_build_and_base_stats(build_and_base_stats):
                 #                 * CHARACTERISTIC_MULTIPLIERS_DICT[param])
                 # total_value += db.session.query(
                 #     getattr(build.characteristic, param)).scalar()
+            # if param == 'air_mastery':
+            #     print(f'total value: {total_value}')
+            
             for equip_slot in build.equipment_set.show():
             # for equip_slot in stat_tables.equipment_set.show():
             # for equip_slot, equip_id in build.equipment_set.show().items():
