@@ -14,12 +14,12 @@
                                 <input type="text" class="form-control" id="build_name" name="build_name">
                                 <label for="build_name">Build Name</label>
                             </div>
-                            <div class="col-xl-3 form-floating mb-3">
-                                <input type="number" class="form-control" id="min_level" name="min_level" value="20" step="15" min="5" max="{{ max_level }}">
+                            <div class="col-xl-3 col-auto form-floating mb-3 align-self-center">
+                                <input type="number" style="width: 5rem;" class="form-control" id="min_level" name="min_level" value="20" step="15" min="5" max="{{ max_level }}">
                                 <label for="min_level">Min Level</label>
                             </div>
-                            <div class="col-xl-3 form-floating mb-3">
-                                <input type="number" class="form-control" id="max_level" name="max_level" step="15" min="5" max="{{ max_level }}">
+                            <div class="col-xl-3 col-auto form-floating mb-3 align-self-center">
+                                <input type="number" style="width: 5rem;" class="form-control" id="max_level" name="max_level" step="15" min="5" max="{{ max_level }}">
                                 <label for="max_level">Max Level</label>
                             </div>
                         </div>
@@ -83,7 +83,7 @@
                             <h5>Stats:</h5>
                             <div class="input-group mb-3 col-auto">
                                 <span class="input-group-text bg-secondary border-secondary">AP:</span>
-                                <input type="number" class="form-control" name="min_ap" aria-label="Minimum AP">
+                                <input type="number" style="width: 3rem;" class="form-control" name="min_ap" aria-label="Minimum AP">
                                 <span class="input-group-text bg-secondary border-secondary"> - </span>
                                 <input type="number" class="form-control" name="max_ap" aria-label="Maximum AP">
                             </div>

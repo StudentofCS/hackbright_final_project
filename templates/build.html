@@ -320,16 +320,16 @@
                                         {% endif %}
                                     {% endfor %}
                                     
-                                    <div class="col-6" id="elemental_mastery_range">
+                                    <div class="col-lg-6" id="elemental_mastery_range">
                                         <div class="input-group input-group-sm">
                                             <span class="input-group-text bg-secondary border-secondary">
                                                 Elemental Mastery:      
                                             </span>
-                                            <input type="number" class="form-control form-control-sm" name="min_elemental_mastery" aria-label="Minimum elemental mastery">
+                                            <input type="number" class="form-control" styl="width: 6rem;" name="min_elemental_mastery" aria-label="Minimum elemental mastery">
                                             <span class="input-group-text bg-secondary border-secondary"> - </span>
-                                            <input type="number" class="form-control form-control-sm" name="max_elemental_mastery" aria-label="Maximum elemental mastery">
+                                            <input type="number" class="form-control" styl="width: 6rem;" name="max_elemental_mastery" aria-label="Maximum elemental mastery">
                                         </div>
-                                        <div class="btn-toolbar mb-3" role="group" aria-label="Checkbox buttons for elemental masteries to focus on for total mastery">
+                                        <div class="d-flex btn-toolbar mb-3 justify-content-center" role="group" aria-label="Checkbox buttons for elemental masteries to focus on for total mastery">
                                             {% for stat in elemental_mastery_order %}
                                                 <input type="checkbox" class="btn-check" name="mastery_element" id="equip_{{ stat }}" value="{{ stat }}" autocomplete="off">
                                                 <label class="btn btn-sm btn-outline-primary" for="equip_{{ stat }}">
@@ -340,7 +340,7 @@
                                         
                                     </div>
 
-                                    <div class="col-6" id="elemental_res_range">
+                                    <div class="col-lg-6" id="elemental_res_range">
                                         <div class="input-group input-group-sm">
                                             <span class="input-group-text bg-secondary border-secondary">
                                                 Elemental Resistance:      
@@ -349,7 +349,7 @@
                                             <span class="input-group-text bg-secondary border-secondary"> - </span>
                                             <input type="number" class="form-control form-control-sm" name="max_elemental_res" aria-label="Maximum elemental resistance">
                                         </div>
-                                        <div class="btn-toolbar mb-3" role="group" aria-label="Checkbox buttons for elemental resistances to focus on for total resistance">
+                                        <div class="d-flex btn-toolbar mb-3 justify-content-center" role="group" aria-label="Checkbox buttons for elemental resistances to focus on for total resistance">
                                             {% for stat in elemental_res_order %}
                                                 <input type="checkbox" class="btn-check" name="res_element" id="equip_{{ stat }}" value="{{ stat }}" autocomplete="off">
                                                 <label class="btn btn-sm btn-outline-primary" for="equip_{{ stat }}">
@@ -359,50 +359,66 @@
                                         </div>
                                     </div>
 
-                                    {% for stat in battle_stat_order %} 
-                                        {% if stat not in ['dmg_inflicted', 'heals_performed'] %}
-                                            <div class="col-4" id="{{ stat }}_range">
-                                                <div class="input-group input-group-sm mb-3">
-                                                    <span class="input-group-text bg-secondary border-secondary">
-                                                        {% if "_" in stat %}                         
-                                                                {{ (stat | replace("_"," ")) | title}}:
-                                                        {% elif stat | length == 2 %}
-                                                                {{ stat | upper }}:
-                                                        {% else %}
-                                                                {{ stat | title }}
-                                                        {% endif %}
-                                                        
-                                                    </span>
-                                                    <input type="number" class="form-control form-control-sm" name="min_{{ stat }}" aria-label="Minimum {{ stat | replace('_','' '') }}">
-                                                    <span class="input-group-text bg-secondary border-secondary"> - </span>
-                                                    <input type="number" class="form-control form-control-sm" name="max_{{ stat }}" aria-label="Maximum {{ stat | replace('_','' '') }}">
-                                                </div>
-                                            </div>   
-                                        {% endif %}
-                                    {% endfor %}
+                                    <div class="d-inline-flex mb-3 gap-1 justify-content-center">
+                                        <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#battle_stats" aria-expanded="false" aria-controls="battle_stats">
+                                            Battle Stats
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#secondary_stats" aria-expanded="false" aria-controls="secondary_stats">
+                                            Secondary Stats
+                                        </button>
+                                    </div>
 
+                                    <div class="col-12 collapse" id="battle_stats">
+                                        <div class="row">
+                                        {% for stat in battle_stat_order %} 
+                                            {% if stat not in ['dmg_inflicted', 'heals_performed'] %}
+                                                <div class="col-4" id="{{ stat }}_range">
+                                                    <div class="input-group input-group-sm mb-3">
+                                                        <span class="input-group-text bg-secondary border-secondary">
+                                                            {% if "_" in stat %}                         
+                                                                    {{ (stat | replace("_"," ")) | title}}:
+                                                            {% elif stat | length == 2 %}
+                                                                    {{ stat | upper }}:
+                                                            {% else %}
+                                                                    {{ stat | title }}
+                                                            {% endif %}
+                                                            
+                                                        </span>
+                                                        <input type="number" class="form-control form-control-sm" name="min_{{ stat }}" aria-label="Minimum {{ stat | replace('_','' '') }}">
+                                                        <span class="input-group-text bg-secondary border-secondary"> - </span>
+                                                        <input type="number" class="form-control form-control-sm" name="max_{{ stat }}" aria-label="Maximum {{ stat | replace('_','' '') }}">
+                                                    </div>
+                                                </div>   
+                                            {% endif %}
+                                        {% endfor %}
+                                        </div>
+                                    </div>
 
-                                    {% for stat in secondary_stat_order %}  
-                                        {% if stat not in ['indirect_dmg', 'barrier'] %}
-                                            <div class="col-4" id="{{ stat }}_range">
-                                                <div class="input-group input-group-sm mb-3">
-                                                    <span class="input-group-text bg-secondary border-secondary">
-                                                        {% if "_" in stat %}                         
-                                                                {{ (stat | replace("_"," ")) | title}}:
-                                                        {% elif stat | length == 2 %}
-                                                                {{ stat | upper }}:
-                                                        {% else %}
-                                                                {{ stat | title }}
-                                                        {% endif %}
-                                                        
-                                                    </span>
-                                                    <input type="number" class="form-control form-control-sm" name="min_{{ stat }}" aria-label="Minimum {{ stat | replace('_','' '') }}">
-                                                    <span class="input-group-text bg-secondary border-secondary"> - </span>
-                                                    <input type="number" class="form-control form-control-sm" name="max_{{ stat }}" aria-label="Maximum {{ stat | replace('_','' '') }}">
-                                                </div>
-                                            </div>     
-                                        {% endif %}
-                                    {% endfor %}
+                                    <div class="col-12 collapse" id="secondary_stats">
+                                        <div class="row">
+                                        {% for stat in secondary_stat_order %}  
+                                            {% if stat not in ['indirect_dmg', 'barrier'] %}
+                                                <div class="col-4" id="{{ stat }}_range">
+                                                    <div class="input-group input-group-sm mb-3">
+                                                        <span class="input-group-text bg-secondary border-secondary">
+                                                            {% if "_" in stat %}                         
+                                                                    {{ (stat | replace("_"," ")) | title}}:
+                                                            {% elif stat | length == 2 %}
+                                                                    {{ stat | upper }}:
+                                                            {% else %}
+                                                                    {{ stat | title }}
+                                                            {% endif %}
+                                                            
+                                                        </span>
+                                                        <input type="number" class="form-control form-control-sm" name="min_{{ stat }}" aria-label="Minimum {{ stat | replace('_','' '') }}">
+                                                        <span class="input-group-text bg-secondary border-secondary"> - </span>
+                                                        <input type="number" class="form-control form-control-sm" name="max_{{ stat }}" aria-label="Maximum {{ stat | replace('_','' '') }}">
+                                                    </div>
+                                                </div>     
+                                            {% endif %}
+                                        {% endfor %}
+                                        </div>
+                                    </div>
 
 
                                 </div>
@@ -410,8 +426,8 @@
                                 <div class="col-12 d-flex justify-content-end">
                                     <button class="btn btn-sm btn-primary" type="submit" id="equipment_search_btn">Search</button>
                                 </div>
-                                <div class="col-2 mb-3 mx-auto" id="homepage_reset_row">
-                                    <button class="btn text-decoration-underline primary" type="reset" id="equipment_reset_button">Reset</button>
+                                <div class="col-2 mb-3 mx-auto" id="equipment_tab_reset_row">
+                                    <button class="btn text-decoration-underline text-primary" type="reset" id="equipment_reset_button">Reset</button>
                                 </div>
                             </form>
                         </div>

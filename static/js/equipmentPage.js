@@ -722,12 +722,10 @@ function update_build_info(build, char_class) {
     if (char_class.length != 0) {
         const char_class_element = document.querySelector(
         '#char_class_dropdown');
-        console.log(char_class.name)
 
         char_class_element.innerHTML = char_class.name;
     }
     
-
     // Update the selected elements button
     const selected_elements = document.querySelector(
         '#selected_elements_col');
