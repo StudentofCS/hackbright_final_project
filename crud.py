@@ -1517,23 +1517,9 @@ def set_build_with_total_stats_by_build_and_base_stats(build_and_base_stats):
                 if isinstance(multiplier, dict):
                     for stat in multiplier:
                         stat_name = 'total_' + stat
-                        # If it's resistance major point
-                        if stat == 'resistance':
-                            res_name = 'total_elemental_res'
-                            if res_name in build.__dict__:
-                                current_value = getattr(build, res_name)
-                                setattr(build, 
-                                        res_name, 
-                                        (current_value +
-                                            (base_value * 
-                                            multiplier[stat])))
-                            else:
-                                setattr(build, 
-                                        res_name, 
-                                        (base_value *
-                                         multiplier[stat]))
+                        
                         # If the total stat is already an attribute in build
-                        elif stat_name in build.__dict__:
+                        if stat_name in build.__dict__:
                             current_value = getattr(build, stat_name)
                             setattr(build, stat_name, (current_value
                                                        + (base_value * 
@@ -1542,6 +1528,21 @@ def set_build_with_total_stats_by_build_and_base_stats(build_and_base_stats):
                         else:
                             setattr(build, stat_name, (base_value * 
                                                        multiplier[stat]))
+                # If it's resistance major point
+                elif param == 'resistance':
+                    res_name = 'total_elemental_res'
+                    if res_name in build.__dict__:
+                        current_value = getattr(build, res_name)
+                        setattr(build, 
+                                res_name, 
+                                (current_value +
+                                    (base_value * 
+                                    multiplier[stat])))
+                    else:
+                        setattr(build, 
+                                res_name, 
+                                (base_value *
+                                    multiplier[stat]))
                 else:
                     total_value += base_value * multiplier
 
@@ -1571,7 +1572,7 @@ def set_build_with_total_stats_by_build_and_base_stats(build_and_base_stats):
                         for element in build.selected_elements:
                             # If the postion is within number of selected elements
                             if element.position < num_elements:
-                                element_name = element.element.name
+                                element_name = 'total_' + element.element.name
                                 if element_name in build.__dict__:
                                     current_value = getattr(build, 
                                                             element_name)
@@ -1587,7 +1588,7 @@ def set_build_with_total_stats_by_build_and_base_stats(build_and_base_stats):
                         for element in build.selected_elements:
                             position = element.position
                             if position < (num_elements + 4) and position > 3:
-                                element_name = element.element.name
+                                element_name = 'total_' + element.element.name
                                 if element_name in build.__dict__:
                                     current_value = getattr(build, 
                                                             element_name)
