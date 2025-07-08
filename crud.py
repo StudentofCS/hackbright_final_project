@@ -1476,7 +1476,7 @@ def set_build_with_total_stats_by_build_and_base_stats(build_and_base_stats):
                                 'level', 'armor']
     base_stat_list = ['hp', 'ap', 'mp', 'wp', 'control', 'crit_hit']
     characteristic_stat_list = ['barrier', 'heals_received',
-                                'armor', 'melee_mastery',
+                                'melee_mastery',
                                 'distance_mastery', 'hp',
                                 'lock', 'dodge', 'initiative',
                                 'force_of_will', 'crit_hit',
@@ -1556,15 +1556,12 @@ def set_build_with_total_stats_by_build_and_base_stats(build_and_base_stats):
                 #                 * CHARACTERISTIC_MULTIPLIERS_DICT[param])
                 # total_value += db.session.query(
                 #     getattr(build.characteristic, param)).scalar()
-            # if param == 'air_mastery':
-            #     print(f'total value: {total_value}')
-            
+
             for equip_slot in build.equipment_set.show():
             # for equip_slot in stat_tables.equipment_set.show():
             # for equip_slot, equip_id in build.equipment_set.show().items():
                 if equip_slot.endswith('_id') and param != 'barrier':
                     equip = getattr(build.equipment_set, equip_slot[:-3])
-                    # equip = getattr(stat_tables.equipment, equip_slot[:-3])
                     equip_pos = getattr(equip, param)
                     equip_neg = getattr(equip, param + '_neg')
                     if equip_pos and equip_neg:
@@ -1575,7 +1572,7 @@ def set_build_with_total_stats_by_build_and_base_stats(build_and_base_stats):
                         total_value -= equip_neg
 
                     # Handle random masteries
-                    if equip.random_masteries:
+                    if equip.random_masteries and param in elemental_mastery_list:
                         num_elements = equip.num_random_masteries
                         mastery = equip.random_masteries
                         # Mastery postions are 0-3
@@ -1584,18 +1581,9 @@ def set_build_with_total_stats_by_build_and_base_stats(build_and_base_stats):
                             if element.position < num_elements:
                                 element_name = 'total_' + element.element.name
                                 if element_name == total_name:
-                                    total_value += mastery
-                                elif element_name in build.__dict__:
-                                    current_value = getattr(build, 
-                                                            element_name)
-                                    setattr(build, element_name, (
-                                        current_value + 
-                                        mastery))
-                                else:
-                                    setattr(build, element_name,
-                                            mastery)
+                                    current_value += mastery
 
-                    if equip.random_resistances:
+                    if equip.random_resistances and param in elemental_res_list:
                         num_elements = equip.num_random_resistances
                         res = equip.random_resistances
                         for element in build.selected_elements:
@@ -1603,17 +1591,11 @@ def set_build_with_total_stats_by_build_and_base_stats(build_and_base_stats):
                             if position < (num_elements + 4) and position > 3:
                                 element_name = 'total_' + element.element.name
                                 if element_name == total_name:
-                                    total_value += res
-                                elif element_name in build.__dict__:
-                                    current_value = getattr(build, 
-                                                            element_name)
-                                    setattr(build, element_name, (
-                                        current_value + res))
-                                else:
-                                    setattr(build, element_name, res)
-            
+                                    current_value += res
             # Set total value
-            setattr(build, total_name, total_value)    
+            setattr(build, total_name, total_value)
+                    
+                    
 
             # for equip_slot, equip_id in build.equipment_set.show().items():
             #     if equip_slot != 'id':
@@ -1648,6 +1630,11 @@ def set_build_with_total_stats_by_build_and_base_stats(build_and_base_stats):
             res = getattr(build, total_stat)
             res += build.total_elemental_res
             setattr(build, total_stat, res)
+            percent = int((1 - 0.8 ** (res / 100)) * 100)
+            res_percent = total_stat + '_percent'
+            setattr(build, res_percent, percent)
+
+            
 
     # Add hp multipliers    
     hp_stat = getattr(build, 'total_hp')

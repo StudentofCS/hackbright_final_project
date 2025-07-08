@@ -216,9 +216,17 @@ function update_build_totals(build_totals) {
     for (const stat of elemental_stats) {
         const stat_name = 'total_' + stat;
         const element = document.querySelector(`#${stat_name}`);
-        const updated_value = element.innerHTML.replace(
-            /\d+/, `${build_totals[stat]}`);
-        element.innerHTML = updated_value;
+        if (stat_name.endsWith('_res')) {
+            const updated_value = element.innerHTML.replace(
+                /\d+/, `${build_totals[stat]}`);
+            const percentage = `(${build_totals[stat + '_percent']}%)`
+            element.innerHTML = updated_value + '&nbsp' + percentage;
+        }
+        else {
+            const updated_value = element.innerHTML.replace(
+                /\d+/, `${build_totals[stat]}`);
+            element.innerHTML = updated_value;
+        }
     }
 
     const battle_stats = JSON.parse(document.getElementsByName(
