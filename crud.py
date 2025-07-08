@@ -1887,12 +1887,13 @@ def verify_and_update_characteristic_section(characteristic, char_cap):
                 # If stat points are within range, keep as is and add to count
                 else:
                     count += stat_points
-        if count < 0 :
+        if count <= 0 :
             setattr(characteristic, section, 0)
         elif count > section_cap:
             setattr(characteristic, section, section_cap)
         elif count != section_count:
             setattr(characteristic, section, count)
+
     pass
         
 

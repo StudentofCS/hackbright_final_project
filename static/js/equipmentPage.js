@@ -719,10 +719,9 @@ function update_selected_elements(evt) {
 function update_build_info(build, char_class) {
     
     // Update the character class element
-    if (char_class.length != 0) {
-        const char_class_element = document.querySelector(
+    const char_class_element = document.querySelector(
         '#char_class_dropdown');
-
+    if (Object.keys(char_class).length != 0) {
         char_class_element.innerHTML = char_class.name;
     }
     
