@@ -661,11 +661,18 @@ function update_class(evt) {
             'Content-Type': 'application/json',
         }
     })
-        .then((response) => {
-            if (response.status === 204) {
-                console.log('Update successful.')
+        .then((response) => response.json())
+        .then((responseJson) => {
+            const build = responseJson.build;
+            const char_class = responseJson.char_class
+            const stat_totals = responseJson.stat_totals;
+
+            if (build.length !== 0) {
+                update_build_info(build, char_class)
+                update_build_totals(stat_totals)
             }
-        })
+
+        });
 }
 
 
@@ -710,11 +717,12 @@ function update_selected_elements(evt) {
 
 
 function update_build_info(build, char_class) {
-
+    
     // Update the character class element
-    if (build.character_class_id) {
+    if (char_class.length != 0) {
         const char_class_element = document.querySelector(
         '#char_class_dropdown');
+        console.log(char_class.name)
 
         char_class_element.innerHTML = char_class.name;
     }

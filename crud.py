@@ -1905,10 +1905,9 @@ def update_build_name_by_build_id(build_id, build_name):
     pass
 
 
-def update_build_class_by_build_id(build_id, class_id):
+def update_build_class_by_build(build, class_id):
     """Update the character class id of build using the build id"""
 
-    build = get_build_by_id(build_id)
     build.character_class_id = class_id
     pass
 
@@ -1948,7 +1947,7 @@ def get_build_and_char_class_char_cap_by_build(build_id):
     return build, char_class, char_cap 
 
 
-def get_build_and_char_class_by_build(build_id):
+def get_build_and_char_class_by_build_id(build_id):
     """Return build and, if not null, class"""
 
     build = get_build_by_id(build_id)

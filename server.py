@@ -446,9 +446,26 @@ def update_class():
     build_id = request.json.get('build_id')
     class_id = int(request.json.get('class_id'))
 
-    crud.update_build_class_by_build_id(build_id, class_id)
+    build = crud.get_build_by_id(build_id)
+
+    crud.update_build_class_by_build(build, class_id)
     db.session.commit()
-    return '', 204
+
+    char_class = crud.get_character_class_by_id(class_id)
+
+    build = schemas.BuildSchema().dump(build)
+    if char_class:
+        char_class = schemas.CharacterClassSchema().dump(char_class)
+    else:
+        char_class = {}
+
+    # Get the updated stat totals
+    totals_build = helpers.get_total_build_stats_by_build_id(build_id)
+    total_stats_dict = helpers.get_total_stats_dict_by_build(totals_build)
+
+    return jsonify(build=build,
+                   char_class=char_class,
+                   stat_totals=total_stats_dict)
 
 
 @app.route('/api/update_selected_elements', methods=['POST'])
@@ -461,7 +478,7 @@ def update_selected_elements():
     crud.update_selected_elements_by_build_id(build_id, position, element_id)
     db.session.commit()
 
-    build, char_class = crud.get_build_and_char_class_by_build(build_id)
+    build, char_class = crud.get_build_and_char_class_by_build_id(build_id)
 
     build = schemas.BuildSchema().dump(build)
     if char_class:
