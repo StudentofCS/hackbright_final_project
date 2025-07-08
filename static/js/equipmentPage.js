@@ -146,7 +146,7 @@ if (window.location.pathname.startsWith('/build/')) {
                         equip_dict.setAttribute('value', equip)
                         equip_dict.setAttribute('type', 'hidden')
                         const col_div = document.createElement('div');
-                        col_div.classList.add('col-4','card_col')
+                        col_div.classList.add('col-md-4','card_col')
                         results_row.insertAdjacentElement('beforeend', col_div)
                         const card_div = document.createElement('div');
                         card_div.classList.add('card', 'h-100', 'equip-card')
@@ -325,12 +325,21 @@ function activate_tab(evt) {
     evt.preventDefault();
 
     const tab_classes = ['characteristics_tab', 'equipment_tab',
-        'spells_tab', 'runes_tab', 'auto_tab'
-    ];
+        'spells_tab', 'runes_tab', 'auto_tab'];
+    const equipment_section = document.querySelector('#equipment_slots_row');
+
+    // DIDN'T WORK :(
+    // Add sticky to equipment section if in equipment tab
+    // if (this.classList.contains('equipment_tab')) {
+    //     equipment_section.classList.add('sticky-sm-top')    
+    // }
+    // else {
+    //     equipment_section.classList.remove('sticky-sm-top')
+    // }
     
     for (const tab of tabs) {
         tab.classList.remove('active')
-        tab.removeAttribute('aria-current')   
+        tab.removeAttribute('aria-current')
     }
 
     for (const tab_class of tab_classes) {
