@@ -55,12 +55,39 @@ def get_total_stats_dict_by_build(build):
 
     total_stats_dict = {}
 
+    non_total_stat_keys = ['id', 'user_id',
+                           'equipment_set', 'characteristics',
+                           'character_class_id', 'level',
+                           'updated_at', 'build_name',
+                           'public', 'main_role',
+                           'content_type']
+
     for attr, value in build.__dict__.items():
         if 'total_' in attr:
             # Remove 'total_'
             stat = attr[6:]
             total_stats_dict.update({stat : value })
+        elif attr in non_total_stat_keys:
+            if attr == 'updated_at':
+                # Remove time from the date
+                total_stats_dict.update({attr, value[:10]})
+            else:
+                total_stats_dict.update({attr, value})
     return total_stats_dict
+
+
+def get_name_translations_dict(name_translations, language):
+    """Return a dict of name translation in input language 
+    by with type, id, translations"""
+    """Ex. {'equipment': { 9723: 'Gelano'}}}"""
+    
+    names_dict = {}
+    for nt in name_translations:
+        names_dict.update(
+            {nt.name_type : {'en' : {nt.name_id : getattr(nt, language)}}})
+        
+    return names_dict
+
 
 
 if __name__ == '__main__':

@@ -56,16 +56,16 @@ if (window.location.pathname.startsWith('/build/')) {
             max_control: document.querySelector('input[name="max_control"]').value,
             min_force_of_will: document.querySelector('input[name="min_force_of_will"]').value,
             max_force_of_will: document.querySelector('input[name="max_force_of_will"]').value,
-            // min_crit_mastery: document.querySelector('input[name="min_crit_mastery"]').value,
-            // max_crit_mastery: document.querySelector('input[name="max_crit_mastery"]').value,
-            // min_crit_res: document.querySelector('input[name="min_crit_res"]').value,
-            // max_crit_res: document.querySelector('input[name="max_crit_res"]').value,
-            // min_rear_mastery: document.querySelector('input[name="min_rear_mastery"]').value,
-            // max_rear_mastery: document.querySelector('input[name="max_rear_mastery"]').value,
-            // min_rear_res: document.querySelector('input[name="min_rear_res"]').value,
-            // max_rear_res: document.querySelector('input[name="max_rear_res"]').value,
-            // min_melee_mastery: document.querySelector('input[name="min_melee_mastery"]').value,
-            // max_melee_mastery: document.querySelector('input[name="max_melee_mastery"]').value,
+            min_crit_mastery: document.querySelector('input[name="min_crit_mastery"]').value,
+            max_crit_mastery: document.querySelector('input[name="max_crit_mastery"]').value,
+            min_crit_res: document.querySelector('input[name="min_crit_res"]').value,
+            max_crit_res: document.querySelector('input[name="max_crit_res"]').value,
+            min_rear_mastery: document.querySelector('input[name="min_rear_mastery"]').value,
+            max_rear_mastery: document.querySelector('input[name="max_rear_mastery"]').value,
+            min_rear_res: document.querySelector('input[name="min_rear_res"]').value,
+            max_rear_res: document.querySelector('input[name="max_rear_res"]').value,
+            min_melee_mastery: document.querySelector('input[name="min_melee_mastery"]').value,
+            max_melee_mastery: document.querySelector('input[name="max_melee_mastery"]').value,
             min_armor_given: document.querySelector('input[name="min_armor_given"]').value,
             max_armor_given: document.querySelector('input[name="max_armor_given"]').value,
             min_distance_mastery: document.querySelector('input[name="min_distance_mastery"]').value,
@@ -830,16 +830,16 @@ if (window.location.pathname.startsWith('/build/')) {
         });
 }
 
+// Still in progress
+// if (window.location.pathname == ('/')) {
 
-if (window.location.pathname == ('/')) {
+//     const search_button = document.querySelector('#homepage_submit_button')
 
-    const search_button = document.querySelector('#homepage_submit_button')
-
-    search_button.addEventListener('click', update_search_results)
-}
+//     search_button.addEventListener('click', get_search_results)
+// }
 
 
-function update_search_results(evt) {
+function get_search_results(evt) {
     evt.preventDefault();
 
     // Get a list of the checkedbox ids without the undefined values
@@ -877,9 +877,9 @@ function update_search_results(evt) {
     const formInputs = {
         build_name: document.querySelector(
             'input[name="build_name"]').value,
-        character_class_ids : char_class_id_list,
-        main_role_ids : main_role_id_list,
-        content_type_ids : content_type_id_list,
+        character_class_id : char_class_id_list,
+        main_role : main_role_id_list,
+        content_type : content_type_id_list,
         min_level: document.querySelector('input[name="min_level"]').value,
         max_level: document.querySelector('input[name="max_level"]').value,
         min_hp: document.querySelector('input[name="min_hp"]').value,
@@ -890,10 +890,10 @@ function update_search_results(evt) {
         max_mp: document.querySelector('input[name="max_mp"]').value,
         min_wp: document.querySelector('input[name="min_wp"]').value,
         max_wp: document.querySelector('input[name="max_wp"]').value,
-        min_elemental_mastery: document.querySelector(
-            'input[name="min_elemental_mastery"]').value,
-        max_elemental_mastery: document.querySelector(
-            'input[name="max_elemental_mastery"]').value,
+        min_mastery: document.querySelector(
+            'input[name="min_mastery"]').value,
+        max_mastery: document.querySelector(
+            'input[name="max_mastery"]').value,
         mastery_element: mastery_element_list,
         mastery_type: mastery_type_list,
         min_elemental_res_percent: document.querySelector(
@@ -912,33 +912,162 @@ function update_search_results(evt) {
         max_dodge: document.querySelector('input[name="max_dodge"]').value,
         min_lock: document.querySelector('input[name="min_lock"]').value,
         max_lock: document.querySelector('input[name="max_lock"]').value,
-        min_wisdom: document.querySelector('input[name="min_wisdom"]').value,
-        max_wisdom: document.querySelector('input[name="max_wisdom"]').value,
-        min_prospecting: document.querySelector('input[name="min_prospecting"]').value,
-        max_prospecting: document.querySelector('input[name="max_prospecting"]').value,
+        // min_wisdom: document.querySelector('input[name="min_wisdom"]').value,
+        // max_wisdom: document.querySelector('input[name="max_wisdom"]').value,
+        // min_prospecting: document.querySelector('input[name="min_prospecting"]').value,
+        // max_prospecting: document.querySelector('input[name="max_prospecting"]').value,
         min_control: document.querySelector('input[name="min_control"]').value,
         max_control: document.querySelector('input[name="max_control"]').value,
         min_force_of_will: document.querySelector('input[name="min_force_of_will"]').value,
         max_force_of_will: document.querySelector('input[name="max_force_of_will"]').value,
-        min_crit_mastery: document.querySelector('input[name="min_crit_mastery"]').value,
-        max_crit_mastery: document.querySelector('input[name="max_crit_mastery"]').value,
-        min_crit_res: document.querySelector('input[name="min_crit_res"]').value,
-        max_crit_res: document.querySelector('input[name="max_crit_res"]').value,
-        min_rear_mastery: document.querySelector('input[name="min_rear_mastery"]').value,
-        max_rear_mastery: document.querySelector('input[name="max_rear_mastery"]').value,
-        min_rear_res: document.querySelector('input[name="min_rear_res"]').value,
-        max_rear_res: document.querySelector('input[name="max_rear_res"]').value,
-        min_melee_mastery: document.querySelector('input[name="min_melee_mastery"]').value,
-        max_melee_mastery: document.querySelector('input[name="max_melee_mastery"]').value,
         min_armor_given: document.querySelector('input[name="min_armor_given"]').value,
         max_armor_given: document.querySelector('input[name="max_armor_given"]').value,
-        min_distance_mastery: document.querySelector('input[name="min_distance_mastery"]').value,
-        max_distance_mastery: document.querySelector('input[name="max_distance_mastery"]').value,
         min_armor_received: document.querySelector('input[name="min_armor_received"]').value,
         max_armor_received: document.querySelector('input[name="max_armor_received"]').value,
-        min_healing_mastery: document.querySelector('input[name="min_healing_mastery"]').value,
-        max_healing_mastery: document.querySelector('input[name="max_healing_mastery"]').value,
-        min_berserk_mastery: document.querySelector('input[name="min_berserk_mastery"]').value,
-        max_berserk_mastery: document.querySelector('input[name="max_berserk_mastery"]').value,
+        min_dmg_inflicted: document.querySelector('input[name="min_dmg_inflicted"]').value,
+        max_dmg_inflicted: document.querySelector('input[name="max_dmg_inflicted"]').value,
+        min_heals_performed: document.querySelector('input[name="min_berserk_mastery"]').value,
+        max_heals_performed: document.querySelector('input[name="max_berserk_mastery"]').value,
     };
+
+    const query_string = new URLSearchParams(formInputs).toString();
+    const url = `/api/get_search_results?${query_string}`;
+
+    fetch(url)
+        .then((response) => response.json())
+        .then ((responseJson) => {
+
+            const build_totals_list = responseJson.build_totals_list;
+            const translations = responseJson.translations
+
+            if (build_totals_list.length !== 0) {
+                add_homepage_results(build_totals_list, translations)
+            }
+        });
+}
+
+
+function add_homepage_results(build_totals_list, translations) {
+
+    const individual_results_div = document.querySelector(
+        '#individual_results');
+
+    individual_results_div.innerHTML = '';
+
+    const equip_order = JSON.parse(document.getElementsByName(
+                    'equip_order')[0].value);
+    
+    // String for equipment
+    let equipments = ''
+    for (equip in equip_order) {
+        if (!build['equipment_set'][equip]) {
+            // Not fixed yet
+            `<div class="col-auto border">
+                {{ (equip | replace("_"," ")) | title }}: Empty
+            </div>`
+        }
+        else {
+            `<div class="col-auto border">
+                {{ (equip | replace("_"," ")) | title }}: {{ equipment.id }}
+            </div>`
+        }
+    }
+
+    for (build in build_totals_list) {
+
+        let class_name = '';
+        if (!isNaN(build.character_class_id)) {
+            class_name = translations['class'][build.character_class_id];
+        }
+
+        const card = `
+                <div class="col-11 text-bg-dark border border-secondary rounded-4 mb-3">
+                    <input type="hidden" name="result_build_id" value="${build.id}">
+                
+                    <div class="mb-3 mx-1">
+                        <div class="row pb-3 mb-3 pt-3 border-bottom border-warning-subtle">
+                            <div class="col">Level: ${build.level}</div>
+                                <div class="col">
+                                    <span>Class:&nbsp</span> + 
+                                    <span>${class_name}
+                                </div>
+                            <div class="col text-truncate">Name: ${build.name}</div>
+                        </div>
+                        <div class="row mb-3 pt-3">
+                            {% for equip in equip_order %}
+                                {% set equipment = build.equipment_set[equip] %}
+                                {% if equipment == None %}
+                                    <div class="col-auto border">
+                                        {{ (equip | replace("_"," ")) | title }}: Empty
+                                    </div>
+                                {% else %}
+                                    <div class="col-auto border">
+                                        {{ (equip | replace("_"," ")) | title }}: {{ equipment.id }}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="row mb-3 pt-3">
+                            {% for stat in main_stats_order %}
+                                {% set stat_name = 'total_' + stat %}
+                                {% if "_" in stat %}
+                                    <div class="col text-nowrap">{{ (stat | replace("_"," ")) | title}}: {{ build[stat_name] }}</div>
+                                {% elif stat | length == 2 %}
+                                    <div class="col text-nowrap">{{ stat | upper }}: {{ build[stat_name] }}</div>
+                                {% else %}
+                                    <div class="col text-nowrap">{{ stat | title }}: {{ build[stat_name] }}</div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="row mb-3 pt-3 border-top collapse" id="show_stats">
+                            {% for stat in (elemental_mastery_order + elemental_res_order + battle_stat_order + secondary_stat_order) %}
+
+                                {% set stat_name = 'total_' + stat %}
+                                
+                                <!-- {#{% if stat in ['fire_mastery', 'air_mastery', 'earth_mastery', 'water_mastery'] and "elemental_mastery" in session["build_stats"][build.id] %}
+                                    <div class="col">{{ (stat | replace("_"," ")) | title}}: {{session["build_stats"][build.id][stat] + session["build_stats"][build.id]["elemental_mastery"]}}</div>
+                                {% elif stat in ['fire_res', 'air_res', 'earth_res', 'water_res'] and "elemental_res" in session["build_stats"][build.id] %}
+                                    <div class="col">{{ (stat | replace("_"," ")) | title}}: {{session["build_stats"][build.id][stat] + session["build_stats"][build.id]["elemental_mastery"]}}</div>#} -->
+                                {% if "_" in stat %}
+                                    <div class="col text-nowrap">{{ (stat | replace("_"," ")) | title}}: {{ build[stat_name] }}</div>
+                                {% elif stat | length == 2 %}
+                                    <div class="col text-nowrap">{{ stat | upper }}: {{ build[stat_name] }}</div>
+                                {% else %}
+                                    <div class="col text-nowrap">{{ stat | title }}: {{ build[stat_name] }}</div>
+                                <!-- {#{% else %}
+                                    <div class="col">{{ stat | capitalize }}: {{session["build_stats"][build.id][stat]}}</div>#} -->
+                                {% endif %}
+                                
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                </div> 
+                `;
+
+    }
+}
+
+
+if (window.location.pathname == '/') {
+
+    const cards = document.querySelectorAll('.individual-build-result');
+
+    for (const card of cards) {
+        card.addEventListener('click', go_to_build_page)
+    }
+}
+
+
+function go_to_build_page(evt) {
+    evt.preventDefault();
+
+    console.log(this)
+    console.log(evt)
+
+    const build_id = this.querySelector(
+        'input[name="result_build_id"]').value
+
+    window.location.href = `http://localhost:6060/build/${build_id}`
 }

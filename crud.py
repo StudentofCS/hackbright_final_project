@@ -865,7 +865,7 @@ def get_total_stats_by_build(build):
     if build.build_name:
         total_stats.update({'build_name' : build.build_name})
     if build.character_class_id:
-        total_stats.update({'character_class' : build.character_class_id})
+        total_stats.update({'character_class_id' : build.character_class_id})
     total_stats.update({'level' : build.level})
     return total_stats
 
@@ -1678,7 +1678,7 @@ def is_build_result(build_with_stats, search_params_dict):
                     return False
             elif isinstance(param_value, list):
 
-                if build_stat not in param_value:
+                if str(build_stat) not in param_value:
                     return False
             else:
                 if param_value != build_stat:
@@ -1970,6 +1970,53 @@ def get_build_and_char_class_by_build_id(build_id):
         char_class = get_character_class_by_id(build.character_class_id)
     
     return build, char_class
+
+
+def narrowed_build_and_base_stats_query_results_by_params(params_dict):
+    """Return builds narrowed by search parameter queries"""
+
+    non_total_params = ['build_name', 'level',
+                        'character_class_id', 'main_role',
+                        'content_type']
+
+    main_query = db.session.query(Build, Base_stat)
+
+    for param in non_total_params:
+        if param == 'level':
+            min_level = params_dict.get('min_level')
+            max_level = params_dict.get('max_level')
+            if min_level and max_level:
+                main_query = main_query.filter(
+                    Build.level <= max_level, Build.level >= min_level)
+            elif min_level and not max_level:
+                main_query = main_query.filter(Build.level >= min_level)
+            elif max_level and not min_level:
+                main_query = main_query.filter(Build.level <= max_level)
+        elif params_dict.get(param):
+            value = params_dict[param]
+            if param == 'build_name':
+                main_query = main_query.filter(
+                    Build.name.ilike(f'%{value}%'))
+            else:
+                main_query = main_query.filter(
+                    getattr(Build, param) in value)
+    
+    return main_query.all()
+            
+
+
+def get_api_build_search_results(params_dict):
+    """Return return list of builds that meet search params"""
+
+    build_list = []
+
+    builds = narrowed_build_and_base_stats_query_results_by_params(params_dict)
+
+    for build in builds:
+        build = set_build_with_total_stats_by_build_and_base_stats(build)
+        if is_build_result(build, params_dict):
+            build_list.append(build)
+    return build_list
 
 
 if __name__ == '__main__':

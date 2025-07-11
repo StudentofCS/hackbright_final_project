@@ -77,6 +77,35 @@ def get_search_args(form):
             build_search_args[key].update({'max' : max_stat})
 
     return build_search_args
+
+def get_search_api_args(form):
+    """Return a dict of the non-null form values from build search params"""
+
+    params_dict = {}
+
+    for param in form:
+        value = form.get(param)
+        # Only non-null values
+        if value:
+            if param.startswith('min_'):
+                value = int(value)
+                key = param[4:]
+                params_dict[key] = params_dict.get(key, {})
+                params_dict[key].update({'min' : value})
+            elif param.startswith('max_'):
+                value = int(value)
+                key = param[4:]
+                params_dict[key] = params_dict.get(key, {})
+                params_dict[key].update({'max' : value})
+            elif isinstance(value, list):
+                params_dict[param] = params_dict.get(param, [])
+                params_dict[param].extend(value)
+            else:
+                params_dict[param] = params_dict.get(param, value)
+
+    return params_dict
+
+
             
 
 @app.context_processor
@@ -517,6 +546,29 @@ def initialize_build_info():
                    char_class=char_class,
                    stat_totals=total_stats_dict,
                    char_cap=char_cap)
+
+
+@app.route('/api/get_search_results')
+def get_build_search_results():
+
+    params_dict = get_search_api_args(request.args)
+
+    build_totals_list = crud.get_api_build_search_results(params_dict)
+    build_totals_dict_list = []
+
+    for build in build_totals_list:
+        build = helpers.get_total_stats_dict_by_build(build)
+        build_totals_dict_list.append(build)
+
+    name_translations = crud.get_name_translations()
+    translations = helpers.get_name_translations_dict(
+        name_translations, session['lang'])
+
+    return jsonify(build_totals_list = build_totals_dict_list,
+                   translations = translations)
+
+
+
 
 
 if __name__ == "__main__":

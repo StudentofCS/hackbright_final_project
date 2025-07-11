@@ -460,6 +460,71 @@ def seed_user():
     db.session.add(user)
     db.session.commit()
 
+
+def seed_character_class_name_translations():
+    """Seed the name translations for the character classes"""
+    classes = [ {'name_id' : 1, 'name_type': 'class',
+                 'en': 'Feca', 'fr' : '',
+                 'es': '', 'pt' : ''},
+                 {'name_id' : 2, 'name_type': 'class',
+                 'en': 'Osamodas', 'fr' : '',
+                 'es': '', 'pt' : ''},
+                 {'name_id' : 3, 'name_type': 'class',
+                 'en': 'Enutrof', 'fr' : '',
+                 'es': '', 'pt' : ''},
+                 {'name_id' : 4, 'name_type': 'class',
+                 'en': 'Sram', 'fr' : '',
+                 'es': '', 'pt' : ''},
+                 {'name_id' : 5, 'name_type': 'class',
+                 'en': 'Xelor', 'fr' : '',
+                 'es': '', 'pt' : ''},
+                 {'name_id' : 6, 'name_type': 'class',
+                 'en': 'Ecaflip', 'fr' : '',
+                 'es': '', 'pt' : ''},
+                 {'name_id' : 7, 'name_type': 'class',
+                 'en': 'Eniripsa', 'fr' : '',
+                 'es': '', 'pt' : ''},
+                 {'name_id' : 8, 'name_type': 'class',
+                 'en': 'Iop', 'fr' : '',
+                 'es': '', 'pt' : ''},
+                 {'name_id' : 9, 'name_type': 'class',
+                 'en': 'Cra', 'fr' : '',
+                 'es': '', 'pt' : ''},
+                 {'name_id' : 10, 'name_type': 'class',
+                 'en': 'Sadida', 'fr' : '',
+                 'es': '', 'pt' : ''},
+                 {'name_id' : 11, 'name_type': 'class',
+                 'en': 'Sacrier', 'fr' : '',
+                 'es': '', 'pt' : ''},
+                 {'name_id' : 12, 'name_type': 'class',
+                 'en': 'Pandawa', 'fr' : '',
+                 'es': '', 'pt' : ''},
+                 {'name_id' : 13, 'name_type': 'class',
+                 'en': 'Rogue', 'fr' : '',
+                 'es': '', 'pt' : ''},
+                 {'name_id' : 14, 'name_type': 'class',
+                 'en': 'Masqueraider', 'fr' : '',
+                 'es': '', 'pt' : ''},
+                 {'name_id' : 15, 'name_type': 'class',
+                 'en': 'Ouginak', 'fr' : '',
+                 'es': '', 'pt' : ''},
+                 {'name_id' : 16, 'name_type': 'class',
+                 'en': 'Foggernaut', 'fr' : '',
+                 'es': '', 'pt' : ''},
+                 {'name_id' : 17, 'name_type': 'class',
+                 'en': 'Eliotrope', 'fr' : '',
+                 'es': '', 'pt' : ''},
+                 {'name_id' : 18, 'name_type': 'class',
+                 'en': 'Huppermage', 'fr' : '',
+                 'es': '', 'pt' : ''} ]
+    
+    for char_class in classes:
+        class_translation = crud.create_name_translation(char_class)
+        db.session.add(class_translation)
+    db.session.commit()
+
+
+
 seed_all_equipments()
 seed_equipment_name_translations()
 seed_character_classes()
@@ -468,3 +533,4 @@ seed_elements()
 seed_base_stats()
 seed_spell_and_passive_slot_caps()
 seed_user()
+seed_character_class_name_translations()

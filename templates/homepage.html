@@ -2,6 +2,7 @@
 
 {% block title %}Wakfu Builds: Home{% endblock %}
 {% block content %}
+    <input type="hidden" name="equip_order" value="{{ equip_order }}">
     <div class="container" id="homepage-container">
         <div class="row row mb-3 pt-5 justify-content-evenly" id="main_homepage_row">
             <div class="col-md-4" id="homepage_search_col">
@@ -39,39 +40,37 @@
                         <div class="row mb-1 pt-1" id="homepage_main_role_row">
                                 <h5>Main role:</h5>
                                 <div class="btn-toolbar mb-3" role="group" aria-label="Checkbox buttons for main role">
-                                        <input type="checkbox" class="btn-check" name="main_role" id="damage" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="damage" value="1" autocomplete="off">
                                         <label class="btn btn-outline-primary" for="damage">Damage</label>
-                                        <input type="checkbox" class="btn-check" name="main_role" id="melee" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="melee" value="2" autocomplete="off">
                                         <label class="btn btn-outline-primary" for="melee">Melee Dmg</label>
-                                        <input type="checkbox" class="btn-check" name="main_role" id="distance" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="distance" value="3" autocomplete="off">
                                         <label class="btn btn-outline-primary" for="distance">Distance Dmg</label>
-                                        <input type="checkbox" class="btn-check" name="main_role" id="tank" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="tank" value="4" autocomplete="off">
                                         <label class="btn btn-outline-primary" for="tank">Tank</label>
-                                        <input type="checkbox" class="btn-check" name="main_role" id="healer" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="healer" value="5" autocomplete="off">
                                         <label class="btn btn-outline-primary" for="healer">Healer</label>
-                                        <input type="checkbox" class="btn-check" name="main_role" id="shielder" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="shielder" value="6" autocomplete="off">
                                         <label class="btn btn-outline-primary" for="shielder">Shielder</label>
-                                        <input type="checkbox" class="btn-check" name="main_role" id="positioner" autocomplete="off">
+                                        <input type="checkbox" class="btn-check" name="main_role" id="positioner" value="7" autocomplete="off">
                                         <label class="btn btn-outline-primary" for="positioner">Positioner</label>
-                                        <input type="checkbox" class="btn-check" name="main_role" id="buffer" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="buffer">Buffer</label>
-                                        <input type="checkbox" class="btn-check" name="main_role" id="debuffer" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="debuffer">Debuffer</label>
+                                        <input type="checkbox" class="btn-check" name="main_role" id="buffer" value="8" autocomplete="off">
+                                        <label class="btn btn-outline-primary" for="buffer">Buffer / Debufer</label>
                                 </div>
                         </div>
 
                         <div class="row mb-1 pt-1" id="homepage_content_focus_row">   
                             <h5>Content Focus:</h5>
                             <div class="btn-toolbar mb-3" role="group" aria-label="Checkbox buttons for content type">
-                                    <input type="checkbox" class="btn-check" name="content_type" id="solo" autocomplete="off">
+                                    <input type="checkbox" class="btn-check" name="content_type" id="solo" value="1" autocomplete="off">
                                     <label class="btn btn-outline-primary" for="solo">Solo PvM</label>
-                                    <input type="checkbox" class="btn-check" name="content_type" id="group" autocomplete="off">
+                                    <input type="checkbox" class="btn-check" name="content_type" id="group" value="2" autocomplete="off">
                                     <label class="btn btn-outline-primary" for="group">Group PvM</label>
-                                    <input type="checkbox" class="btn-check" name="content_type" id="pvp" autocomplete="off">
+                                    <input type="checkbox" class="btn-check" name="content_type" id="pvp" value="3" autocomplete="off">
                                     <label class="btn btn-outline-primary" for="pvp">PvP</label>
-                                    <input type="checkbox" class="btn-check" name="content_type" id="rift" autocomplete="off">
+                                    <input type="checkbox" class="btn-check" name="content_type" id="rift" value="4" autocomplete="off">
                                     <label class="btn btn-outline-primary" for="rift">Rift</label>
-                                    <input type="checkbox" class="btn-check" name="content_type" id="ub" autocomplete="off">
+                                    <input type="checkbox" class="btn-check" name="content_type" id="ub" value="5" autocomplete="off">
                                     <label class="btn btn-outline-primary" for="ub">Ultimate Boss</label>
                             </div>
                         </div>    
@@ -113,13 +112,13 @@
                                 </button>
                             </p>
                             <div class="collapse" id="advanced_stats">
-                                <div class="input-group mb-3 col-auto">
+                                <div class="input-group mb-1 col-auto">
                                     <span class="input-group-text bg-secondary border-secondary">Total Mastery:</span>
                                     <input type="number" class="form-control" name="min_elemental_mastery" aria-label="Minimum mastery">
                                     <span class="input-group-text bg-secondary border-secondary"> - </span>
                                     <input type="number" class="form-control" name="max_elemental_mastery" aria-label="Maximum mastery">
                                 </div>
-                                <div class="btn-toolbar mb-3" role="group" aria-label="Checkbox buttons for masteries to include for total mastery">
+                                <div class="btn-toolbar mb-1" role="group" aria-label="Checkbox buttons for elements to include for total mastery">
                                     <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Selecting multiple elements will only return builds with equal mastery in those elements. Other masteries are addititve.">
                                         ?*
                                     </button>
@@ -131,6 +130,8 @@
                                     <label class="btn btn-sm btn-outline-primary" for="earth_mastery">Earth</label>
                                     <input type="checkbox" class="btn-check" name="mastery_element" id="air_mastery" autocomplete="off">
                                     <label class="btn btn-sm btn-outline-primary" for="air_mastery">Air</label>
+                                </div>
+                                <div class="btn-toolbar mb-3" role="group" aria-label="Checkbox buttons for masteries to include for total mastery">
                                     <input type="checkbox" class="btn-check" name="mastery_type" id="crit_mastery" autocomplete="off">
                                     <label class="btn btn-sm btn-outline-primary" for="crit_mastery">Crit</label>
                                     <input type="checkbox" class="btn-check" name="mastery_type" id="rear_mastery" autocomplete="off">
@@ -210,6 +211,18 @@
                                     <span class="input-group-text bg-secondary border-secondary"> - </span>
                                     <input type="number" class="form-control" name="max_armor" aria-label="Maximum armor">
                                 </div>
+                                <div class="input-group mb-3 col-auto">
+                                    <span class="input-group-text bg-secondary border-secondary">Armor Given:</span>
+                                    <input type="number" class="form-control" name="min_armor_given" aria-label="Minimum armor given">
+                                    <span class="input-group-text bg-secondary border-secondary"> - </span>
+                                    <input type="number" class="form-control" name="max_armor_given" aria-label="Maximum armor given">
+                                </div>
+                                <div class="input-group mb-3 col-auto">
+                                    <span class="input-group-text bg-secondary border-secondary">Armor Received:</span>
+                                    <input type="number" class="form-control" name="min_armor_received" aria-label="Minimum armor received">
+                                    <span class="input-group-text bg-secondary border-secondary"> - </span>
+                                    <input type="number" class="form-control" name="max_armor_received" aria-label="Maximum armor reeived">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -255,9 +268,10 @@
                         </button>
                     </div>
                 </div>
-                <div class="row mb-3 pt-3 justify-content-center">
+                <div class="row mb-3 pt-3 justify-content-center" id="individual_results">
                     {% for build in builds %}
-                        <div class="col-11 text-bg-dark border border-secondary rounded-4 mb-3" id="individual_result">
+                        <div class="col-11 text-bg-dark border border-secondary rounded-4 mb-3 individual-build-result">
+                            <input type="hidden" name="result_build_id" value="{{ build.id }}">
                         
                             <div class="mb-3 mx-1">
                                 <div class="row pb-3 mb-3 pt-3 border-bottom border-warning-subtle">
