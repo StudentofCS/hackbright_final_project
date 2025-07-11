@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Wakfu Builds{% endblock %}
+{% block title %}Wakfu Builds: Home{% endblock %}
 {% block content %}
     <div class="container" id="homepage-container">
         <div class="row row mb-3 pt-5 justify-content-evenly" id="main_homepage_row">
@@ -115,9 +115,9 @@
                             <div class="collapse" id="advanced_stats">
                                 <div class="input-group mb-3 col-auto">
                                     <span class="input-group-text bg-secondary border-secondary">Total Mastery:</span>
-                                    <input type="number" class="form-control" name="min_mastery" aria-label="Minimum mastery">
+                                    <input type="number" class="form-control" name="min_elemental_mastery" aria-label="Minimum mastery">
                                     <span class="input-group-text bg-secondary border-secondary"> - </span>
-                                    <input type="number" class="form-control" name="max_mastery" aria-label="Maximum mastery">
+                                    <input type="number" class="form-control" name="max_elemental_mastery" aria-label="Maximum mastery">
                                 </div>
                                 <div class="btn-toolbar mb-3" role="group" aria-label="Checkbox buttons for masteries to include for total mastery">
                                     <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Selecting multiple elements will only return builds with equal mastery in those elements. Other masteries are addititve.">
@@ -146,9 +146,9 @@
                                 </div>
                                 <div class="input-group mb-3 col-auto">
                                     <span class="input-group-text bg-secondary border-secondary">Resistance %:</span>
-                                    <input type="number" class="form-control" name="min_res" aria-label="Minimum resistance %">
+                                    <input type="number" class="form-control" name="min_elemental_res_percent" aria-label="Minimum resistance %">
                                     <span class="input-group-text bg-secondary border-secondary"> - </span>
-                                    <input type="number" class="form-control" name="max_res" aria-label="Maximum resistance %">
+                                    <input type="number" class="form-control" name="max_elemental_res_percent" aria-label="Maximum resistance %">
                                 </div>
                                 <div class="input-group mb-3 col-auto">
                                     <span class="input-group-text bg-secondary border-secondary">Damage Inflicted %:</span>

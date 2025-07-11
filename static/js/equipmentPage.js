@@ -6,6 +6,18 @@ if (window.location.pathname.startsWith('/build/')) {
     document.querySelector('#equipment_search_form').addEventListener('submit', (evt) => {
         evt.preventDefault();
 
+        const mastery_element_list = Array.from(document.querySelectorAll(
+            'input[name="mastery_element"]')).map(element => {
+                if (element.checked) {
+                    return element.id}
+            }).filter(element => typeof element !== 'undefined');
+
+        const res_element_list = Array.from(document.querySelectorAll(
+            'input[name="mastery_element"]')).map(element => {
+                if (element.checked) {
+                    return element.id}
+            }).filter(element => typeof element !== 'undefined');
+
         const formInputs = {
 
             equipment_name: document.querySelector(
@@ -26,8 +38,8 @@ if (window.location.pathname.startsWith('/build/')) {
                 'input[name="max_elemental_mastery"]').value,
             min_elemental_res: document.querySelector('input[name="min_elemental_res"]').value,
             max_elemental_res: document.querySelector('input[name="max_elemental_res"]').value,
-            mastery_element: document.querySelectorAll('input[name="min_level"]').value,
-            res_element: document.querySelectorAll('input[name="max_level"]').value,
+            mastery_element: mastery_element_list,
+            res_element: res_element_list,
             min_crit_hit: document.querySelector('input[name="min_crit_hit"]').value,
             max_crit_hit: document.querySelector('input[name="max_crit_hit"]').value,
             min_block: document.querySelector('input[name="min_block"]').value,
@@ -40,24 +52,20 @@ if (window.location.pathname.startsWith('/build/')) {
             max_dodge: document.querySelector('input[name="max_dodge"]').value,
             min_lock: document.querySelector('input[name="min_lock"]').value,
             max_lock: document.querySelector('input[name="max_lock"]').value,
-            min_wisdom: document.querySelector('input[name="min_wisdom"]').value,
-            max_wisdom: document.querySelector('input[name="max_wisdom"]').value,
-            min_prospecting: document.querySelector('input[name="min_prospecting"]').value,
-            max_prospecting: document.querySelector('input[name="max_prospecting"]').value,
             min_control: document.querySelector('input[name="min_control"]').value,
             max_control: document.querySelector('input[name="max_control"]').value,
             min_force_of_will: document.querySelector('input[name="min_force_of_will"]').value,
             max_force_of_will: document.querySelector('input[name="max_force_of_will"]').value,
-            min_crit_mastery: document.querySelector('input[name="min_crit_mastery"]').value,
-            max_crit_mastery: document.querySelector('input[name="max_crit_mastery"]').value,
-            min_crit_res: document.querySelector('input[name="min_crit_res"]').value,
-            max_crit_res: document.querySelector('input[name="max_crit_res"]').value,
-            min_rear_mastery: document.querySelector('input[name="min_rear_mastery"]').value,
-            max_rear_mastery: document.querySelector('input[name="max_rear_mastery"]').value,
-            min_rear_res: document.querySelector('input[name="min_rear_res"]').value,
-            max_rear_res: document.querySelector('input[name="max_rear_res"]').value,
-            min_melee_mastery: document.querySelector('input[name="min_melee_mastery"]').value,
-            max_melee_mastery: document.querySelector('input[name="max_melee_mastery"]').value,
+            // min_crit_mastery: document.querySelector('input[name="min_crit_mastery"]').value,
+            // max_crit_mastery: document.querySelector('input[name="max_crit_mastery"]').value,
+            // min_crit_res: document.querySelector('input[name="min_crit_res"]').value,
+            // max_crit_res: document.querySelector('input[name="max_crit_res"]').value,
+            // min_rear_mastery: document.querySelector('input[name="min_rear_mastery"]').value,
+            // max_rear_mastery: document.querySelector('input[name="max_rear_mastery"]').value,
+            // min_rear_res: document.querySelector('input[name="min_rear_res"]').value,
+            // max_rear_res: document.querySelector('input[name="max_rear_res"]').value,
+            // min_melee_mastery: document.querySelector('input[name="min_melee_mastery"]').value,
+            // max_melee_mastery: document.querySelector('input[name="max_melee_mastery"]').value,
             min_armor_given: document.querySelector('input[name="min_armor_given"]').value,
             max_armor_given: document.querySelector('input[name="max_armor_given"]').value,
             min_distance_mastery: document.querySelector('input[name="min_distance_mastery"]').value,
@@ -834,22 +842,44 @@ if (window.location.pathname == ('/')) {
 function update_search_results(evt) {
     evt.preventDefault();
 
+    // Get a list of the checkedbox ids without the undefined values
+    const char_class_id_list = Array.from(document.querySelectorAll(
+        'input[name="character_class_id"]')).map(element => {
+            if (element.checked) {
+                return element.value}
+        }).filter(element => typeof element !== 'undefined');
+    
+    const main_role_id_list = Array.from(document.querySelectorAll(
+        'input[name="main_role"]')).map(element => {
+            if (element.checked) {
+                return element.value}
+        }).filter(element => typeof element !== 'undefined');
 
+    const content_type_id_list = Array.from(document.querySelectorAll(
+        'input[name="content_type"]')).map(element => {
+            if (element.checked) {
+                return element.value}
+        }).filter(element => typeof element !== 'undefined');
+
+    const mastery_element_list = Array.from(document.querySelectorAll(
+        'input[name="mastery_element"]')).map(element => {
+            if (element.checked) {
+                return element.id}
+        }).filter(element => typeof element !== 'undefined');
+
+    const mastery_type_list = Array.from(document.querySelectorAll(
+        'input[name="mastery_type"]')).map(element => {
+            if (element.checked) {
+                return element.id}
+        }).filter(element => typeof element !== 'undefined');
 
 
     const formInputs = {
         build_name: document.querySelector(
             'input[name="build_name"]').value,
-        character_class_ids : Array.from(document.querySelectorAll(
-            'input[name="character_class_id"]')).map(element => {
-                if (element.checked) {
-                    return element.value
-                }
-            }).filter(element => typeof element !== 'undefined'),
-        character_class_ids : Array.from(document.querySelectorAll(
-            'input[name="character_class_id"]')),
-        character_class_ids : Array.from(document.querySelectorAll(
-            'input[name="character_class_id"]')),
+        character_class_ids : char_class_id_list,
+        main_role_ids : main_role_id_list,
+        content_type_ids : content_type_id_list,
         min_level: document.querySelector('input[name="min_level"]').value,
         max_level: document.querySelector('input[name="max_level"]').value,
         min_hp: document.querySelector('input[name="min_hp"]').value,
@@ -864,10 +894,12 @@ function update_search_results(evt) {
             'input[name="min_elemental_mastery"]').value,
         max_elemental_mastery: document.querySelector(
             'input[name="max_elemental_mastery"]').value,
-        min_elemental_res: document.querySelector('input[name="min_elemental_res"]').value,
-        max_elemental_res: document.querySelector('input[name="max_elemental_res"]').value,
-        mastery_element: document.querySelectorAll('input[name="min_level"]').value,
-        res_element: document.querySelectorAll('input[name="max_level"]').value,
+        mastery_element: mastery_element_list,
+        mastery_type: mastery_type_list,
+        min_elemental_res_percent: document.querySelector(
+            'input[name="min_elemental_res_percent"]').value,
+        max_elemental_res_percent: document.querySelector(
+            'input[name="max_elemental_res_percent"]').value,
         min_crit_hit: document.querySelector('input[name="min_crit_hit"]').value,
         max_crit_hit: document.querySelector('input[name="max_crit_hit"]').value,
         min_block: document.querySelector('input[name="min_block"]').value,
